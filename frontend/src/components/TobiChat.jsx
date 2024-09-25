@@ -16,8 +16,6 @@ import TobiCon from '../../public/TobiCon.png'
 function TobiChat() {
   // Constante que indica el status OK de la API
   const OK_API = 200
-  // Clave que da la autorización a la API
-  const API_KEY = "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"
   // Mensaje de error
   const ERROR_MSG = "Error, please refresh!"
   // El array de mensajes que sera actualizado mendiante un estado 
