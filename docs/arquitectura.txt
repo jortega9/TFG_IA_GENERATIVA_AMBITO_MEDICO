@@ -1,0 +1,45 @@
+```
+/raiz_del_proyecto
+│
+├── /frontend/                # Carpeta para el código del frontend (interfaz web)
+│   ├── /src/
+│   ├── /public/
+│   ├── package.json          # Dependencias del frontend
+│   ├── .env                  # Variables de entorno (API keys, etc.)
+│   ├── README.md             # Documentación del frontend
+│   └── .gitignore
+│
+├── /backend/                 # Carpeta para el código del backend (API y lógica de negocio)
+│   ├── /src/
+│   │   ├── /controllers/     # Controladores para la lógica de los chats y pacientes
+│   │   ├── /models/          # Modelos de datos (Pacientes, Chats)
+│   │   ├── /routes/          # Rutas API (Chat, Pacientes, IA)
+│   │   ├── /services/        # Servicios para IA y almacenamiento
+│   │   └── app.js            # Configuración principal del backend
+│   ├── /config/              # Configuración del entorno
+│   ├── package.json          # Dependencias del backend
+│   ├── .env                  # Variables de entorno (claves API, base de datos)
+│   ├── README.md             # Documentación del backend
+│   └── .gitignore
+│
+├── /ai/                      # Algoritmos o integración de IA generativa
+│   ├── /models/              # Modelos entrenados o script para llamar APIs de IA
+│   ├── /training_data/       # Datos de entrenamiento (si es necesario)
+│   ├── inference.py          # Código de inferencia para la IA generativa
+│   └── README.md             # Documentación para el manejo de la IA
+│
+├── /db/                      # Configuración de base de datos y scripts de migración
+│   ├── /migrations/          # Scripts de migración de la base de datos
+│   ├── schema.sql            # Esquema SQL o NoSQL de la base de datos
+│   └── README.md             # Documentación de la base de datos
+│
+├── /docs/                    # Documentación general del proyecto
+│   ├── REQUISITOS.md         # Especificación de requisitos
+│   ├── DISEÑO.md             # Diseño técnico y arquitectura
+│   ├── API.md                # Documentación de la API (endpoints)
+│   └── README.md             # Documentación general del proyecto
+│
+├── README.md                 # Documentación principal del proyecto
+└── .gitignore                # Archivos a ignorar en el control de versiones
+
+```

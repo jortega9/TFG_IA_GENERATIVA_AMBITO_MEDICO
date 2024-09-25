@@ -1,0 +1,22 @@
+{
+	"name": "TobiChat",
+	"short_name": "TobiChat",
+	"start_url": "/",
+	"display": "standalone",
+	"background_color": "#4d7aff0c",
+	"theme_color": "#4D7AFF",
+	"description": "A chat app built with React",
+	"icons": [
+	  {
+		"src": "/Tobichat/TobiCon.png",
+		"type": "image/png",
+		"sizes": "192x192"
+	  },
+	  {
+		"src": "/Tobichat/TobiCon.png",
+		"type": "image/png",
+		"sizes": "512x512"
+	  }
+	]
+}
+  
