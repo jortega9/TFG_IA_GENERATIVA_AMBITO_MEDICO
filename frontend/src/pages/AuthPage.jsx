@@ -1,29 +1,80 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography, Box } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { json, useNavigate } from 'react-router-dom';
 import AsistenteIcon from '../../public/assets/AsistenteIcon.png';
 import './AuthPage.css'; // Importa el archivo CSS
 
 const AuthPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [errorMsg, setErrorMsg] = useState('');
+    const [isLogIn, setIsLogIn] = useState(true);
     const navigate = useNavigate();
-
-    const hardcodedEmail = 'jorge.amato@example.com';
 
     function setUser(user) {
         sessionStorage.setItem('user', JSON.stringify(user));
     }
 
+    const checkUserExistence = async (email) => {
+        try{
+            const response = await fetch('/api/login/user-exist', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json',
+                },
+                body: JSON.stringify({ email })
+              });
+
+            const userExist = await response.json();
+            return userExist;
+
+        }
+        catch(error){
+            console.error("Error comprobando la existencia del usuario:", error);
+            return;
+        }
+    }
+
+    async function loginUser(info){
+        try{
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(info)
+            })
+            if(response.status === 401){
+                setErrorMsg("Usuario o Contraseña incrrectos");
+                return null;
+            }
+            if(response.status === 500){
+                setErrorMsg("Error de servidor");
+                return null;
+            }
+            if(response.status === 404){
+                setErrorMsg("Error de conexión, servidor no encontrado");
+                return null;
+            }
+            const user = await response.json();
+            return user; 
+
+        }
+        catch(error){
+            console.error("Error al realizar el loginUser: ", error);
+        }
+    }
+
     const handleLogin = async (e) => {
         e.preventDefault();
 
-        const user = {
+        const user = await loginUser({
             email: email,
             password: password,
-        };
+        });
 
-        if (email === hardcodedEmail && password === '12345') {
+        if (email) {
             setUser(user);
             navigate('/Tobichat');
         }
@@ -62,6 +113,7 @@ const AuthPage = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
+                {errorMsg && <p className='error-mesage'>{errorMsg}</p>}
                 <Button
                     variant="contained"
                     fullWidth
