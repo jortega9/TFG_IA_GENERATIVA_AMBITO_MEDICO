@@ -5,10 +5,12 @@ import AsistenteIcon from '../../public/assets/AsistenteIcon.png';
 import './AuthPage.css'; // Importa el archivo CSS
 
 const AuthPage = () => {
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [errorMsg, setErrorMsg] = useState('');
-    const [isLogIn, setIsLogIn] = useState(true);
+    const [isLogin, setIsLogin] = useState(true);
     const navigate = useNavigate();
 
     function setUser(user) {
@@ -20,11 +22,11 @@ const AuthPage = () => {
             const response = await fetch('/api/login/user-exist', {
                 method: 'POST',
                 headers: {
-                  'Content-Type': 'application/json',
-                  'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
                 },
                 body: JSON.stringify({ email })
-              });
+            });
 
             const userExist = await response.json();
             return userExist;
@@ -36,12 +38,20 @@ const AuthPage = () => {
         }
     }
 
+    function clearInputs() {
+        setName('');
+        setEmail('');
+        setPassword('');
+        setConfirmPassword('');
+        setErrorMsg('');
+    }
+
     async function loginUser(info){
         try{
             const response = await fetch('/api/login', {
                 method: 'POST',
                 headers: {
-                  'Content-Type': 'application/json',
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(info)
             })
@@ -80,9 +90,34 @@ const AuthPage = () => {
         }
     };
 
-    const handleRegisterRedirect = () => {
-        navigate('/register');
-    };
+    function isValidEmail(email) {
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return emailPattern.test(email);
+    }
+
+    const handleRegister = async (e) => {
+        e.preventDefault();
+        setErrorMsg('');
+        
+        if(!isValidEmail(email)) {
+            setErrorMsg('El email no es válido. Por favor, introduce otro email.');
+            return;
+        }
+
+        if( password !== confirmPassword){
+            setErrorMsg('Contraseñas diferentes');
+            return;
+        }
+
+        const existUser = await checkUserExistence(email);
+        if(existUser){
+            setErrorMsg("Usuario ya registrado.");
+            return;
+        }
+
+        const newUser = await createNewUser(name, email, password);
+        setSuccessMsg("Se ha registrado con éxito.");
+    }
 
     return (
         <Box className="auth-page-container">
@@ -90,9 +125,12 @@ const AuthPage = () => {
                 <img src={AsistenteIcon} alt="Bot avatar" className="avatar-image" />
             </div>
             <Typography variant="h4" className="title">
-                UroloBot
+                {isLogin ? 'Iniciar Sesión en UroloBot' : 'Regístrate en UroloBot'}
             </Typography>
-            <div className="input-container">
+    
+            {isLogin ? (
+                // Formulario de Inicio de Sesión
+                <div className="input-container">
                 <TextField
                     className="input-user"
                     label="Correo Electrónico"
@@ -113,7 +151,7 @@ const AuthPage = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
-                {errorMsg && <p className='error-mesage'>{errorMsg}</p>}
+                {errorMsg && <p className="error-message">{errorMsg}</p>}
                 <Button
                     variant="contained"
                     fullWidth
@@ -122,15 +160,91 @@ const AuthPage = () => {
                 >
                     Iniciar Sesión
                 </Button>
-            </div>
-            <Typography variant="body2" className="register-prompt">
-                ¿No tienes cuenta?{' '}
-                <Button variant="text" onClick={handleRegisterRedirect} className="register-button">
-                    Regístrate
+                <div className='centered-text'>
+                    <Typography variant="body2" className="change-prompt">
+                        ¿No tienes cuenta?{' '}
+                        <Button variant="text" 
+                            onClick={() => {
+                                setIsLogin(false);
+                                clearInputs();
+                            }}
+                            className="change-button"
+                        >
+                        Regístrate
+                        </Button>
+                    </Typography>
+                </div>
+                </div>
+            ) : (
+                // Formulario de Registro
+                <div className="input-container">
+                <TextField
+                    className="input-user"
+                    label="Nombre"
+                    type="text"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                />
+                <TextField
+                    className="input-user"
+                    label="Correo Electrónico"
+                    type="email"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                />
+                <TextField
+                    className="input-user"
+                    label="Contraseña"
+                    type="password"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
+                <TextField
+                    className="input-user"
+                    label="Confirmar Contraseña"
+                    type="password"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+                {errorMsg && <p className="error-message">{errorMsg}</p>}
+                <Button
+                    variant="contained"
+                    fullWidth
+                    onClick={handleRegister}
+                    className="register-button"
+                >
+                    Registrarse
                 </Button>
-            </Typography>
-        </Box>
-    );
-};
+                <div className='centered-text'>
+                    <Typography variant="body2" className="change-prompt">
+                        ¿Ya tienes cuenta?{' '}
+                        <Button variant="text" 
+                            onClick={() => {
+                                setIsLogin(true);
+                                clearInputs();
+                            }}
+                            className="change-button"
+                        >
+                        Iniciar Sesión
+                        </Button>
+                    </Typography>
+                </div>
+                </div>
+            )}
+            </Box>
+        );
+    }
 
 export default AuthPage;

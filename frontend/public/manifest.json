@@ -7,16 +7,15 @@
 	"theme_color": "#4D7AFF",
 	"description": "A chat app built with React",
 	"icons": [
-	  {
-		"src": "/frontend/public/assets/AsistenteIcon.png",
+	{
+		"src": "AsistenteIcon.png",
 		"type": "image/png",
-		"sizes": "192x192"
-	  },
-	  {
-		"src": "/frontend/public/assets/AsistenteIcon.png",
+		"sizes": "192x192 512x512 64x64 32x32 24x24 16x16"
+	},
+	{
+		"src": "AsistenteIcon-rbg.png",
 		"type": "image/png",
-		"sizes": "512x512"
-	  }
+		"sizes": "192x192 512x512 64x64 32x32 24x24 16x16"
+	}
 	]
 }
-  

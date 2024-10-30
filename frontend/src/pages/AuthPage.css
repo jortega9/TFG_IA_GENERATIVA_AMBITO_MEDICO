@@ -59,9 +59,41 @@
     color: #01579b;
 }
 
+.change-prompt {
+    color: #0277bd;
+    margin-top: 20px;
+}
+
+.change-button {
+    color: #01579b;
+}
+
 .input-container {
     width: 50%;
     display: flex;
     flex-direction: column;
     gap: 16px;
+}
+
+.centered-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.centered-text .MuiTypography-root {
+    margin-right: 5px;
+}
+
+.error-message {
+    color: red !important;
+    margin-top: 10px;
+    font-size: 0.9 rem !important;
+}
+
+.success-message {
+    color: green !important;
+    margin-top: 10px;
+    font-size: 0.9 rem !important;
 }
