@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import { User, Bot } from 'lucide-react'
-import TobiCon from '../../public/TobiCon.png'
+import AsistenteIcon from '../../public/assets/AsistenteIcon.png'
 
 function MessageList({ messages }) {
   const messagesEndRef = useRef(null)
@@ -27,7 +27,7 @@ function MessageList({ messages }) {
             {message.isUser ? (
               <User size={24}/>
             ) : (
-              <img src={TobiCon} alt="Bot avatar" className="avatar-image-small" />
+              <img src={AsistenteIcon} alt="Bot avatar" className="avatar-image-small" />
             )}
           </div>
           <div className={`message ${message.error ? 'error' : (message.isUser ? 'user' : 'bot')}`}>

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react'
 import ThemeToggle from './ThemeToggle'
 import MessageList from './MessageList'
 import MessageInput from './MessageInput'
-import TobiCon from '../../public/TobiCon.png'
+import AsistenteIcon from '../../public/assets/AsistenteIcon.png'
+import AppHeader from './AppHeader'
 
 /*
 	TobiChat.jsx
@@ -16,6 +17,7 @@ import TobiCon from '../../public/TobiCon.png'
 function TobiChat() {
   // Constante que indica el status OK de la API
   const OK_API = 200
+  const API_KEY = "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"
   // Mensaje de error
   const ERROR_MSG = "Error, please refresh!"
   // El array de mensajes que sera actualizado mendiante un estado 
@@ -43,7 +45,7 @@ function TobiChat() {
       navigator.serviceWorker.ready.then((registration) => {
         registration.showNotification('TobiChat', {
           body: message,
-          icon: TobiCon,
+          icon: AsistenteIcon,
         }).catch((error) => {console.log(error)});
       });
     }
@@ -108,14 +110,9 @@ function TobiChat() {
   */
   return (
     <div className="app-container">
-      <header className="app-header">
-        <h1>TobiChat</h1>
-      </header>
+      <AppHeader/>
       <div className="main-content">
-        <div className="avatar-container">
-          <div className="avatar">
-            <img src={TobiCon} alt="Bot avatar" className="avatar-image" />
-          </div>
+        <div className="menu-container">
         </div>
         <div className="chat-container">
           <div className="chat-header">

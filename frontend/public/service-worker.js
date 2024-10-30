@@ -3,7 +3,7 @@ const CACHE_NAME = 'tobichat-cache-v1';
 const urlsToCache = [
     '/',
     '/Tobichat/index.html',
-    '/Tobichat/TobiCon.png',        
+    '/frontend/public/assets/AsistenteIcon.png',        
     '/Tobichat/src/styles/chat.css', 
     '/Tobichat/src/main.jsx',        
     '/Tobichat/src/components/MessageInput.jsx',
@@ -79,8 +79,8 @@ self.addEventListener('push', function(event) {
 	console.log('push');
 	const options = {
 	  body: event.data.text(),
-	  icon: '/TobiCon.png',
-	  badge: '/TobiCon.png',
+	  icon: '/frontend/public/assets/AsistenteIcon.png',
+	  badge: '/frontend/public/assets/AsistenteIcon.png',
 	  data: { url: 'https://miguelamato.github.io/Tobichat/' } // The URL of the page that triggered the notification
 	};
   

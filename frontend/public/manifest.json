@@ -8,12 +8,12 @@
 	"description": "A chat app built with React",
 	"icons": [
 	  {
-		"src": "/Tobichat/TobiCon.png",
+		"src": "/frontend/public/assets/AsistenteIcon.png",
 		"type": "image/png",
 		"sizes": "192x192"
 	  },
 	  {
-		"src": "/Tobichat/TobiCon.png",
+		"src": "/frontend/public/assets/AsistenteIcon.png",
 		"type": "image/png",
 		"sizes": "512x512"
 	  }

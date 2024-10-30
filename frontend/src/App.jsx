@@ -1,11 +1,23 @@
 import React from 'react'
 import { ThemeProvider } from './components/ThemeContext'
-import TobiChat from './components/TobiChat'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import AuthPage from './pages/AuthPage'
+import ProtectedRoute from './ProtectedRoute'
 
 function App() {
   return (
     <ThemeProvider>
-      <TobiChat />
+      <Router>
+        <div className='app'>
+          <main>
+            <Routes>
+              <Route path='/login' element={<AuthPage/>}/>
+              <Route path='/Tobichat' element={<ProtectedRoute />}/>
+              <Route path='/' element={<ProtectedRoute />}/>
+            </Routes>
+          </main>
+        </div>
+      </Router>
     </ThemeProvider>
   )
 }
