@@ -12,7 +12,7 @@
 ├── /backend/                 # Carpeta para el código del backend (API y lógica de negocio)
 │   ├── /src/
 │   │   ├── /controllers/     # Controladores para la lógica de los chats y pacientes
-│   │   ├── /models/          # Modelos de datos (Pacientes, Chats)
+│   │   ├── /schemas/          # Modelos de datos (Pacientes, Chats)
 │   │   ├── /routes/          # Rutas API (Chat, Pacientes, IA)
 │   │   ├── /services/        # Servicios para IA y almacenamiento
 │   │   └── app.js            # Configuración principal del backend

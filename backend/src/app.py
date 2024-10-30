@@ -1,0 +1,13 @@
+from fastapi import FastAPI
+from .routes.auth_routes import router as auth_router
+
+app = FastAPI()
+
+# Montar las rutas de autenticación en /auth
+app.include_router(auth_router, prefix="/auth", tags=["auth"])
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("src.app:app", host="0.0.0.0", port=8000, reload=True)
+    
+"""Echarle un ojo a esto"""
