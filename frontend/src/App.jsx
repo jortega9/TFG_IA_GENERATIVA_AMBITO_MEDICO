@@ -2,7 +2,8 @@ import React from 'react'
 import { ThemeProvider } from './components/ThemeContext'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import AuthPage from './pages/AuthPage'
-import ProtectedRoute from './ProtectedRoute'
+import ProtectedRoute from './pages/ProtectedRoute'
+import TobiChat from './pages/TobiChat'
 
 function App() {
   return (
@@ -12,8 +13,8 @@ function App() {
           <main>
             <Routes>
               <Route path='/login' element={<AuthPage/>}/>
-              <Route path='/Tobichat' element={<ProtectedRoute />}/>
-              <Route path='/' element={<ProtectedRoute />}/>
+              <Route path='/Tobichat' element={<TobiChat />}/>
+              <Route path='/' element={<TobiChat />}/>
             </Routes>
           </main>
         </div>

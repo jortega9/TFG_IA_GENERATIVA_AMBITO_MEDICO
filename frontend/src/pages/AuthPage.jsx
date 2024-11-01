@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { TextField, Button, Typography, Box } from '@mui/material';
 import { json, useNavigate } from 'react-router-dom';
 import AsistenteIcon from '../../public/assets/AsistenteIcon.png';
-import './AuthPage.css'; // Importa el archivo CSS
+import '../styles/AuthPage.css';
 
 const AuthPage = () => {
     const [name, setName] = useState('');
@@ -19,7 +19,7 @@ const AuthPage = () => {
 
     const checkUserExistence = async (email) => {
         try{
-            const response = await fetch('/api/login/user-exist', {
+            const response = await fetch('http://127.0.0.1:8000/login/user-exist', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ const AuthPage = () => {
 
     async function loginUser(info){
         try{
-            const response = await fetch('/api/login', {
+            const response = await fetch('http://127.0.0.1:8000/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

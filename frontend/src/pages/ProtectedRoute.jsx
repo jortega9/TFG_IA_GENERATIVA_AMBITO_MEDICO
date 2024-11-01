@@ -1,6 +1,6 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import TobiChat from "./components/TobiChat";
+import TobiChat from "./TobiChat";
 
 function ProtectedRoute() {
     const user = sessionStorage.getItem('user');

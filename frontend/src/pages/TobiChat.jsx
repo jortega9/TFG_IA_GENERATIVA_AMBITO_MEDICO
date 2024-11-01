@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import ThemeToggle from './ThemeToggle'
-import MessageList from './MessageList'
-import MessageInput from './MessageInput'
+import ThemeToggle from '../components/ThemeToggle'
+import MessageList from '../components/MessageList'
+import MessageInput from '../components/MessageInput'
 import AsistenteIcon from '../../public/assets/AsistenteIcon.png'
-import AppHeader from './AppHeader'
+import AppHeader from '../components/AppHeader'
+import ChatList from '../components/ChatList'
+import '../styles/TobiChat.css'
 
 /*
 	TobiChat.jsx
@@ -22,6 +24,8 @@ function TobiChat() {
   const ERROR_MSG = "Error, please refresh!"
   // El array de mensajes que sera actualizado mendiante un estado 
   const [messages, setMessages] = useState([])
+  const [chats, setChats] = useState([{ id: 1, name: 'New Chat 1' }]);
+  const [activeChat, setActiveChat] = useState(1);
 
   useEffect(() => {
     if ('serviceWorker' in navigator && 'PushManager' in window) {
@@ -113,6 +117,7 @@ function TobiChat() {
       <AppHeader/>
       <div className="main-content">
         <div className="menu-container">
+        <ChatList />
         </div>
         <div className="chat-container">
           <div className="chat-header">

@@ -1,3 +1,28 @@
+:root {
+	--primary-color: #4D7AFF;
+	--secondary-color: #F0F4F8; 
+    --title-color: #0277bd;
+	--background-color: #e0f7fa;
+	--chat-background: #FFFFFF;
+	--text-color: #333333;
+	--input-background: #F0F4F8;
+	--icon-color: #4D7AFF;
+	--error-color: #FF3366;
+	--success-color: #52ff33;
+    --hover-color: #01579b;
+}
+
+.dark-theme {
+	--primary-color: #4D7AFF;
+	--secondary-color: #4b5696;
+	--background-color: #1A1C2A;
+	--chat-background: #2A2D3E;
+	--text-color: #E0E0E0;
+	--input-background: #2A2D3E;
+	--icon-color: #4D7AFF;
+	--error-color: #FF4D7A;
+}
+
 .auth-page-container {
     display: flex;
     flex-direction: column;
@@ -6,7 +31,7 @@
     height: 100vh;
     gap: 20px;
     padding: 20px;
-    background-color: #e0f7fa;
+    background-color: var(--background-color);
 }
 
 .avatar-login {
@@ -16,7 +41,7 @@
 	overflow: hidden;
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 	margin-right: 1rem;
-  }
+}
 
 .avatar-image {
     width: 100px;
@@ -25,7 +50,7 @@
 }
 
 .title {
-    color: #0277bd;
+    color: var(--title-color);
 }
 
 .input-user {
@@ -33,39 +58,39 @@
 }
 
 .input-field .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
-    border-color: #0277bd;
+    border-color: var(--title-color);
 }
 
 .input-field .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-    border-color: #01579b;
+    border-color: var(--title-color);
 }
 
 .login-button {
     width: 50%;
-    background-color: #0277bd;
-    color: #ffffff;
+    background-color: var(--title-color);
+    color: var(--chat-background);
 }
 
 .login-button:hover {
-    background-color: #01579b;
+    background-color: var(--hover-color);
 }
 
 .register-prompt {
-    color: #0277bd;
+    color: var(--title-color);
     margin-top: 20px;
 }
 
 .register-button {
-    color: #01579b;
+    color: var(--hover-color);
 }
 
 .change-prompt {
-    color: #0277bd;
+    color: var(--title-color);
     margin-top: 20px;
 }
 
 .change-button {
-    color: #01579b;
+    color: var(--hover-color);
 }
 
 .input-container {
@@ -87,13 +112,13 @@
 }
 
 .error-message {
-    color: red !important;
+    color: var(--error-color) !important;
     margin-top: 10px;
     font-size: 0.9 rem !important;
 }
 
 .success-message {
-    color: green !important;
+    color: var(--success-color) !important;
     margin-top: 10px;
     font-size: 0.9 rem !important;
 }
