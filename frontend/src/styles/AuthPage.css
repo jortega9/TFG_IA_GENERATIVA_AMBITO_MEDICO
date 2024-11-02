@@ -52,9 +52,20 @@
 .title {
     color: var(--title-color);
 }
-
 .input-user {
     width: 50%;
+}
+
+.dark-theme .input-user .MuiInputBase-root {
+    color: white;
+}
+
+.dark-theme .input-user .MuiOutlinedInput-notchedOutline {
+    border-color: white;
+}
+
+.dark-theme .input-user .MuiInputLabel-root {
+    color: white;/
 }
 
 .input-field .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
