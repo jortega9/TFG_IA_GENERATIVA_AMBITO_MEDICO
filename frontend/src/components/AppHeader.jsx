@@ -11,7 +11,7 @@ function AppHeader() {
         <>
             <header className="app-header">
             <div className="avatar">
-                <img src={AsistenteIcon} alt="Bot avatar" className="avatar-image" />
+                <img src={AsistenteIcon} alt="Bot avatar" className="avatar-image"/>
             </div>
             <h1>UroloBot</h1>
             <AccountButton/>

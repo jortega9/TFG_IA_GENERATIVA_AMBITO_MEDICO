@@ -21,8 +21,8 @@ function AccountButton() {
         navigate('/account');
     };
 
-    const handleSettings = () => {
-        navigate('/config');
+    const handleChangePsw = () => {
+        navigate('/passwd');
     };
 
     const handleLogout = () => {
@@ -72,7 +72,7 @@ function AccountButton() {
                 }}
             >
                 <MenuItem onClick={handleAccount}>Mi Cuenta</MenuItem>
-                <MenuItem onClick={handleSettings}>Configuración</MenuItem>
+                <MenuItem onClick={handleChangePsw}>Cambiar Contraseña</MenuItem>
                 <MenuItem onClick={handleLogout}>Cerrar Sesión</MenuItem>
             </Menu>
 

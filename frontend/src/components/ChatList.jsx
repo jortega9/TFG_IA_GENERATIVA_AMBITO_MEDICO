@@ -1,13 +1,11 @@
-import { useState } from 'react'
-import { PlusCircle, MessageCircle } from 'lucide-react'
-import { Button, Input } from "@mui/material"
+import { useState } from 'react';
+import { PlusCircle } from 'lucide-react';
+import { Button, Input } from '@mui/material';
 import { Menu, MenuItem } from '@mui/material';
-import '../styles/ChatList.css'
+import '../styles/ChatList.css';
 
-const ChatList = () => {
-
-    const [chats, setChats] = useState([])
-    const [newChatName, setNewChatName] = useState('')
+const ChatList = ({ chats, setChats, onSelectChat }) => {
+    const [newChatName, setNewChatName] = useState('');
     const [menu, setMenu] = useState(null);
 
     const handleMenuOpen = (event) => {
@@ -20,76 +18,74 @@ const ChatList = () => {
     };
 
     const createNewChat = () => {
-        if (newChatName.trim() === '') return
+        if (newChatName.trim() === '') return;
 
         const newChat = {
-            id: newChatName.trim(),
-            name: newChatName.trim(),
-            timestamp: new Date().toLocaleString()
-        }
-        setChats([newChat, ...chats])
-        setNewChatName('')
-    }
+        id: chats.length,
+        name: newChatName.trim(),
+        messages: [],
+        };
+        
+        setChats((prevChats) => [...prevChats, newChat]);
+        setNewChatName('');
+    };
 
-    const handleSelectChat = () => {
-
-    }
     const changeChatName = () => {
 
     }
-    const deleteChat = () => {
-
+    const deleteChat = (id) => {
+        setMenu(null);
+        setChats((prevChats) => prevChats.filter((chat) => chat.id !== id));
     }
 
     return (
         <div className="chat-list-container">
-            <div className="flex gap-2 mb-4">
-                <Input
-                type="text"
-                placeholder="Enter chat name"
-                value={newChatName}
-                onChange={(e) => setNewChatName(e.target.value)}
-                className='input-chatList'
-                />
-                <Button 
-                onClick={createNewChat}
-                disabled={newChatName.trim() === ''}
-                style={{ color: '#4D7AFF' }}
+        <div className="flex gap-2 mb-4">
+            <Input
+            type="text"
+            placeholder="Enter chat name"
+            value={newChatName}
+            onChange={(e) => setNewChatName(e.target.value)}
+            className="input-chatList"
+            />
+            <Button
+            onClick={createNewChat}
+            disabled={newChatName.trim() === ''}
+            style={{ color: '#4D7AFF' }}
+            >
+            <PlusCircle style={{ marginRight: '7px', color: '#4D7AFF' }} />
+            New Chat
+            </Button>
+        </div>
+
+        <div className="space-y-2">
+            {chats.map((chat) => (
+            <Button
+                key={chat.id}
+                className="chat-button"
+                onClick={() => onSelectChat(chat.id)}
+                style={{ fontSize: '15px', width: '100%', background: '#4D7AFF' }}
+            >
+                {chat.name}
+                <span
+                    onClick={handleMenuOpen}
+                    style={{ fontSize: '15px', background: 'none', border: 'none', cursor: 'pointer', padding: '0', marginLeft: 'auto' }}
                 >
-                    <PlusCircle style={{ marginRight: '7px', color: '#4D7AFF' }} />
-                    New Chat
-                </Button>
-            </div>
-
-            <div className="space-y-2">
-                {chats.map((chat) => (
-                    <Button
-                        key={chat.id}
-                        className="chat-button"
-                        onClick={handleSelectChat}
-                        style={{fontSize: '15px', width:'100%', background: '#4D7AFF'}}
-                    >
-                    {chat.name}
-                    <button
-                        onClick={handleMenuOpen}
-                        style={{ fontSize: '15px', background: 'none', border: 'none', cursor: 'pointer', padding: '0', marginLeft: 'auto' }}
-                    >
-                        ⋮
-                    </button>
-
+                    ⋮
+                </span>
                 <Menu
                     anchorEl={menu}
                     open={Boolean(menu)}
                     onClose={handleMenuClose}
                 >
                     <MenuItem onClick={changeChatName}>Cambiar Nombre</MenuItem>
-                    <MenuItem onClick={deleteChat}>Eliminar Paciente</MenuItem>
+                    <MenuItem onClick={() => deleteChat(chat.id)}>Eliminar Paciente</MenuItem>
                 </Menu>
-                    </Button>
-                ))}
-            </div>
+            </Button>
+            ))}
         </div>
-    )
-}
+        </div>
+    );
+};
 
 export default ChatList;
