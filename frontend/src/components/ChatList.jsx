@@ -21,7 +21,7 @@ const ChatList = ({ chats, setChats, onSelectChat }) => {
         if (newChatName.trim() === '') return;
 
         const newChat = {
-        id: chats.length,
+        id: chats.length + 1,
         name: newChatName.trim(),
         messages: [],
         };

@@ -5,6 +5,7 @@ import MessageInput from '../components/MessageInput';
 import AsistenteIcon from '../../public/assets/AsistenteIcon.png';
 import AppHeader from '../components/AppHeader';
 import ChatList from '../components/ChatList';
+import ChatWelcome from '../components/ChatWelcome';
 import '../styles/TobiChat.css';
 
 function TobiChat() {
@@ -14,7 +15,7 @@ function TobiChat() {
   
   // Estado que guarda la lista de chats
   const [chats, setChats] = useState([]);
-  const [activeChatId, setActiveChatId] = useState(1);
+  const [activeChatId, setActiveChatId] = useState(0);
 
   useEffect(() => {
     if ('serviceWorker' in navigator && 'PushManager' in window) {
@@ -101,14 +102,16 @@ function TobiChat() {
         <div className="menu-container">
           <ChatList chats={chats} setChats={setChats} onSelectChat={handleSelectChat} />
         </div>
-        <div className="chat-container">
-          <div className="chat-header">
-            <h2>Chat with me!</h2>
-            <ThemeToggle />
+        {activeChatId !== 0 ? (
+          <div className="chat-container">
+            <div className="chat-header">
+              <h2>Chat with me!</h2>
+              <ThemeToggle />
+            </div>
+            <MessageList messages={chats.find(chat => chat.id === activeChatId)?.messages || []} />
+            <MessageInput onSendMessage={handleSendMessage} />
           </div>
-          <MessageList messages={chats.find(chat => chat.id === activeChatId)?.messages || []} />
-          <MessageInput onSendMessage={handleSendMessage} />
-        </div>
+        ) : <ChatWelcome/> }
       </div>
     </div>
   );
