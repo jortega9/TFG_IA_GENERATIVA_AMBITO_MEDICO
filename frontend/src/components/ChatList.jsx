@@ -54,7 +54,7 @@ const ChatList = ({ chats, setChats, onSelectChat }) => {
             style={{ color: '#4D7AFF' }}
             >
             <PlusCircle style={{ marginRight: '7px', color: '#4D7AFF' }} />
-            New Chat
+            New Patient
             </Button>
         </div>
 
