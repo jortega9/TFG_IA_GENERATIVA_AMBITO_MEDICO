@@ -10,6 +10,7 @@ class DatabaseConnection:
         load_dotenv()
 
     def insert_user(self, user) -> None:
+        self.connectUser()
         cursor = self.connUser.cursor()
         query = """
         INSERT INTO user (uuid_user, username, email, password, secret, date, last_update, last_login, uuid_group, validated, token, is_active)
