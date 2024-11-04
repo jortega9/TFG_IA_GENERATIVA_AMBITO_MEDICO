@@ -10,7 +10,7 @@ class DatabaseConnection:
         load_dotenv()
 
     def insert_user(self, user) -> None:
-        self.connectUser()
+        self.connectDB()
         cursor = self.connUser.cursor()
         query = """
         INSERT INTO user (uuid_user, username, email, password, secret, date, last_update, last_login, uuid_group, validated, token, is_active)
@@ -20,27 +20,31 @@ class DatabaseConnection:
         try:
             cursor.execute(
             query, 
-            (
-                user.uuid_user, 
-                user.username, 
-                user.email, 
-                user.password, 
-                user.secret, 
-                user.date, 
-                user.last_update, 
-                user.last_login, 
-                user.uuid_group, 
-                user.validated, 
-                user.token,
-                user.is_active,
-                # str(args)
+                (
+                    user.uuid_user, 
+                    user.username, 
+                    user.email, 
+                    user.password, 
+                    user.secret, 
+                    user.date, 
+                    user.last_update, 
+                    user.last_login, 
+                    user.uuid_group, 
+                    user.validated, 
+                    user.token,
+                    user.is_active,
+                    # str(args)
+                )   
             )
-        )
+            self.connUser.commit()
         except Exception as e:
+            self.connUser.rollback()
             raise Exception("insert_user: " + str(e))
-        self.connUser.commit()
+        finally:
+            self.close_connectionDB()
 
     def delete_user(self, uuid_user) -> None:
+        self.connectDB()
         cursor = self.connUser.cursor()
         query = """
         DELETE FROM user WHERE uuid_user = %s
@@ -48,22 +52,27 @@ class DatabaseConnection:
         try:
             # Ejecutar la consulta con el valor de uuid_user
             cursor.execute(query, (uuid_user,))
+            self.connUser.commit()
         except Exception as e:
             raise Exception("delete_user: " + str(e))
-        self.connUser.commit()
+        finally:
+            self.close_connectionDB()
 
 
 
     def get_users(self) -> List[Dict]:
+        self.connectDB()
         cursor = self.connUser.cursor()
         query = """SELECT * FROM user """   
         cursor.execute(query)   
         users = cursor.fetchall()
         cursor.close()
         print("users: ", users)
+        self.close_connectionDB()
         return users
     
     def get_user_identifier(self, identifier) -> List[Dict]:
+        self.connectDB()
         cursor = self.connUser.cursor()
         query = """SELECT * FROM user 
                     WHERE email = %s OR username = %s
@@ -72,9 +81,11 @@ class DatabaseConnection:
         users = cursor.fetchall()
         cursor.close()
         print("user: ", identifier)
+        self.close_connectionDB()
         return users
 
     def update_user_account(self, user) -> None:
+        self.connectDB()
         cursor = self.connUser.cursor()
         query = """
         UPDATE user
@@ -84,8 +95,13 @@ class DatabaseConnection:
         WHERE uuid_user = %s
         """
 
-        cursor.execute(query, (user.name, user.email, user.password, user.uuid_user))
-        self.connUser.commit()
+        try:
+            cursor.execute(query, (user.name, user.email, user.password, user.uuid_user))
+            self.connUser.commit()
+        except Exception as e:
+            raise Exception("update_user_account: " + str(e))
+        finally:
+            self.close_connectionDB()
 
     # def endUsers(self, user: Dict) -> None:
         
@@ -126,10 +142,10 @@ class DatabaseConnection:
     #     cursor.execute(query, (config.get("error_status"), str(error), user[0]))
     #     self.connUser.commit()        
 
-    def close_connectionUser(self) -> None:
+    def close_connectionDB(self) -> None:
         self.connUser.close()
         
-    def connectUser(self) -> None:
+    def connectDB(self) -> None:
         self.connUser = mysql.connector.connect(
             host=os.getenv("DB_HOST"),
             user=os.getenv("DB_USER"),
