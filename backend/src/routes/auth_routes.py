@@ -9,13 +9,22 @@ def register(user_create: UserCreate):
     return register_user(user_create)
 
 @router.post("/login", summary="Login de usuario")
-def login(email: str, password: str):
-    return login_user(email, password)
+def login(identifier: str, password: str):
+    return login_user(identifier, password)
 
 @router.put("/update", summary="Actualizar información de usuario")
-def update_user_info(email: str, user_update: UserUpdate):
-    return update_user(email, user_update)
+def update_user_info(identifier: str, user_update: UserUpdate):
+    return update_user(identifier, user_update)
 
 @router.delete("/deactivate", summary="Desactivar usuario")
-def deactivate_user_account(email: str):
-    return deactivate_user(email)
+def deactivate_user_account(identifier: str):
+    return deactivate_user(identifier)
+
+@router.get("/users", summary="Obtener todos los usuarios")
+def get_users():
+    return get_users()
+
+#eliminar user
+@router.delete("/delete", summary="Eliminar usuario")
+def delete_user(identifier: str):
+    return delete_user(identifier)

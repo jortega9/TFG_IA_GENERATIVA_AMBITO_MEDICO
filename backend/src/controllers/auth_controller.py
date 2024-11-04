@@ -5,27 +5,12 @@ from src.schemas.user import User, UserCreate, UserUpdate
 from src.services.auth_service import hash_password, verify_password, create_access_token
 from datetime import timedelta
 from db.database import DatabaseConnection
-from pydantic import BaseModel
 from datetime import datetime
 import uuid
 
 # Simulación de una base de datos en memoria
 fake_users_db = {}
 db = DatabaseConnection()
-
-class User(BaseModel):
-    uuid_user: str
-    username: str
-    email: str
-    password: str
-    secret: str
-    date: datetime
-    last_update: datetime
-    last_login: datetime
-    uuid_group: str
-    validated: int
-    token: str
-    is_active: int
 
 def unique_uuid_user():
     uuid_user = str(uuid.uuid4())

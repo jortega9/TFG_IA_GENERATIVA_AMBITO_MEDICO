@@ -1,13 +1,20 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
+from datetime import datetime
 
 class User(BaseModel):
-    id: Optional[int] = None
-    """TODO: Cambiar a una UUID"""
-    name: str
+    uuid_user: str
+    username: str
     email: EmailStr
-    hashed_password: str
-    is_active: bool = True
+    password: str
+    secret: str
+    date: datetime
+    last_update: datetime
+    last_login: datetime
+    uuid_group: str
+    validated: int
+    token: str
+    is_active: int
 
 class UserCreate(BaseModel):
     """Data that user needs to register in the database."""
