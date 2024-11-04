@@ -12,16 +12,16 @@ class Controller:
         print("Controller is running...")
         
         while self.running:
-            self.db.connectUsers()
-            print("Fethcing tasks...")
+            self.db.connectUser()
+            print("Fethcing users...")
             users = self.db.get_users()
             self.updateStartDB(users)         
             time.sleep(1)
-            self.db.close_connectionUsers()
+            self.db.close_connectionUser()
             time.sleep(1)
             
     def updateStartDB(self, users) -> None:
-        self.db.update_users(users)
+        self.db.update_user_account(users)
 
     def updateEndDB(self, users) -> None:
         self.db.end_users(users)
@@ -29,6 +29,6 @@ class Controller:
     def stop(self) -> None:
         print("Stopping controller and closing database connection...")
         self.running = False
-        time.sleep(3) # Se espera que las tasks que se han detenido a mano se actualicen en la base de datos
-        self.db.close_connectionUsers()
+        time.sleep(3) 
+        self.db.close_connectionUser()
         exit()

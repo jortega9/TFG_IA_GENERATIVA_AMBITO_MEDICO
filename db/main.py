@@ -13,7 +13,7 @@ def main() -> None:
     signal.signal(signal.SIGTERM, stop_controller)
     
     controller.run()
-    db.close_connectionUsers()
+    db.close_connectionUser()
 
 if __name__ == "__main__":
     main()
