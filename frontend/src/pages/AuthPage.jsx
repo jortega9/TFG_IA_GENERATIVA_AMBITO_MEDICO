@@ -48,13 +48,18 @@ const AuthPage = () => {
 
     async function loginUser(info){
         try{
-            const response = await fetch('http://127.0.0.1:8000/login', {
+            console.log(info);
+            console.log("antes del fetch");
+            const response = await fetch('http://127.0.0.1:8000/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(info)
-            })
+                body: JSON.stringify({
+                    identifier: info.email,
+                    password: info.password
+                })
+            });
             if(response.status === 401){
                 setErrorMsg("Usuario o Contraseña incrrectos");
                 return null;
@@ -84,7 +89,7 @@ const AuthPage = () => {
             password: password,
         });
 
-        if (email) {
+        if (user) {
             setUser(user);
             navigate('/Tobichat');
         }

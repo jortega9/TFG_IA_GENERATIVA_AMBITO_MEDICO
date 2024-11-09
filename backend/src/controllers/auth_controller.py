@@ -43,11 +43,28 @@ def register_user(user_create: UserCreate):
         raise HTTPException(status_code=500, detail=str(e))
 
 def login_user(identifier: str, password: str):
-    user = db.get_user_identifier(identifier)
-    if not user or not verify_password(password, user.hashed_password):
-        raise HTTPException(status_code=400, detail="Email o contraseña incorrectos")
-    access_token = create_access_token(data={"sub": user.email})
-    return {"access_token": access_token, "token_type": "bearer"}
+    try:
+        print(f"Buscando usuario con el identificador: {identifier}")
+        user = db.get_user_identifier(identifier)
+        print(f"Usuario encontrado: {user}")
+        if not user:  # Si el usuario no se encuentra, lanza una excepción
+            print(f"No se encontró el usuario con el identificador: {identifier}")
+            raise HTTPException(status_code=400, detail="Email o contraseña incorrectos")
+
+        print(f"Verificando contraseña: {password} y { hash_password(user['password'])}")
+        if not verify_password(password, user["password"]):
+            print(f"Contraseña incorrecta para el usuario: {identifier}")
+            raise HTTPException(status_code=400, detail="Email o contraseña incorrectos")
+
+        print("Creando token de acceso")
+        access_token = create_access_token(data={"sub": user["email"]})
+        print(f"Usuario autenticado correctamente: {identifier}")
+        return {"access_token": access_token, "token_type": "bearer"}
+        
+    except Exception as e:
+        print(f"Error en login_user: {e}")
+        raise HTTPException(status_code=500, detail="Error en el servidor durante el proceso de login")
+
 
 def update_user(identifier: str, user_update: UserUpdate):
     user = db.get_user_identifier(identifier)

@@ -16,6 +16,10 @@ class User(BaseModel):
     token: str
     is_active: int
 
+class UserLogin(BaseModel):
+    identifier: str
+    password: str
+
 class UserCreate(BaseModel):
     """Data that user needs to register in the database."""
     

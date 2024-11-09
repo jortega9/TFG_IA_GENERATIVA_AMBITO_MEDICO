@@ -8,6 +8,7 @@ import json
 class DatabaseConnection:
     def __init__(self) -> None:
         load_dotenv()
+        self.connUser = None 
 
     def insert_user(self, user) -> None:
         self.connectDB()
@@ -71,18 +72,24 @@ class DatabaseConnection:
         self.close_connectionDB()
         return users
     
-    def get_user_identifier(self, identifier) -> List[Dict]:
+    def get_user_identifier(self, identifier) -> dict:
         self.connectDB()
         cursor = self.connUser.cursor()
         query = """SELECT * FROM user 
                     WHERE email = %s OR username = %s
                 """   
         cursor.execute(query, (identifier, identifier))   
-        users = cursor.fetchall()
+        user = cursor.fetchone()
         cursor.close()
-        print("user: ", identifier)
         self.close_connectionDB()
-        return users
+        
+        # Retornar None si no se encuentra el usuario
+        if user is None:
+            return None
+        
+        columns = [desc[0] for desc in cursor.description]
+        return dict(zip(columns, user))
+
 
     def update_user_account(self, user) -> None:
         self.connectDB()
@@ -146,9 +153,19 @@ class DatabaseConnection:
         self.connUser.close()
         
     def connectDB(self) -> None:
-        self.connUser = mysql.connector.connect(
-            host=os.getenv("DB_HOST"),
-            user=os.getenv("DB_USER"),
-            password=os.getenv("DB_PASSWORD"),
-            database=os.getenv("DB_NAME"),
-        )
+        print(f"DB_HOST {os.getenv('DB_HOST')}")
+        print(f"DB_USER {os.getenv('DB_USER')}")
+        print(f"DB_PASSWORD {os.getenv('DB_PASSWORD')}")
+        print(f"DB_NAME {os.getenv('DB_NAME')}")
+            
+        try:
+            self.connUser = mysql.connector.connect(
+                host=os.getenv("DB_HOST"),
+                user=os.getenv("DB_USER"),
+                password=os.getenv("DB_PASSWORD"),
+                database=os.getenv("DB_NAME"),
+                collation="utf8mb4_unicode_ci" 
+            )
+            print("Connected to the database")
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")

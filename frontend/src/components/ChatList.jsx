@@ -21,9 +21,9 @@ const ChatList = ({ chats, setChats, onSelectChat }) => {
         if (newChatName.trim() === '') return;
 
         const newChat = {
-        id: chats.length + 1,
-        name: newChatName.trim(),
-        messages: [],
+            id: chats.length + 1,
+            name: newChatName.trim(),
+            messages: [],
         };
         
         setChats((prevChats) => [...prevChats, newChat]);
@@ -31,59 +31,59 @@ const ChatList = ({ chats, setChats, onSelectChat }) => {
     };
 
     const changeChatName = () => {
+        // Functionality for changing chat name
+    };
 
-    }
     const deleteChat = (id) => {
         setMenu(null);
         setChats((prevChats) => prevChats.filter((chat) => chat.id !== id));
-    }
+    };
 
     return (
         <div className="chat-list-container">
-        <div className="flex gap-2 mb-4">
-            <Input
-            type="text"
-            placeholder="Enter chat name"
-            value={newChatName}
-            onChange={(e) => setNewChatName(e.target.value)}
-            className="input-chatList"
-            />
-            <Button
-            onClick={createNewChat}
-            disabled={newChatName.trim() === ''}
-            style={{ color: '#4D7AFF' }}
-            >
-            <PlusCircle style={{ marginRight: '7px', color: '#4D7AFF' }} />
-            New Patient
-            </Button>
-        </div>
+            <div className="flex gap-2 mb-4">
+                <Input
+                    type="text"
+                    placeholder="Enter chat name"
+                    value={newChatName}
+                    onChange={(e) => setNewChatName(e.target.value)}
+                    className="input-chatList"
+                />
+                <Button
+                    onClick={createNewChat}
+                    disabled={newChatName.trim() === ''}
+                    style={{ color: '#4D7AFF' }}
+                >
+                    <PlusCircle style={{ marginRight: '7px', color: '#4D7AFF' }} />
+                    New Patient
+                </Button>
+            </div>
 
-        <div className="space-y-2">
-            {chats.map((chat) => (
-            <Button
-                key={chat.id}
-                className="chat-button"
-                onClick={() => onSelectChat(chat.id)}
-                style={{ fontSize: '15px', width: '100%', background: '#4D7AFF' }}
-            >
-                {chat.name}
-                <span
-                    onClick={handleMenuOpen}
-                    style={{ fontSize: '15px', background: 'none', border: 'none', cursor: 'pointer', padding: '0', marginLeft: 'auto' }}
-                >
-                    ⋮
-                </span>
-                <Menu
-                    anchorEl={menu}
-                    open={Boolean(menu)}
-                    onClose={handleMenuClose}
-                >
-                    <MenuItem onClick={changeChatName}>Cambiar Nombre</MenuItem>
-                    <MenuItem onClick={() => deleteChat(chat.id)}>Eliminar Paciente</MenuItem>
-                </Menu>
-            </Button>
-            ))}
-        </div>
+            <div className="space-y-2">
+                {chats.map((chat) => (
+                    <Button
+                        key={chat.id}
+                        className="chat-button"
+                        onClick={() => onSelectChat(chat.id)}
+                    >
+                        {chat.name}
+                        <span
+                            onClick={handleMenuOpen}
+                            style={{ fontSize: '15px', cursor: 'pointer' }}
+                        >
+                            ⋮
+                        </span>
+                        <Menu
+                            anchorEl={menu}
+                            open={Boolean(menu)}
+                            onClose={handleMenuClose}
+                        >
+                            <MenuItem onClick={changeChatName}>Cambiar Nombre</MenuItem>
+                            <MenuItem onClick={() => deleteChat(chat.id)}>Eliminar Paciente</MenuItem>
+                        </Menu>
+                    </Button>
+                ))}
+            </div>
         </div>
     );
 };

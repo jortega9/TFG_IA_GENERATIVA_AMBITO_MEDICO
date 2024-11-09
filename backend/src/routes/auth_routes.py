@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from src.schemas.user import UserCreate, UserUpdate
+from src.schemas.user import UserCreate, UserUpdate, UserLogin
 from src.controllers.auth_controller import register_user, login_user, update_user, deactivate_user
 
 router = APIRouter()
@@ -9,8 +9,8 @@ def register(user_create: UserCreate):
     return register_user(user_create)
 
 @router.post("/login", summary="Login de usuario")
-def login(identifier: str, password: str):
-    return login_user(identifier, password)
+def login(login: UserLogin):
+    return login_user(login.identifier, login.password)
 
 @router.put("/update", summary="Actualizar información de usuario")
 def update_user_info(identifier: str, user_update: UserUpdate):

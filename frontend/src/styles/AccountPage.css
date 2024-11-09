@@ -23,18 +23,18 @@
 	--error-color: #FF4D7A;
 }
 
-.input-chatList {
-    color: var(--text-color) !important;
+.account-title {
+    color: #0277bd;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    align-items: center;
+    display: flex;
+    justify-content: center;
 }
 
-.dark-theme .input-chatList {
-    color: var(--text-color);
-}
-
-.chat-button {
-    color: var(--text-color) !important;
-}
-
-.dark-theme .chat-button {
-    color: var(--text-color);
+.account-items {
+    color: #0277bd;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
 }
