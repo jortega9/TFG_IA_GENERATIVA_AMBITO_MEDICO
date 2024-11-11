@@ -25,8 +25,32 @@ function AccountButton() {
         navigate('/passwd');
     };
 
-    const handleLogout = () => {
-        navigate('/login');
+    async function logoutUser(){
+        try{
+            const response = await fetch('http://127.0.0.1:8000/auth/logout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({})
+            });
+            const user = await response.json();
+            return user; 
+
+        }
+        catch(error){
+            console.error("Error al realizar el loginUser: ", error);
+        }
+    }
+
+    const handleLogout = async (e) => {
+        e.preventDefault();
+
+        const user = await logoutUser({});
+
+        if (user) {
+            navigate('/login');
+        }
     };
 
     return (

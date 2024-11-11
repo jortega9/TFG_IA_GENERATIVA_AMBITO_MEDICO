@@ -4,6 +4,7 @@ from datetime import datetime
 
 class User(BaseModel):
     uuid_user: str
+    name: str
     username: str
     email: EmailStr
     password: str
@@ -31,5 +32,6 @@ class UserUpdate(BaseModel):
     """Data that user can change and update in the database."""
     
     name: Optional[str] = None
+    username: Optional[str] = None
     email: Optional[EmailStr] = None
     password: Optional[str] = None

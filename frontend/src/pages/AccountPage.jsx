@@ -1,19 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AppHeader from '../components/AppHeader';
 import '../styles/AccountPage.css';
 import { useNavigate } from 'react-router-dom';
 
 function AccountPage() {
-    const [userInfo, setUserInfo] = useState({
-        fullName: 'Jorge Ortega',
-        username: 'jor123',
-        email: 'jorge@example.com',
-        password: '1234',
-    });
+    const [userInfo, setUserInfo] = useState({});
 
     const navigate = useNavigate();
 
     const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [dataObtained, setDataObteined] = useState(false);
+
+    useEffect(() => {
+        const getInfo = async () => {
+            if (dataObtained) return; // Si ya se obtuvieron los datos, no vuelve a cargarlos
+            try {
+                const response = await fetch('http://127.0.0.1:8000/auth/info', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                const data = await response.json();
+                setUserInfo(data);
+                setDataObteined(true); 
+            } catch (error) {
+                console.error("Error al obtener la información del usuario: ", error);
+                alert("Hubo un problema al cargar la información del usuario.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        getInfo();
+    }, [dataObtained]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -23,16 +45,66 @@ function AccountPage() {
         }));
     };
 
-    const handleSave = () => {
-        console.log('Información guardada:', userInfo);
-        alert('Información guardada con éxito');
+    async function saveUser(){
+        try{
+            const response = await fetch('http://127.0.0.1:8000/auth/update', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: userInfo.name,
+                    username: userInfo.username,
+                    email: userInfo.email,
+                })
+            });
+
+            console.log("Usuario actualizado con éxito");
+            return true;
+        }
+        catch(error){
+            console.error("Error al realizar el saveUser: ", error);
+        }
+    }
+
+    const handleSave = async (e) => {
+        try {
+            await saveUser();
+            console.log("Operación de guardado completada");
+        } catch (error) {
+            alert("Hubo un problema al actualizar el usuario. Inténtalo de nuevo.");
+        }
     };
 
-    const handleDeleteUser = () => {
-        console.log('Usuario eliminado:', userInfo);
-        alert('Usuario eliminado con éxito');
-        navigate('/login');
+    async function deleteUser(){
+        try{
+            const response = await fetch('http://127.0.0.1:8000/auth/delete', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            console.log("Usuario eliminado con éxito");
+            return true;
+        }
+        catch(error){
+            console.error("Error al realizar el deleteUser: ", error);
+        }
     }
+
+    const handleDeleteUser = async (e) => {
+        try {
+            e.preventDefault();
+            await deleteUser();
+            navigate('/login');
+        } catch (error) {
+            alert("Hubo un problema al actualizar el usuario. Inténtalo de nuevo.");
+        }
+        
+    };
+
+    if (loading) return <div>Loading...</div>;
 
     return (
         <div className="app-container">
@@ -44,8 +116,8 @@ function AccountPage() {
                     <label className='account-items'>Nombre Completo:</label>
                     <input
                         type="text"
-                        name="fullName"
-                        value={userInfo.fullName}
+                        name="name"
+                        value={userInfo.name}
                         onChange={handleChange}
                         style={{ width: '100%', marginBottom: '10px', padding: '8px' }}
                     />
@@ -65,11 +137,11 @@ function AccountPage() {
                 <div>
                     <label className='account-items'>Correo Electrónico:</label>
                     <input
-                        type="email"
+                        type="text"
                         name="email"
                         value={userInfo.email}
-                        readOnly
-                        style={{ width: '100%', marginBottom: '10px', padding: '8px', backgroundColor: '#d3d3d3' }}
+                        onChange={handleChange}
+                        style={{ width: '100%', marginBottom: '10px', padding: '8px' }}
                     />
                 </div>
 

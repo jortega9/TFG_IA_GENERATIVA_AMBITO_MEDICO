@@ -14,13 +14,40 @@ function App() {
         <div className='app'>
           <main>
             <Routes>
-              <Route path='/login' element={<AuthPage/>}/>
-              <Route path='/Tobichat' element={<TobiChat />}/>
-              <Route path='/' element={<TobiChat />}/>
-              <Route path='/account' element={<AccountPage />}/>
-              <Route path='/passwd' element={<PasswordPage />}/>
-
-            </Routes>
+                <Route path='/login' element={<AuthPage />} />
+                <Route
+                  path='/Tobichat'
+                  element={
+                    <ProtectedRoute>
+                      <TobiChat />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path='/'
+                  element={
+                    <ProtectedRoute>
+                      <TobiChat />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path='/account'
+                  element={
+                    <ProtectedRoute>
+                      <AccountPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path='/passwd'
+                  element={
+                    <ProtectedRoute>
+                      <PasswordPage />
+                    </ProtectedRoute>
+                  }
+                />
+              </Routes>
           </main>
         </div>
       </Router>

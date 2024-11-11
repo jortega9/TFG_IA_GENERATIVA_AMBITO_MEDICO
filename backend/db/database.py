@@ -14,7 +14,7 @@ class DatabaseConnection:
         self.connectDB()
         cursor = self.connUser.cursor()
         query = """
-        INSERT INTO user (uuid_user, username, email, password, secret, date, last_update, last_login, uuid_group, validated, token, is_active)
+        INSERT INTO user (uuid_user, username, email, password, secret, date, last_updated, last_login, uuid_group, validated, token, is_active)
         VALUES (${user})
         """
         # args = json.dumps(user.tp_arguments_desc.__dict__)
@@ -42,21 +42,68 @@ class DatabaseConnection:
             self.connUser.rollback()
             raise Exception("insert_user: " + str(e))
         finally:
+            cursor.close()
             self.close_connectionDB()
 
-    def delete_user(self, uuid_user) -> None:
+    def update_user_login(self, user_id, date, token) -> None:
         self.connectDB()
         cursor = self.connUser.cursor()
         query = """
-        DELETE FROM user WHERE uuid_user = %s
+        UPDATE user 
+        SET last_updated = %s, last_login = %s, token = %s, is_active = 1 
+        WHERE uuid_user = %s
         """
         try:
-            # Ejecutar la consulta con el valor de uuid_user
-            cursor.execute(query, (uuid_user,))
+            cursor.execute(query, (date, date, token, user_id))
+            self.connUser.commit()
+        except Exception as e:
+            raise Exception("update_user_login: " + str(e))
+        finally: 
+            cursor.close()   
+            self.close_connectionDB()
+
+    def update_user_logout(self, date) -> None:
+        self.connectDB()
+        cursor = self.connUser.cursor()
+        query = """
+        UPDATE user 
+        SET last_updated = %s, last_login = %s, token = NULL, is_active = 0 
+        WHERE is_active = 1
+        """
+        try:
+            cursor.execute(query, (date, date))
+            self.connUser.commit()
+        except Exception as e:
+            raise Exception("update_user_logout: " + str(e))
+        finally:    
+                cursor.close()
+                self.close_connectionDB()
+
+    def get_active_user(self) -> dict:
+        self.connectDB()
+        cursor = self.connUser.cursor(dictionary=True) 
+        query = """SELECT * FROM user WHERE is_active = 1"""
+        print("query: ", query)
+        cursor.execute(query)
+        user = cursor.fetchone()
+        print("user: ", user)
+        cursor.close()
+        self.close_connectionDB()
+        return user
+
+    def delete_user(self) -> None:
+        self.connectDB()
+        cursor = self.connUser.cursor()
+        query = """
+        DELETE FROM user WHERE is_active = 1
+        """
+        try:
+            cursor.execute(query)
             self.connUser.commit()
         except Exception as e:
             raise Exception("delete_user: " + str(e))
         finally:
+            cursor.close()
             self.close_connectionDB()
 
 
@@ -69,6 +116,7 @@ class DatabaseConnection:
         users = cursor.fetchall()
         cursor.close()
         print("users: ", users)
+        cursor.close()
         self.close_connectionDB()
         return users
     
@@ -97,18 +145,29 @@ class DatabaseConnection:
         query = """
         UPDATE user
         SET name = %s,
-            email = %s,
-            password = %s,
-        WHERE uuid_user = %s
+            username = %s,
+            email = %s
+        WHERE is_active = 1
         """
-
         try:
-            cursor.execute(query, (user.name, user.email, user.password, user.uuid_user))
+            cursor.execute(query, (user.name, user.username, user.email))
             self.connUser.commit()
         except Exception as e:
             raise Exception("update_user_account: " + str(e))
         finally:
+            cursor.close()
             self.close_connectionDB()
+
+    def get_user_info(self) -> dict:
+        self.connectDB()
+        cursor = self.connUser.cursor(dictionary=True)  # Configura el cursor para que devuelva un diccionario
+        query = """SELECT name, username, email, password FROM user WHERE is_active = 1"""
+        cursor.execute(query)
+        user = cursor.fetchone()  # Obtiene solo un registro
+        cursor.close()
+        self.close_connectionDB()
+        return user
+
 
     # def endUsers(self, user: Dict) -> None:
         
