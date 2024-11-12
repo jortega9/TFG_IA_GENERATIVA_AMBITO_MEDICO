@@ -1,6 +1,8 @@
-from fastapi import APIRouter
-from src.schemas.user import UserCreate, UserUpdate, UserLogin
-from src.controllers.auth_controller import register_user, login_user, update_user, logout_user, get_active_user, delete_user, get_info
+from fastapi import APIRouter, Depends
+from src.schemas.user import UserCreate, UserUpdate, UserLogin, UserIdentifier
+from src.controllers.auth_controller import register_user, login_user, update_user, logout_user, get_active_user, delete_user, get_info, get_user
+from src.services.auth_service import get_current_user
+
 
 router = APIRouter()
 
@@ -8,30 +10,39 @@ router = APIRouter()
 def register(user_create: UserCreate):
     return register_user(user_create)
 
+@router.post("/user-exist", summary="Verificar si el usuario existe")
+def user_exist(user: UserIdentifier):
+    return get_user(user.identifier)
+
 @router.post("/login", summary="Login de usuario")
 def login(login: UserLogin):
     return login_user(login.identifier, login.password)
 
 @router.post("/logout", summary="Logout de usuario")
-def logout():
-    return logout_user()
+def logout(current_user: dict = Depends(get_current_user)):
+    uuid = current_user["uuid"]
+    return logout_user(uuid)
 
 @router.put("/update", summary="Actualizar información de usuario")
-def update_user_info(user_update: UserUpdate):
-    return update_user(user_update)
+def update_user_info(user_update: UserUpdate, current_user: dict = Depends(get_current_user)):
+    uuid = current_user["uuid"]
+    return update_user(user_update, uuid)
 
 @router.get("/users", summary="Obtener todos los usuarios")
 def get_users():
     return get_users()
 
 @router.get("/info", summary="Obtener info del usuario")
-def get_user_info():
-    return get_info()
+def get_user_info(current_user: dict = Depends(get_current_user)):
+    uuid = current_user["uuid"]
+    return get_info(uuid)
 
 @router.get("/active", summary="Obtener usuario activo")
-def get_active():
-    return get_active_user()
+def get_active(current_user: dict = Depends(get_current_user)):
+    uuid = current_user["uuid"]
+    return get_active_user(uuid)
 
 @router.delete("/delete", summary="Eliminar usuario")
-def delete():
-    return delete_user()
+def delete(current_user: dict = Depends(get_current_user)):
+    uuid = current_user["uuid"]
+    return delete_user(uuid)

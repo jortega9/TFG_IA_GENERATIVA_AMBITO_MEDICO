@@ -16,10 +16,12 @@ function AccountPage() {
         const getInfo = async () => {
             if (dataObtained) return; // Si ya se obtuvieron los datos, no vuelve a cargarlos
             try {
+                const token = localStorage.getItem('token');
                 const response = await fetch('http://127.0.0.1:8000/auth/info', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
                     }
                 });
 
@@ -47,10 +49,13 @@ function AccountPage() {
 
     async function saveUser(){
         try{
+
+            const token = localStorage.getItem('token');
             const response = await fetch('http://127.0.0.1:8000/auth/update', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
                     name: userInfo.name,
@@ -78,10 +83,12 @@ function AccountPage() {
 
     async function deleteUser(){
         try{
+            const token = localStorage.getItem('token');
             const response = await fetch('http://127.0.0.1:8000/auth/delete', {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
             });
 

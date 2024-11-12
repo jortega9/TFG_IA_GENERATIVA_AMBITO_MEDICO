@@ -17,19 +17,19 @@ const AuthPage = () => {
         sessionStorage.setItem('user', JSON.stringify(user));
     }
 
-    const checkUserExistence = async (email) => {
+    const checkUserExistence = async (identifier) => {
         try{
-            const response = await fetch('http://127.0.0.1:8000/login/user-exist', {
+            const response = await fetch('http://127.0.0.1:8000/auth/user-exist', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
                 },
-                body: JSON.stringify({ email })
+                body: JSON.stringify({ identifier })
             });
 
             const userExist = await response.json();
-            return userExist;
+            return userExist.user_exists;
 
         }
         catch(error){
@@ -60,20 +60,13 @@ const AuthPage = () => {
                     password: info.password
                 })
             });
-            if(response.status === 401){
-                setErrorMsg("Usuario o Contraseña incrrectos");
-                return null;
-            }
-            if(response.status === 500){
-                setErrorMsg("Error de servidor");
-                return null;
-            }
-            if(response.status === 404){
-                setErrorMsg("Error de conexión, servidor no encontrado");
-                return null;
-            }
             const user = await response.json();
-            return user; 
+            if (response.ok) {
+                localStorage.setItem('token', user.access_token);
+                return user;
+            } else {
+                throw new Error(user.detail || "Error en el login");
+            }
 
         }
         catch(error){
@@ -120,9 +113,33 @@ const AuthPage = () => {
             return;
         }
 
-        const newUser = await createNewUser(name, email, password);
-        setSuccessMsg("Se ha registrado con éxito.");
+        const newUser = await registerUser(name, email, password);
     }
+
+    async function registerUser(name, email, password){
+        try{
+            const response = await fetch('http://127.0.0.1:8000/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    password: password
+                })
+            });
+            const user = await response.json();
+            if (response.ok) {
+                return user;
+            } else {
+                throw new Error(user.detail || "Error en el registro");
+            }
+        }
+        catch(error){
+            console.error("Error al realizar el registerUser: ", error);
+        }
+    };
 
     return (
         <Box className="auth-page-container">
@@ -134,7 +151,6 @@ const AuthPage = () => {
             </Typography>
     
             {isLogin ? (
-                // Formulario de Inicio de Sesión
                 <div className="input-container">
                 <TextField
                     className="input-user"
@@ -181,7 +197,6 @@ const AuthPage = () => {
                 </div>
                 </div>
             ) : (
-                // Formulario de Registro
                 <div className="input-container">
                 <TextField
                     className="input-user"

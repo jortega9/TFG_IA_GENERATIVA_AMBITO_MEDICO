@@ -14,15 +14,15 @@ class DatabaseConnection:
         self.connectDB()
         cursor = self.connUser.cursor()
         query = """
-        INSERT INTO user (uuid_user, username, email, password, secret, date, last_updated, last_login, uuid_group, validated, token, is_active)
-        VALUES (${user})
+            INSERT INTO user (
+                uuid_user, name, username, email, password, secret, date, last_updated, last_login, uuid_group, validated, token, is_active) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
-        # args = json.dumps(user.tp_arguments_desc.__dict__)
         try:
             cursor.execute(
             query, 
                 (
-                    user.uuid_user, 
+                    user.uuid_user,
+                    user.name,
                     user.username, 
                     user.email, 
                     user.password, 
@@ -34,7 +34,6 @@ class DatabaseConnection:
                     user.validated, 
                     user.token,
                     user.is_active,
-                    # str(args)
                 )   
             )
             self.connUser.commit()
@@ -62,16 +61,17 @@ class DatabaseConnection:
             cursor.close()   
             self.close_connectionDB()
 
-    def update_user_logout(self, date) -> None:
+    def update_user_logout(self,uuid, date) -> None:
         self.connectDB()
         cursor = self.connUser.cursor()
         query = """
         UPDATE user 
         SET last_updated = %s, last_login = %s, token = NULL, is_active = 0 
-        WHERE is_active = 1
+        WHERE uuid_user = %s
         """
         try:
-            cursor.execute(query, (date, date))
+            print("uuid: ", uuid)
+            cursor.execute(query, (date, date, uuid))
             self.connUser.commit()
         except Exception as e:
             raise Exception("update_user_logout: " + str(e))
@@ -79,32 +79,46 @@ class DatabaseConnection:
                 cursor.close()
                 self.close_connectionDB()
 
-    def get_active_user(self) -> dict:
+    def get_active_user(self, uuid) -> dict:
         self.connectDB()
         cursor = self.connUser.cursor(dictionary=True) 
-        query = """SELECT * FROM user WHERE is_active = 1"""
+        query = """SELECT * FROM user WHERE uuid_user = %s AND is_active = 1"""
         print("query: ", query)
-        cursor.execute(query)
+        print("uuid: ", uuid)
+        cursor.execute(query, (uuid,))
         user = cursor.fetchone()
         print("user: ", user)
         cursor.close()
         self.close_connectionDB()
         return user
 
-    def delete_user(self) -> None:
+    def delete_user(self, uuid) -> None:
         self.connectDB()
         cursor = self.connUser.cursor()
         query = """
-        DELETE FROM user WHERE is_active = 1
+        DELETE FROM user WHERE uuid_user = %s
         """
         try:
-            cursor.execute(query)
+            cursor.execute(query, (uuid,))
             self.connUser.commit()
         except Exception as e:
             raise Exception("delete_user: " + str(e))
         finally:
             cursor.close()
             self.close_connectionDB()
+
+    def get_user_exist(self, identifier) -> bool:
+        self.connectDB()
+        cursor = self.connUser.cursor()
+        query = """SELECT * FROM user 
+                    WHERE email = %s OR username = %s
+                """   
+        cursor.execute(query, (identifier, identifier))   
+        user = cursor.fetchone()
+        cursor.close()
+        self.close_connectionDB()
+        return user is not None
+
 
 
 
@@ -131,7 +145,6 @@ class DatabaseConnection:
         cursor.close()
         self.close_connectionDB()
         
-        # Retornar None si no se encuentra el usuario
         if user is None:
             return None
         
@@ -139,7 +152,7 @@ class DatabaseConnection:
         return dict(zip(columns, user))
 
 
-    def update_user_account(self, user) -> None:
+    def update_user_account(self, user, uuid) -> None:
         self.connectDB()
         cursor = self.connUser.cursor()
         query = """
@@ -147,10 +160,10 @@ class DatabaseConnection:
         SET name = %s,
             username = %s,
             email = %s
-        WHERE is_active = 1
+        WHERE uuid_user = %s
         """
         try:
-            cursor.execute(query, (user.name, user.username, user.email))
+            cursor.execute(query, (user.name, user.username, user.email, uuid))
             self.connUser.commit()
         except Exception as e:
             raise Exception("update_user_account: " + str(e))
@@ -158,55 +171,15 @@ class DatabaseConnection:
             cursor.close()
             self.close_connectionDB()
 
-    def get_user_info(self) -> dict:
+    def get_user_info(self, uuid) -> dict:
         self.connectDB()
         cursor = self.connUser.cursor(dictionary=True)  # Configura el cursor para que devuelva un diccionario
-        query = """SELECT name, username, email, password FROM user WHERE is_active = 1"""
-        cursor.execute(query)
+        query = """SELECT name, username, email, password FROM user WHERE uuid_user = %s"""
+        cursor.execute(query, (uuid,))
         user = cursor.fetchone()  # Obtiene solo un registro
         cursor.close()
         self.close_connectionDB()
-        return user
-
-
-    # def endUsers(self, user: Dict) -> None:
-        
-    #     cursor = self.connUser.cursor()
-    #     update_query = """
-    #     UPDATE user
-    #     SET tp_status = %s,
-    #         tp_finish_date = %s,
-    #         tp_arguments_desc = %s
-    #     WHERE tp_uid = %s
-    #     """
-    #     insert_query = """
-    #     INSERT INTO tasks_completed (tc_uid, tc_task_type, tc_uid_depend, tc_status, tc_creation_date, tc_initial_date, tc_finish_date, tc_actual_attempt, tc_max_attempts, tc_working_machine, tc_priority, tc_arguments_desc)
-    #     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-    #     """
-    #     with open('/etc/machine-id', 'r') as f:
-    #         machine_id = f.read().strip()
-    
-    #     args = json.dumps(user.tp_arguments_desc.__dict__)
-    #     try:
-    #         cursor.execute(update_query, (config.get("finished_status"),datetime.datetime.now(), str(args) ,user.tp_uid))
-    #     except Exception as e:
-    #         raise Exception("tasks_pending: " + str(e))
-    #     try:
-    #         cursor.execute(insert_query, (user.tp_uid, user.tp_user_type, user.tp_uid_depend, config.get("finished_status"), user.tp_creation_date, user.tp_initial_date, user.tp_finish_date, user.tp_actual_attemps + 1, user.tp_max_attemps, machine_id, user.tp_priority, str(args)))
-    #     except Exception as e:
-    #         raise Exception("tasks: " + str(e))
-    #     self.connUser.commit()
-        
-    # def updateError(self, user: Dict, error: Exception) -> None:
-    #     cursor = self.connUser.cursor()
-    #     query = """
-    #     UPDATE tasks_pending
-    #     SET tp_status = %s,
-    #         tp_status_error = %s
-    #     WHERE tp_uid = %s
-    #     """
-    #     cursor.execute(query, (config.get("error_status"), str(error), user[0]))
-    #     self.connUser.commit()        
+        return user  
 
     def close_connectionDB(self) -> None:
         self.connUser.close()

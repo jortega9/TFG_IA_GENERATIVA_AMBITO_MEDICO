@@ -1,16 +1,35 @@
 # backend/src/services/auth_service.py
-
+from fastapi import Depends, HTTPException, status
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from src.schemas.user import User
 from datetime import datetime, timezone
+from fastapi.security import OAuth2PasswordBearer
+from typing import Optional
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 SECRET_KEY = "tu_clave_secreta"  # Esto se debe obtener de .env
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+
+async def get_current_user(token: str = Depends(oauth2_scheme)) -> Optional[dict]:
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="No se pudo validar las credenciales",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id: str = payload.get("sub")
+        if user_id is None:
+            raise credentials_exception
+        return {"uuid": user_id} 
+    except JWTError:
+        raise credentials_exception
 
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)

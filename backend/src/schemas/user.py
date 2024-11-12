@@ -8,18 +8,21 @@ class User(BaseModel):
     username: str
     email: EmailStr
     password: str
-    secret: str
+    secret: Optional[str]
     date: datetime
     last_update: datetime
     last_login: datetime
     uuid_group: str
     validated: int
-    token: str
+    token: Optional[str]
     is_active: int
 
 class UserLogin(BaseModel):
     identifier: str
     password: str
+
+class UserIdentifier(BaseModel):
+    identifier: str
 
 class UserCreate(BaseModel):
     """Data that user needs to register in the database."""

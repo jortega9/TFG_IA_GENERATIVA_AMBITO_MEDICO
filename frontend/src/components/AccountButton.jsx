@@ -25,15 +25,25 @@ function AccountButton() {
         navigate('/passwd');
     };
 
+    function getToken() {
+        return localStorage.getItem('token');
+    }
+
     async function logoutUser(){
         try{
+            const token = getToken();
+
             const response = await fetch('http://127.0.0.1:8000/auth/logout', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({})
             });
+            if(response.ok){
+                localStorage.removeItem('token');
+            }
             const user = await response.json();
             return user; 
 

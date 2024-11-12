@@ -2,7 +2,7 @@
 
 from fastapi import HTTPException
 from src.schemas.user import User, UserCreate, UserUpdate
-from src.services.auth_service import hash_password, verify_password, create_access_token
+from src.services.auth_service import hash_password, verify_password, create_access_token, get_current_user
 from datetime import timedelta
 from db.database import DatabaseConnection
 from datetime import datetime
@@ -16,31 +16,30 @@ def unique_uuid_user():
     uuid_user = str(uuid.uuid4())
     return uuid_user
 
-
-#ver como hacemos para ver si es medico group = 1 o admin group = 0
 def register_user(user_create: UserCreate):
     hashed_password = hash_password(user_create.password)
     uuid = unique_uuid_user()
     user = User(
         uuid_user= uuid,
         name= user_create.name,
-        username= user_create.name[0:3] + uuid[0:5],
+        username= user_create.name[0:3] + uuid[0:3],
         email= user_create.email,
         password= hashed_password,
-        secret= hashed_password,
+        secret= None,
         date= datetime.now(),
         last_update= datetime.now(),
         last_login= datetime.now(),
-        uuid_group= 0,
+        uuid_group= "12345",
         validated= 0,
-        token= "",
-        is_active=True,
+        token= None,
+        is_active=False,
     )
 
     try:
         db.insert_user(user)
         return user
     except Exception as e:
+        print(f"Error en register_user: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 def login_user(identifier: str, password: str):
@@ -54,7 +53,7 @@ def login_user(identifier: str, password: str):
             print(f"Contraseña incorrecta para el usuario: {identifier}")
             raise HTTPException(status_code=400, detail="Email o contraseña incorrectos")
 
-        access_token = create_access_token(data={"sub": user["email"]})
+        access_token = create_access_token(data={"sub": user["uuid_user"]})
         db.update_user_login(user["uuid_user"], datetime.now(), access_token)
         return {"access_token": access_token, "token_type": "bearer"}
         
@@ -63,9 +62,9 @@ def login_user(identifier: str, password: str):
         raise HTTPException(status_code=500, detail="Error en el servidor durante el proceso de login")
     
 
-def logout_user():
+def logout_user(uuid: str):
     try:
-        db.update_user_logout(datetime.now())
+        db.update_user_logout(uuid, datetime.now())
         return {"user_id_logout": "logout"}
         
     except Exception as e:
@@ -73,9 +72,9 @@ def logout_user():
         raise HTTPException(status_code=500, detail="Error en el servidor durante el proceso de login")
     
 
-def get_active_user():
+def get_active_user(uuid: str):
     try:
-        user = db.get_active_user()
+        user = db.get_active_user(uuid)
         if user:
             return user
 
@@ -84,25 +83,34 @@ def get_active_user():
         print("Error en get_active_user:", e)  # Agrega este print para más detalles
         raise HTTPException(status_code=500, detail="Error interno del servidor")
     
-def get_info():
+def get_user(identifier: str):
     try:
-        info = db.get_user_info()
+        exist = db.get_user_exist(identifier)
+        return {"user_exists": exist}
+    except Exception as e:
+        print("Error en get_user:", e)
+        raise HTTPException(status_code=500, detail="Error interno del servidor")
+
+    
+def get_info(uuid: str):
+    try:
+        info = db.get_user_info(uuid)
         return info
     except Exception as e:
         print("Error en get_active_user:", e)
         raise HTTPException(status_code=500, detail="Error interno del servidor")
 
-def update_user(user_update: UserUpdate):
+def update_user(user_update: UserUpdate, uuid: str):
     try:
-        user = db.update_user_account(user_update)
+        user = db.update_user_account(user_update, uuid)
         return user
     except Exception as e:
         print("Error en update_user:", e)
         raise HTTPException(status_code=500, detail="Error interno del servidor")
 
-def delete_user():
+def delete_user(uuid: str):
     try:
-        db.delete_user()
+        db.delete_user(uuid)
     except Exception as e:
         print("Error en get_active_user:", e)
         raise HTTPException(status_code=500, detail="Error interno del servidor")

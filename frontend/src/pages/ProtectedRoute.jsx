@@ -8,10 +8,12 @@ const ProtectedRoute = ({ children }) => {
     useEffect(() => {
         const getActiveUser = async () => {
         try {
+            const token = localStorage.getItem('token');
             const response = await fetch('http://127.0.0.1:8000/auth/active', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 }
             });
             if (response.ok) {
