@@ -7,10 +7,14 @@ from src.schemas.user import User
 from datetime import datetime, timezone
 from fastapi.security import OAuth2PasswordBearer
 from typing import Optional
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-SECRET_KEY = "tu_clave_secreta"  # Esto se debe obtener de .env
+SECRET_KEY =  os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 

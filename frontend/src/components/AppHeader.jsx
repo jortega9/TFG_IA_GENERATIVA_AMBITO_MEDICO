@@ -3,9 +3,15 @@ import '../styles/chat.css';
 import AsistenteIcon from '../../public/assets/AsistenteIcon.png';
 import { Button } from '@mui/material';
 import AccountButton from './AccountButton';
+import { useNavigate } from 'react-router-dom';
 
 
 function AppHeader() {
+    const navigate = useNavigate();
+
+    const handleUroloBot = () => {
+        navigate('/');
+    }
 
     return (
         <>
@@ -13,7 +19,7 @@ function AppHeader() {
             <div className="avatar">
                 <img src={AsistenteIcon} alt="Bot avatar" className="avatar-image"/>
             </div>
-            <h1>UroloBot</h1>
+            <Button variant="text" sx={{color:'white', fontSize:'20px'}} onClick={handleUroloBot}><strong>UroloBot</strong></Button>
             <AccountButton/>
 
             </header>

@@ -1,12 +1,13 @@
 # backend/src/controllers/auth_controller.py
 
 from fastapi import HTTPException
-from src.schemas.user import User, UserCreate, UserUpdate
+from src.schemas.user import User, UserCreate, UserUpdate, PwdUpdate
 from src.services.auth_service import hash_password, verify_password, create_access_token, get_current_user
 from datetime import timedelta
 from db.database import DatabaseConnection
 from datetime import datetime
 import uuid
+import random
 
 # Simulación de una base de datos en memoria
 fake_users_db = {}
@@ -22,7 +23,7 @@ def register_user(user_create: UserCreate):
     user = User(
         uuid_user= uuid,
         name= user_create.name,
-        username= user_create.name[0:3] + uuid[0:3],
+        username= user_create.name[0:3] + str(random.randint(100, 999)),
         email= user_create.email,
         password= hashed_password,
         secret= None,
@@ -106,6 +107,15 @@ def update_user(user_update: UserUpdate, uuid: str):
         return user
     except Exception as e:
         print("Error en update_user:", e)
+        raise HTTPException(status_code=500, detail="Error interno del servidor")
+    
+def update_pwd(pwd_update: PwdUpdate, uuid: str):
+    try:
+        hashed_password = hash_password(pwd_update.password)
+        user = db.update_user_pwd(hashed_password, pwd_update.email, uuid)
+        return user
+    except Exception as e:
+        print("Error en update_pwd:", e)
         raise HTTPException(status_code=500, detail="Error interno del servidor")
 
 def delete_user(uuid: str):

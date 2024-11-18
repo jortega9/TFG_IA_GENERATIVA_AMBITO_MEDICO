@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import AppHeader from '../components/AppHeader';
 import '../styles/AccountPage.css';
 import { useNavigate } from 'react-router-dom';
+import CloseIcon from '@mui/icons-material/Close';
+import IconButton from '@mui/material/IconButton';
 
 function AccountPage() {
     const [userInfo, setUserInfo] = useState({});
@@ -45,6 +47,10 @@ function AccountPage() {
             ...prevInfo,
             [name]: value,
         }));
+    };
+
+    const handleClose = () => {
+        navigate('/');
     };
 
     async function saveUser(){
@@ -116,9 +122,17 @@ function AccountPage() {
     return (
         <div className="app-container">
             <AppHeader />
+            <div style={{  display: 'flex', direction: 'rtl',}}>
+                <IconButton
+                aria-label="close"
+                onClick={handleClose}
+                style={{ color: '#555' }}
+                >
+                    <CloseIcon />
+                </IconButton>
+            </div>
             <div style={{ maxWidth: '400px', margin: '0 auto' }}>
                 <h2 className='account-title'>Información de Cuenta</h2>
-                
                 <div>
                     <label className='account-items'>Nombre Completo:</label>
                     <input
@@ -152,7 +166,7 @@ function AccountPage() {
                     />
                 </div>
 
-                <div style={{ position: 'relative' }}>
+                {/* <div style={{ position: 'relative' }}>
                     <label className='account-items'>Contraseña:</label>
                     <input
                         type={showPassword ? 'text' : 'password'}
@@ -175,7 +189,7 @@ function AccountPage() {
                     >
                         {showPassword ? '🔓' : '🔒'}
                     </button>
-                </div>
+                </div> */}
 
                 <button
                     onClick={handleSave}

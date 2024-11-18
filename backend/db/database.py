@@ -171,6 +171,33 @@ class DatabaseConnection:
             cursor.close()
             self.close_connectionDB()
 
+    def update_user_pwd(self, pwd, email, uuid) -> None:
+        self.connectDB()
+        cursor = self.connUser.cursor()
+        verify_query = """
+        SELECT COUNT(*) FROM user
+        WHERE uuid_user = %s AND email = %s
+        """
+        query = """
+        UPDATE user
+        SET password = %s
+        WHERE uuid_user = %s AND email = %s
+        """
+        try:
+            cursor.execute(verify_query, (uuid, email)) # Verifica que el usuario exista tanto uuid y email
+            count = cursor.fetchone()[0]
+            
+            if count == 0:
+                raise Exception("Error: No se encontró un usuario con el email y UUID proporcionados.")
+            
+            cursor.execute(query, (pwd, uuid, email)) # Una vez sabemos que existe ejecutamos la actualización de la contraseña
+            self.connUser.commit()
+        except Exception as e:
+            raise Exception("update_user_pwd: " + str(e))
+        finally:
+            cursor.close()
+            self.close_connectionDB()
+
     def get_user_info(self, uuid) -> dict:
         self.connectDB()
         cursor = self.connUser.cursor(dictionary=True)  # Configura el cursor para que devuelva un diccionario

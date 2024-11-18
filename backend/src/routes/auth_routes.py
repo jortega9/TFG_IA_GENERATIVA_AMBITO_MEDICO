@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
-from src.schemas.user import UserCreate, UserUpdate, UserLogin, UserIdentifier
-from src.controllers.auth_controller import register_user, login_user, update_user, logout_user, get_active_user, delete_user, get_info, get_user
+from src.schemas.user import UserCreate, UserUpdate, UserLogin, UserIdentifier, PwdUpdate
+from src.controllers.auth_controller import register_user, login_user, update_user, logout_user, get_active_user, delete_user, get_info, get_user, update_pwd
 from src.services.auth_service import get_current_user
 
 
@@ -28,6 +28,11 @@ def update_user_info(user_update: UserUpdate, current_user: dict = Depends(get_c
     uuid = current_user["uuid"]
     return update_user(user_update, uuid)
 
+@router.put("/updatePwd", summary="Actualizar contraseña de usuario")
+def update_user_pwd(pwd_update: PwdUpdate, current_user: dict = Depends(get_current_user)):
+    uuid = current_user["uuid"]
+    return update_pwd(pwd_update, uuid)
+
 @router.get("/users", summary="Obtener todos los usuarios")
 def get_users():
     return get_users()
@@ -40,6 +45,7 @@ def get_user_info(current_user: dict = Depends(get_current_user)):
 @router.get("/active", summary="Obtener usuario activo")
 def get_active(current_user: dict = Depends(get_current_user)):
     uuid = current_user["uuid"]
+    print(uuid)
     return get_active_user(uuid)
 
 @router.delete("/delete", summary="Eliminar usuario")

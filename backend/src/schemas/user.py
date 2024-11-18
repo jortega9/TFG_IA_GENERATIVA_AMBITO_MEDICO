@@ -38,3 +38,9 @@ class UserUpdate(BaseModel):
     username: Optional[str] = None
     email: Optional[EmailStr] = None
     password: Optional[str] = None
+
+class PwdUpdate(BaseModel):
+    """Data that user can change and update in the database."""
+    
+    email: Optional[str] = None
+    password: Optional[str] = None
