@@ -84,7 +84,7 @@ def get_active_user(uuid: str):
         print("Error en get_active_user:", e)  # Agrega este print para más detalles
         raise HTTPException(status_code=500, detail="Error interno del servidor")
     
-def get_user(identifier: str):
+def get_exist_user(identifier: str):
     try:
         exist = db.get_user_exist(identifier)
         return {"user_exists": exist}

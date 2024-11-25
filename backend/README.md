@@ -1,5 +1,5 @@
 # Backend
 
 ```bash
-sudo apt install npm
+uvicorn src.app:app --reload
 ```

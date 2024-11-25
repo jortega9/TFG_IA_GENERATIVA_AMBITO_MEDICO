@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from src.schemas.user import UserCreate, UserUpdate, UserLogin, UserIdentifier, PwdUpdate
-from src.controllers.auth_controller import register_user, login_user, update_user, logout_user, get_active_user, delete_user, get_info, get_user, update_pwd
+from src.controllers.auth_controller import register_user, login_user, update_user, logout_user, get_active_user, delete_user, get_info, get_exist_user, update_pwd
 from src.services.auth_service import get_current_user
 
 
@@ -12,7 +12,7 @@ def register(user_create: UserCreate):
 
 @router.post("/user-exist", summary="Verificar si el usuario existe")
 def user_exist(user: UserIdentifier):
-    return get_user(user.identifier)
+    return get_exist_user(user.identifier)
 
 @router.post("/login", summary="Login de usuario")
 def login(login: UserLogin):

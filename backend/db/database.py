@@ -120,8 +120,6 @@ class DatabaseConnection:
         return user is not None
 
 
-
-
     def get_users(self) -> List[Dict]:
         self.connectDB()
         cursor = self.connUser.cursor()

@@ -13,6 +13,8 @@ function AccountPage() {
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(true);
     const [dataObtained, setDataObteined] = useState(false);
+    const [errorMsg, setErrorMsg] = useState('');
+    const [successMsg, setSuccessMsg] = useState('');
 
     useEffect(() => {
         const getInfo = async () => {
@@ -71,6 +73,7 @@ function AccountPage() {
             });
 
             console.log("Usuario actualizado con éxito");
+            setSuccessMsg("Usuario actualizado con éxito");
             return true;
         }
         catch(error){
@@ -83,7 +86,7 @@ function AccountPage() {
             await saveUser();
             console.log("Operación de guardado completada");
         } catch (error) {
-            alert("Hubo un problema al actualizar el usuario. Inténtalo de nuevo.");
+            setErrorMsg("Hubo un problema al actualizar el usuario. Inténtalo de nuevo.");
         }
     };
 
@@ -99,6 +102,7 @@ function AccountPage() {
             });
 
             console.log("Usuario eliminado con éxito");
+            setSuccessMsg("Usuario eliminado con éxito");
             return true;
         }
         catch(error){
@@ -112,7 +116,7 @@ function AccountPage() {
             await deleteUser();
             navigate('/login');
         } catch (error) {
-            alert("Hubo un problema al actualizar el usuario. Inténtalo de nuevo.");
+            setErrorMsg("Hubo un problema al eliminar el usuario. Inténtalo de nuevo.");
         }
         
     };
@@ -190,7 +194,8 @@ function AccountPage() {
                         {showPassword ? '🔓' : '🔒'}
                     </button>
                 </div> */}
-
+                {errorMsg && <p className="error-message"><strong>{errorMsg}</strong></p>}
+                {successMsg && <p className="success-message"><strong>{successMsg}</strong></p>}
                 <button
                     onClick={handleSave}
                     style={{

@@ -11,6 +11,9 @@ function PasswordPage() {
         password2: '',
     });
 
+    const [errorMsg, setErrorMsg] = useState('');
+    const [successMsg, setSuccessMsg] = useState('');
+
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -28,12 +31,29 @@ function PasswordPage() {
     async function changePswd(){
         try{
 
-            if(userInfo.password !== userInfo.password2){
-                alert("Las contraseñas no coinciden");
+            setErrorMsg('');
+            const token = localStorage.getItem('token');
+            const thisUser = await fetch('http://127.0.0.1:8000/auth/active', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            const thisUserJSON = await thisUser.json();
+            console.log(thisUserJSON.email);
+            if(thisUserJSON.email !== userInfo.email){
+                setErrorMsg("El correo electrónico no coincide con el usuario activo");
                 return false;
             }
 
-            const token = localStorage.getItem('token');
+            if(userInfo.password !== userInfo.password2){
+                setErrorMsg("Las contraseñas no coinciden");
+                return false;
+            }
+
+            // const token = localStorage.getItem('token');
             const response = await fetch('http://127.0.0.1:8000/auth/updatePwd', {
                 method: 'PUT',
                 headers: {
@@ -45,18 +65,19 @@ function PasswordPage() {
                     password: userInfo.password,
                 })
             });
-
+            
             console.log("Contraseña actualizada con éxito");
             return true;
         }
         catch(error){
-            console.error("Error al realizar el saveUser: ", error);
+            console.error("Error al realizar el change password: ", error);
         }
     }
 
     const handlePswdChange = async (e) => {
         try {
             await changePswd();
+            setSuccessMsg("Contraseña actualizada con éxito");
             console.log("Operación de cambio de contraseña completada");
         } catch (error) {
             alert("Hubo un problema al actualizar el usuario. Inténtalo de nuevo.");
@@ -109,6 +130,9 @@ function PasswordPage() {
                         style={{ width: '100%', marginBottom: '10px', padding: '8px' }}
                     />
                 </div>
+
+                {errorMsg && <p className="error-message">{errorMsg}</p>}
+                {successMsg && <p className="success-message"><strong>{successMsg}</strong></p>}
 
                 <button
                     onClick={handlePswdChange}

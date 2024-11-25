@@ -10,6 +10,7 @@ const AuthPage = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [errorMsg, setErrorMsg] = useState('');
+    const [successMsg, setSuccessMsg] = useState('');
     const [isLogin, setIsLogin] = useState(true);
     const navigate = useNavigate();
 
@@ -44,6 +45,7 @@ const AuthPage = () => {
         setPassword('');
         setConfirmPassword('');
         setErrorMsg('');
+        setSuccessMsg('');
     }
 
     async function loginUser(info){
@@ -71,6 +73,7 @@ const AuthPage = () => {
         }
         catch(error){
             console.error("Error al realizar el loginUser: ", error);
+            setErrorMsg("Error al iniciar sesión. Por favor, revisa tu email y contraseña.");
         }
     }
 
@@ -83,7 +86,7 @@ const AuthPage = () => {
         });
 
         if (user) {
-            setUser(user);
+            // setUser(user);
             navigate('/Tobichat');
         }
     };
@@ -114,6 +117,7 @@ const AuthPage = () => {
         }
 
         const newUser = await registerUser(name, email, password);
+        setSuccessMsg("Usuario registrado con éxito. Por favor, inicia sesión.");
     }
 
     async function registerUser(name, email, password){
@@ -138,6 +142,7 @@ const AuthPage = () => {
         }
         catch(error){
             console.error("Error al realizar el registerUser: ", error);
+            setErrorMsg("Error al registrarse. Por favor, verifica los datos introducidos.");
         }
     };
 
@@ -239,6 +244,7 @@ const AuthPage = () => {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                 />
                 {errorMsg && <p className="error-message">{errorMsg}</p>}
+                {successMsg && <p className="success-message"><strong>{successMsg}</strong></p>}
                 <Button
                     variant="contained"
                     fullWidth
