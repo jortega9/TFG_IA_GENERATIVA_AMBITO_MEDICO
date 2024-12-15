@@ -23,6 +23,12 @@
 	--error-color: #FF4D7A;
 }
 
+.chatName {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Espaciado entre los botones */
+}
+
 .input-chatList {
     color: var(--text-color) !important;
 }
@@ -37,4 +43,11 @@
 
 .dark-theme .chat-button {
     color: var(--text-color);
+}
+
+.chat-button span {
+    position: absolute;
+    right: 10px;
+    font-size: 15px;
+    cursor: pointer;
 }

@@ -76,9 +76,11 @@ function PasswordPage() {
 
     const handlePswdChange = async (e) => {
         try {
-            await changePswd();
-            setSuccessMsg("Contraseña actualizada con éxito");
-            console.log("Operación de cambio de contraseña completada");
+            let change = await changePswd();
+            if(change){
+                setSuccessMsg("Contraseña actualizada con éxito");
+                console.log("Operación de cambio de contraseña completada");
+            }
         } catch (error) {
             alert("Hubo un problema al actualizar el usuario. Inténtalo de nuevo.");
         }
