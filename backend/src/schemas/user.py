@@ -31,6 +31,18 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str
 
+class PatientCreate(BaseModel):
+    """Data that patients need to be added in the database."""
+    
+    name: str
+    email: EmailStr
+    phone: str
+    gender: str
+    age: int
+    diseases: Optional[str] = None
+    allergy: Optional[str] = None
+    history: Optional[str] = None
+
 class UserUpdate(BaseModel):
     """Data that user can change and update in the database."""
     
@@ -44,3 +56,8 @@ class PwdUpdate(BaseModel):
     
     email: Optional[str] = None
     password: Optional[str] = None
+
+class UpdatePatient(BaseModel):
+    """Data that user can change and update in the database."""
+    id: int
+    newName: str
