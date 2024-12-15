@@ -47,7 +47,7 @@ const ChatList = ({ chats, setChats, onSelectChat }) => {
                     placeholder="Enter chat name"
                     value={newChatName}
                     onChange={(e) => setNewChatName(e.target.value)}
-                    className="input-chatList"
+                    className="input-chatList"s
                 />
                 <Button
                     onClick={createNewChat}
@@ -59,7 +59,7 @@ const ChatList = ({ chats, setChats, onSelectChat }) => {
                 </Button>
             </div>
 
-            <div className="space-y-2">
+            <div className="chatName">
                 {chats.map((chat) => (
                     <Button
                         key={chat.id}
