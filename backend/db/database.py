@@ -204,7 +204,58 @@ class DatabaseConnection:
         user = cursor.fetchone()  # Obtiene solo un registro
         cursor.close()
         self.close_connectionDB()
-        return user  
+        return user
+
+# -------------------------- Patients ----------------------------
+
+    def insert_patient(self, patient) -> None:
+        self.connectDB()
+        cursor = self.connUser.cursor()
+        query = """
+            INSERT INTO patients (
+                name, email, phone, gender, age, diseases, allergy, history) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        try:
+            cursor.execute(
+            query, 
+                (
+                    patient.name,
+                    patient.email,
+                    patient.phone,
+                    patient.gender,
+                    patient.age,
+                    patient.diseases,
+                    patient.allergy,
+                    patient.history
+                )   
+            )
+            self.connUser.commit()
+        except Exception as e:
+            self.connUser.rollback()
+            raise Exception("insert_patient: " + str(e))
+        finally:
+            cursor.close()
+            self.close_connectionDB()
+
+    def update_patient(self, id, newName):
+        self.connectDB()
+        cursor = self.connUser.cursor()
+        query = """
+        UPDATE patients
+        SET name = %s
+        WHERE id_patient = %s
+        """
+        try:
+            cursor.execute(query, (newName, id))
+            self.connUser.commit()
+        except Exception as e:
+            raise Exception("update_patientName: " + str(e))
+        finally:
+            cursor.close()
+            self.close_connectionDB()
+
+
+# --------------------------DB Connection ------------------------
 
     def close_connectionDB(self) -> None:
         self.connUser.close()
