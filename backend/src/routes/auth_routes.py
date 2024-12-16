@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from src.schemas.user import UserCreate, UserUpdate, UserLogin, UserIdentifier, PwdUpdate, PatientCreate, UpdatePatient
-from src.controllers.auth_controller import register_user, login_user, update_user, logout_user, get_active_user, delete_user, get_info, get_exist_user, update_pwd, add_newPatient, update_patientName
+from src.controllers.auth_controller import register_user, login_user, update_user, logout_user, get_active_user, delete_user, get_info, get_exist_user, update_pwd, add_newPatient, update_patientName, get_patients, delete_patient
 from src.services.auth_service import get_current_user
 
 
@@ -62,3 +62,11 @@ def newPatient(patient_create: PatientCreate):
 @router.post("/updatePatient", summary="Actualizar nombre paciente")
 def updateName(updatePatient: UpdatePatient):
     return update_patientName(updatePatient)
+
+@router.get("/patients", summary="Obtener todos los pacientes")
+def get_patientsInfo():
+    return get_patients()
+
+@router.delete("/delete/{id}", summary="Eliminar paciente")
+def deletePatient(id: str):
+    return delete_patient(id)
