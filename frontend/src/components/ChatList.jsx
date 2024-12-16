@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     Button,
     Dialog,
@@ -14,9 +14,44 @@ import '../styles/ChatList.css';
 
 const ChatList = ({ chats, setChats, onSelectChat }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [newPatient, setNewPatient] = useState({ name: '', age: '', email: '' });
+    const [newPatient, setNewPatient] = useState({
+        name: '',
+        email: '',
+        age: '',
+        phone: '',
+        gender: '',
+        diseases: '',
+        allergy: '',
+    });
     const [menuAnchor, setMenuAnchor] = useState(null);
     const [selectedChatId, setSelectedChatId] = useState(null);
+    const [isUpdating, setIsUpdating] = useState(false)
+    const [refresh, setRefresh] = useState(false);
+
+    useEffect(() => {
+        const fetchPatients = async () => {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/auth/patients', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+    
+                if (!response.ok) {
+                    throw new Error('Error al obtener los pacientes');
+                }
+    
+                const patients = await response.json();
+                setChats(patients);
+                console.log('Pacientes obtenidos: ', patients);
+            } catch (error) {
+                console.error('Error al obtener los pacientes:', error);
+            }
+        };
+    
+        fetchPatients();
+    }, [refresh]);
 
     const handleOpenModal = () => {
         setIsModalOpen(true);
@@ -24,7 +59,15 @@ const ChatList = ({ chats, setChats, onSelectChat }) => {
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
-        setNewPatient({ name: '', age: '', email: '' });
+        setNewPatient({
+            name: '',
+            email: '',
+            age: '',
+            phone: '',
+            gender: '',
+            diseases: '',
+            allergy: '',
+        });
     };
 
     const handleInputChange = (e) => {
@@ -32,18 +75,28 @@ const ChatList = ({ chats, setChats, onSelectChat }) => {
         setNewPatient((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleAddPatient = () => {
-        if (!newPatient.name.trim()) return;
+    const handleAddPatient = async () => {
+        try {
+            const response = await fetch('http://127.0.0.1:8000/auth/newPatient', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newPatient),
+            });
 
-        const newChat = {
-            id: chats.length + 1,
-            name: newPatient.name.trim(),
-            details: { age: newPatient.age, email: newPatient.email },
-            messages: [],
-        };
+            if (!response.ok) {
+                throw new Error('Error al añadir el paciente');
+            }
 
-        setChats((prevChats) => [...prevChats, newChat]);
-        handleCloseModal();
+            const result = await response.json();
+            console.log('Paciente añadido:', result);
+            setRefresh((prev) => !prev);
+
+            handleCloseModal();
+        } catch (error) {
+            console.error('Error al añadir el paciente:', error);
+        }
     };
 
     const handleMenuOpen = (event, chatId) => {
@@ -54,25 +107,35 @@ const ChatList = ({ chats, setChats, onSelectChat }) => {
     const handleMenuClose = () => {
         setMenuAnchor(null);
         setSelectedChatId(null);
+        setIsUpdating(false);
     };
 
-    const handleChangeChatName = () => {
-        const newName = prompt('Ingrese el nuevo nombre del paciente:');
-        if (newName && selectedChatId !== null) {
-            setChats((prevChats) =>
-                prevChats.map((chat) =>
-                    chat.id === selectedChatId ? { ...chat, name: newName } : chat
-                )
-            );
-        }
-        handleMenuClose();
+    const handleMenuOpenUpdate = () => {
+        setIsUpdating(true);
+        setIsModalOpen(true);
     };
 
-    const handleDeleteChat = () => {
-        if (selectedChatId !== null) {
-            setChats((prevChats) => prevChats.filter((chat) => chat.id !== selectedChatId));
+    const handleDeletePatient = async (id) => {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/auth/delete/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Error al eliminar el paciente');
+            }
+
+            const result = await response.json();
+            console.log('Paciente eliminado:', result);
+            setRefresh((prev) => !prev);
+
+            handleCloseModal();
+        } catch (error) {
+            console.error('Error al eliminar el paciente:', error);
         }
-        handleMenuClose();
     };
 
     return (
@@ -84,30 +147,29 @@ const ChatList = ({ chats, setChats, onSelectChat }) => {
                 </Button>
             </div>
 
-            {/* Mostramos la lista de pacientes */}
             <div className="chatName">
                 {chats.map((chat) => (
                     <Button
                         key={chat.id}
                         className="chat-button"
-                        onClick={() => onSelectChat(chat.id)}
+                        onClick={() => onSelectChat(chat[0])}
                     >
-                        {chat.name}
+                        {chat[1]?.split(' ').slice(0, 2).join(' ')}
                         <span
-                            onClick={(event) => handleMenuOpen(event, chat.id)}
+                            onClick={(event) => handleMenuOpen(event, chat[0])}
                             style={{ fontSize: '15px', cursor: 'pointer', marginLeft: '10px' }}
                         >
                             ⋮
                         </span>
                         <Menu
                             anchorEl={menuAnchor}
-                            open={Boolean(menuAnchor) && selectedChatId === chat.id}
+                            open={Boolean(menuAnchor) && selectedChatId === chat[0]}
                             onClose={handleMenuClose}
                         >
-                            <MenuItem onClick={handleChangeChatName}>
-                                Cambiar Nombre
+                            <MenuItem onClick={handleMenuOpenUpdate}>
+                                Cambiar Información Paciente
                             </MenuItem>
-                            <MenuItem onClick={handleDeleteChat}>
+                            <MenuItem onClick={() => handleDeletePatient(chat[0])}>
                                 Dar de Baja Paciente
                             </MenuItem>
                         </Menu>
@@ -115,9 +177,10 @@ const ChatList = ({ chats, setChats, onSelectChat }) => {
                 ))}
             </div>
 
-            {/* Agregamos nuevo paciente mediante un formulario con la informacioón del paciente*/}
             <Dialog open={isModalOpen} onClose={handleCloseModal}>
-                <DialogTitle>Agregar Nuevo Paciente</DialogTitle>
+                <DialogTitle>
+                    {isUpdating ? 'Actualizar Información del Paciente' : 'Agregar Nuevo Paciente'}
+                </DialogTitle>
                 <DialogContent>
                     <TextField
                         name="name"
@@ -145,16 +208,49 @@ const ChatList = ({ chats, setChats, onSelectChat }) => {
                         margin="normal"
                         type="email"
                     />
+                    <TextField
+                        name="phone"
+                        label="Teléfono"
+                        value={newPatient.phone}
+                        onChange={handleInputChange}
+                        fullWidth
+                        margin="normal"
+                    />
+                    <TextField
+                        name="gender"
+                        label="Género"
+                        value={newPatient.gender}
+                        onChange={handleInputChange}
+                        fullWidth
+                        margin="normal"
+                    />
+                    <TextField
+                        name="diseases"
+                        label="Enfermedades"
+                        value={newPatient.diseases}
+                        onChange={handleInputChange}
+                        fullWidth
+                        margin="normal"
+                    />
+                    <TextField
+                        name="allergy"
+                        label="Alergias"
+                        value={newPatient.allergy}
+                        onChange={handleInputChange}
+                        fullWidth
+                        margin="normal"
+                    />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCloseModal} color="secondary">
                         Cancelar
                     </Button>
                     <Button onClick={handleAddPatient} color="primary">
-                        Agregar
+                        {isUpdating ? 'Actualizar' : 'Agregar'}
                     </Button>
                 </DialogActions>
             </Dialog>
+
         </div>
     );
 };

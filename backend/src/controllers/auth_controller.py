@@ -144,3 +144,18 @@ def update_patientName(updatePatient: UpdatePatient):
     except Exception as e:
         print(f"Error en register_user: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+    
+def get_patients():
+    try:
+        patients = db.get_patients()
+        return patients
+    except Exception as e:
+        print("Error en get_active_user:", e)
+        raise HTTPException(status_code=500, detail="Error interno del servidor")
+    
+def delete_patient(id: str):
+    try:
+        db.delete_patient(id)
+    except Exception as e:
+        print("Error en delete_patient:", e)
+        raise HTTPException(status_code=500, detail="Error interno del servidor")
