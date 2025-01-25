@@ -1,0 +1,22 @@
+.accordion-box {
+    background-color: hsla(0, 0%, 100%, 0) !important;
+    box-shadow: 1px 1px;
+    width: 100%;
+}
+
+.accordion-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-left: 1rem;
+}
+
+.accordion-summary {
+    font-size: 1.5rem;
+    height: 3rem;
+}
+
+.checkbox-column {
+    display: flex;
+    flex-direction: column;
+}
