@@ -1,22 +1,77 @@
+:root {
+    --primary-color: #4D7AFF;
+    --secondary-color: #F0F4F8; 
+    --title-color: #0277bd;
+    --background-color: #e0f7fa;
+    --chat-background: #FFFFFF;
+    --text-color: #333333;
+    --input-background: #F0F4F8;
+    --icon-color: #4D7AFF;
+    --error-color: #FF3366;
+    --success-color: #52ff33;
+    --hover-color: #01579b;
+}
+
+.dark-theme {
+    --primary-color: #4D7AFF;
+    --secondary-color: #4b5696;
+    --background-color: #1A1C2A;
+    --chat-background: #2A2D3E;
+    --text-color: #E0E0E0;
+    --input-background: #2A2D3E;
+    --icon-color: #4D7AFF;
+    --error-color: #FF4D7A;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+}
+
+.controls-container {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    background-color: var(--secondary-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
 .accordion-box {
-    background-color: hsla(0, 0%, 100%, 0) !important;
-    box-shadow: 1px 1px;
-    width: 100%;
+    background-color: var(--chat-background);
+    border: 1px solid var(--secondary-color);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
 }
 
 .accordion-title {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding-left: 1rem;
+    gap: 0.5rem;
 }
 
-.accordion-summary {
+.icon {
+    color: var(--icon-color);
     font-size: 1.5rem;
-    height: 3rem;
 }
 
-.checkbox-column {
+.title {
+    margin: 0;
+    color: var(--title-color);
+    font-weight: 500;
+}
+
+.checkbox-group {
     display: flex;
     flex-direction: column;
+    gap: 0.5rem;
+}
+
+.checkbox-group .MuiFormControlLabel-label {
+    font-size: 1rem;
+    color: var(--text-color);
 }

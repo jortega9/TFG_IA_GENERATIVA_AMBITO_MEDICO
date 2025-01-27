@@ -6,6 +6,7 @@ import AsistenteIcon from '../../public/assets/AsistenteIcon.png';
 import AppHeader from '../components/AppHeader';
 import Controls from '../components/Controls/Controls';
 import ChatWelcome from '../components/ChatWelcome';
+import Report from '../components/Report/Report';
 import '../styles/TobiChat.css';
 
 function TobiChat() {
@@ -112,7 +113,7 @@ function TobiChat() {
           </div>
           ) : isReportAccessible ? (
             <div>
-              <h2>Report</h2>
+              <Report/>
             </div>
           ) : (
             <ChatWelcome />
