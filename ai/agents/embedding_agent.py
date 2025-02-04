@@ -1,0 +1,1 @@
+"""Convert dataset rows into embedded vectors for storage in the database."""

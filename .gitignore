@@ -26,3 +26,4 @@ lerna-debug.log*
 .env
 .venv
 *.xlsx
+*.csv
