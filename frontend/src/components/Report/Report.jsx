@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import DropFiles from '../DropFiles/DropFiles';
-import Form from '../Form/Form';
+import StatisticAnalysis from '../StatisticAnalysis/StatisticAnalysis';
 import ReportSummary from '../ReportSummary/ReportSummary';
+import { Button } from '@mui/material';
 
 const Report = () => {
     const steps = ["1", "2", "3"];
@@ -11,7 +12,7 @@ const Report = () => {
             case 0:
                 return <DropFiles/>;
             case 1:
-                return <Form/>;
+                return <StatisticAnalysis/>;
             case 2:
                 return <ReportSummary/>;
             default:
@@ -31,14 +32,14 @@ const Report = () => {
 
     return (
         <div style={{ width: "100%", margin: "auto", marginTop: "50px" }}>
-            <div style={{ marginTop: "20px", textAlign: "center" }}>
+            <div style={{ width: "100%", marginTop: "20px", textAlign: "center" }}>
                 {getStepContent(currentStep)}
-                <button onClick={prevStep} disabled={currentStep === 0}>
+                <Button onClick={prevStep} disabled={currentStep === 0}>
                 Atrás
-                </button>
-                <button onClick={nextStep} disabled={currentStep === steps.length - 1}>
+                </Button>
+                <Button onClick={nextStep} disabled={currentStep === steps.length - 1}>
                 Siguiente
-                </button>
+                </Button>
             </div>
         </div>
     );

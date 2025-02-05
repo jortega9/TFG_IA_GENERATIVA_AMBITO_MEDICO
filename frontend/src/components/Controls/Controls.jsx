@@ -22,8 +22,8 @@ function Controls({ onChatAccessChange, onReportAccessChange }) {
     };
 
     return (
-        <Box className="controls-container">
-            <Accordion className="accordion-box">
+        <Box className="controls-container"  sx={{ width: "13rem" }}>
+            <Accordion className="accordion-box" sx={{ width: "100%" }}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header">
                     <div className="accordion-title">
                         <GroupsIcon className="icon" />

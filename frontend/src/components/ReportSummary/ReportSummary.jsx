@@ -16,8 +16,8 @@ const ReportSummary = () => {
             borderRadius: 2,
             padding: 4,
             boxShadow: 1,
-            width: '721px',
-            height: "292px",
+            width: '50rem',
+            height: "18rem",
         }}>
             <Box sx={{
                 display: 'flex',
@@ -25,7 +25,9 @@ const ReportSummary = () => {
                 alignItems: 'center',
                 marginBottom: 3,
             }}>
-                <Typography variant="h4" component="h2" sx={{ color: '#4D7AFF' }}><strong>Generador de Informes</strong></Typography>
+                <Typography sx={{ color: '#4D7AFF', fontSize: '1.5rem' }}>
+                    <strong>Generador de Informes</strong>
+                </Typography>
                 <ThemeToggle />
             </Box>
             <h2>ReportSummary</h2>
