@@ -8,6 +8,7 @@ import Controls from '../components/Controls/Controls';
 import ChatWelcome from '../components/ChatWelcome';
 import Report from '../components/Report/Report';
 import '../styles/TobiChat.css';
+import { Grid } from '@mui/material';
 
 function TobiChat() {
   const OK_API = 200;
@@ -100,23 +101,23 @@ function TobiChat() {
       <AppHeader />
       <div className="main-content">
         <div className="menu-container">
-          <Controls onChatAccessChange={handleChatAccessChange} onReportAccessChange={handleReportAccessChange}/>
+            <Controls onChatAccessChange={handleChatAccessChange} onReportAccessChange={handleReportAccessChange}/>
         </div>
         {isChatAccessible ? (
           <div className="chat-container">
-            <div className="chat-header">
-              <h2>Chat with me!</h2>
-              <ThemeToggle />
-            </div>
-            <MessageList messages={messages} />
-            <MessageInput onSendMessage={handleSendMessage} />
+              <div className="chat-header">
+                <h2>Chat with me!</h2>
+                <ThemeToggle />
+              </div>
+              <MessageList messages={messages} />
+              <MessageInput onSendMessage={handleSendMessage} />
           </div>
           ) : isReportAccessible ? (
             <div>
-              <Report/>
+                <Report/>
             </div>
           ) : (
-            <ChatWelcome />
+              <ChatWelcome />
           )}
       </div>
     </div>
