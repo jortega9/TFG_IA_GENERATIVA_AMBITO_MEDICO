@@ -1,6 +1,6 @@
 import os
 from fastapi import HTTPException
-from ai.data.prepare_data import load_xlsx, save_to_csv
+from ai.utils.prepare_data import load_xlsx, save_to_csv
 
 def convert_xlsx(file_path: str) -> str:
     """Convert a xlsx file in a .csv file and returns the path.

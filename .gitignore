@@ -27,3 +27,9 @@ lerna-debug.log*
 .venv
 *.xlsx
 *.csv
+**/__pycache__/
+*.pyc
+chroma_db/*
+!chroma_db/.gitkeep
+*.bin
+config.ini
