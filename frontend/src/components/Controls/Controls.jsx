@@ -1,6 +1,6 @@
 import "./Controls.css";
-import { Accordion, AccordionDetails, AccordionSummary, Box, FormControlLabel, FormGroup, Checkbox } from '@mui/material';
-import {React, useState} from 'react';
+import { Accordion, AccordionDetails, AccordionSummary, FormControlLabel, FormGroup, Checkbox } from '@mui/material';
+import { React, useState } from 'react';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import GroupsIcon from '@mui/icons-material/Groups';
 import SummarizeIcon from '@mui/icons-material/Summarize';
@@ -22,8 +22,8 @@ function Controls({ onChatAccessChange, onReportAccessChange }) {
     };
 
     return (
-        <Box className="controls-container"  sx={{ width: "13rem" }}>
-            <Accordion className="accordion-box" sx={{ width: "100%" }}>
+        <div className="controls-container">
+            <Accordion className="accordion-box">
                 <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header">
                     <div className="accordion-title">
                         <GroupsIcon className="icon" />
@@ -53,7 +53,7 @@ function Controls({ onChatAccessChange, onReportAccessChange }) {
                     </FormGroup>
                 </AccordionDetails>
             </Accordion>
-        </Box>
+        </div>
     );
 }
 

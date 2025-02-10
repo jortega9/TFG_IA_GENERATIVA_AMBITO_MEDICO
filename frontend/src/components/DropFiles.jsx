@@ -1,15 +1,9 @@
 import React, { useState } from 'react';
 import { Box, Button, Typography, Tooltip } from '@mui/material';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
-import ThemeToggle from '../ThemeToggle';
+import ThemeToggle from './ThemeToggle';
 
-const DropFiles = () => {
-    const [files, setFiles] = useState([]);
-
-    const addFiles = (acceptedFiles) => {
-        setFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
-        console.log(acceptedFiles);
-    };
+const DropFiles = ({ files, addFiles }) => {
 
     const getFileNameWithoutExtension = (fileName) => {
         const lastDotIndex = fileName.lastIndexOf('.');
@@ -20,10 +14,10 @@ const DropFiles = () => {
         <Box sx={{
             backgroundColor: 'white',
             borderRadius: 2,
-            padding: 4,
+            padding: 2,
             boxShadow: 1,
-            width: '50rem',
-            height: "18rem",
+            width: '100%',
+            height: "64vh",
             display: 'flex',
             flexDirection: 'column'
         }}>
@@ -40,7 +34,6 @@ const DropFiles = () => {
                 <ThemeToggle />
             </Box>
 
-            {/* Área de carga y archivos seleccionados */}
             <Box sx={{
                 border: '2px dashed gray',
                 padding: 4,
@@ -92,7 +85,7 @@ const DropFiles = () => {
                 <Button
                     variant="contained"
                     component="label"
-                    sx={{ backgroundColor: '#4D7AFF', fontSize: '1.1rem', marginTop: 2, alignSelf: 'center' }}
+                    sx={{ backgroundColor: '#4D7AFF', fontSize: '1.1rem', marginTop: 6, alignSelf: 'center' }}
                 >
                     Buscar Archivos
                     <input

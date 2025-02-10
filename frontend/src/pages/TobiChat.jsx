@@ -15,7 +15,6 @@ function TobiChat() {
   const API_KEY = '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';
   const ERROR_MSG = 'Error, please refresh!';
 
-  // Estado que guarda los mensajes del chat único
   const [messages, setMessages] = useState([]);
   const [isChatAccessible, setIsChatAccessible] = useState(false);
   const [isReportAccessible, setIsReportAccessible] = useState(false);
@@ -99,26 +98,28 @@ function TobiChat() {
   return (
     <div className="app-container">
       <AppHeader />
-      <div className="main-content">
-        <div className="menu-container">
-            <Controls onChatAccessChange={handleChatAccessChange} onReportAccessChange={handleReportAccessChange}/>
+      <div className="main-content" style={{ display: 'flex', height: '100%' }}>
+        <div className="controls-section">
+          <Controls onChatAccessChange={handleChatAccessChange} onReportAccessChange={handleReportAccessChange} />
         </div>
-        {isChatAccessible ? (
-          <div className="chat-container">
+        <div className="content-section">
+          {isChatAccessible ? (
+            <div className="chat-container">
               <div className="chat-header">
                 <h2>Chat with me!</h2>
                 <ThemeToggle />
               </div>
               <MessageList messages={messages} />
               <MessageInput onSendMessage={handleSendMessage} />
-          </div>
+            </div>
           ) : isReportAccessible ? (
             <div>
-                <Report/>
+              <Report />
             </div>
           ) : (
-              <ChatWelcome />
+            <ChatWelcome />
           )}
+        </div>
       </div>
     </div>
   );
