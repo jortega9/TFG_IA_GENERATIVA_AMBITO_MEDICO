@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
-import ThemeToggle from '../ThemeToggle';
+import ThemeToggle from './ThemeToggle';
 
 const StatisticAnalysis = () => {
     const [files, setFiles] = useState([]);
@@ -14,10 +14,12 @@ const StatisticAnalysis = () => {
         <Box sx={{
             backgroundColor: 'white',
             borderRadius: 2,
-            padding: 4,
+            padding: 2,
             boxShadow: 1,
-            width: '50rem',
-            height: "18rem",
+            width: '100%',
+            height: "64vh",
+            display: 'flex',
+            flexDirection: 'column'
         }}>
             <Box sx={{
                 display: 'flex',
