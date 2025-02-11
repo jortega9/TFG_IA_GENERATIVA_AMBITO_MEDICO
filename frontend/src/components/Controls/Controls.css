@@ -74,5 +74,5 @@ body {
 
 .checkbox-group .MuiFormControlLabel-label {
     font-size: 1rem;
-    color: var(--text-color);
+    color: #333333;
 }
