@@ -57,7 +57,7 @@ const DropFiles = ({ files, addFiles }) => {
                 {/* Mostrar archivos con icono y nombre sin extensión */}
                 {files.length > 0 && (
                     <>
-                        <Typography variant="h6" sx={{ paddingBottom: '20px' }}>Archivos seleccionados:</Typography>
+                        <Typography variant="h6" sx={{ paddingBottom: '20px', color:"#333333" }}>Archivos seleccionados:</Typography>
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
                             {files.map((file, index) => {
                                 const fileName = getFileNameWithoutExtension(file.name);
@@ -70,7 +70,8 @@ const DropFiles = ({ files, addFiles }) => {
                                                 textAlign: 'center',
                                                 overflow: 'hidden',
                                                 textOverflow: 'ellipsis',
-                                                whiteSpace: 'nowrap'
+                                                whiteSpace: 'nowrap',
+                                                color: '#333333'
                                             }}>
                                                 {fileName}
                                             </Typography>
