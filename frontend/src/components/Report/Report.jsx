@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import DropFiles from '../DropFiles';
-import StatisticAnalysis from '../StatisticAnalysis';
-import ReportSummary from '../ReportSummary';
+import DescStatistics1 from '../Statistics/DescStatistics/DescStatistics1';
+import DescStatistics2 from '../Statistics/DescStatistics/DescStatistics2';
+import DescStatistics3 from '../Statistics/DescStatistics/DescStatistics3';
+import AdvancedStatistics1 from '../Statistics/AdvancesStatistics/AdvancedStatistics1';
+import AdvancedStatistics2 from '../Statistics/AdvancesStatistics/AdvancedStatistics2';
+import AdvancedStatistics3 from '../Statistics/AdvancesStatistics/AdvancedStatistics3';
+import AdvancedStatistics4 from '../Statistics/AdvancesStatistics/AdvancedStatistics4';
 import { Button } from '@mui/material';
 
 const Report = () => {
-    const steps = ["1", "2", "3"];
+    const steps = ["1", "2", "3", "4", "5", "6", "7"];
     const [currentStep, setCurrentStep] = useState(0);
     const [files, setFiles] = useState([]);
 
@@ -19,9 +24,19 @@ const Report = () => {
             case 0:
                 return <DropFiles files={files} addFiles={addFiles} />;
             case 1:
-                return <StatisticAnalysis/>;
+                return <DescStatistics1/>;
             case 2:
-                return <ReportSummary/>;
+                return <DescStatistics2/>;
+            case 3:
+                return <DescStatistics3/>;
+            case 4:
+                return <AdvancedStatistics1/>;
+            case 5:
+                return <AdvancedStatistics2/>;
+            case 6:
+                return <AdvancedStatistics3/>;
+            case 7:
+                return <AdvancedStatistics4/>;
             default:
                 return <p>Error: Paso desconocido</p>;
             }
@@ -35,6 +50,16 @@ const Report = () => {
                 return true;
             case 2:
                 return true;
+            case 3:
+                return true;
+            case 4:
+                return true;
+            case 5:
+                return true;
+            case 6:
+                return true;
+            case 7:
+                return false;
             default:
                 return false;
         }
