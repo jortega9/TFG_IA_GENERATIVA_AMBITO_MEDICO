@@ -3,16 +3,21 @@ import pandas as pd
 import configparser
 import os
 import json
+from docx import Document
 
+
+from ai.agents.agent import Agent
+from ai.phases.etl.prepare_data.prompts import EXTRACT_INFO_VARIABLES
+from ai.phases.etl.prepare_data.schemas import Master
 
 SETTINGS_PATH = "ai/config.ini"
 RAW_DATA = "BD_Test.xlsx"
 JSON_DATA = "variables_dataset_actualizado.json"
+DOC_DATA = "descripcion.docx"
 
 config = configparser.ConfigParser()
 
 config.read(SETTINGS_PATH)
-
 
 def read_excel(excel_path:str) -> pd.DataFrame :
     """_summary_
@@ -24,18 +29,23 @@ def read_excel(excel_path:str) -> pd.DataFrame :
     df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_")
     return df
 
-def read_master(json_path:str) -> dict:
-    """_summary_
+def read_master(file: str) -> str:
+    """Reads the content of a Word (.docx) file and returns it as a string.
 
     Args:
-        json_path (str): _description_
+        file (str): Path to the Word document.
 
     Returns:
-        dict: _description_
+        str: The extracted text from the document.
     """
-    with open(json_path, "r", encoding="utf-8") as json_file:
-        data = json.load(json_file)
     
+    doc = Document(file)
+    text = "\n".join([para.text for para in doc.paragraphs])
+    return text
+    
+
+            
+"""
     if isinstance(data, list) and len(data) > 0:
         data = data[0]
         
@@ -45,19 +55,14 @@ def read_master(json_path:str) -> dict:
                 k.strip().lower().replace(" ", "_"): 
                     lower_keys(v) for k, v in d.items()
             }
-            
     return lower_keys(data)
-    
-
+"""
 def main() :
-    print("Llegue")
-    excel = os.path.join(config["data_path"]["raw_path"], RAW_DATA)
-    json_path = os.path.join(config["data_path"]["raw_path"], JSON_DATA)
-    df = read_excel(excel_path=excel)
-    dic = read_master(json_path=json_path)
-    print(len(df.columns) == len(dic.keys()))
-    print(set(df.columns).symmetric_difference(set(dic.keys())))
+    doc_path = os.path.join(config["data_path"]["raw_path"], DOC_DATA)
+    text = read_master(file=doc_path)
+    agent = Agent()
+    response = agent.call_llm(prompt=EXTRACT_INFO_VARIABLES.format(text=text), response_format=Master)
+    print(response)
     
 if __name__ == "__main__":
-    print("llegue")
     main()

@@ -30,6 +30,6 @@ lerna-debug.log*
 **/__pycache__/
 *.pyc
 chroma_db/*
-!chroma_db/.gitkeep
 *.bin
 config.ini
+/data
