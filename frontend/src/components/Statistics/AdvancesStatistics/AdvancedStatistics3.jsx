@@ -43,7 +43,7 @@ const AdvancedStatistics3 = () => {
             }}>
                 <div style={{ padding: 3 }}>
                     <Typography variant="body1" sx={{ color: '#333', wordBreak: 'break-word' }}>
-                        <strong>Media y Desviación Típica siguiendo una Distribución Normal. (Variables Númericas)</strong>
+                        <strong>Análizar Curvas de Supervivencia Global y Supervivencia Cáncer Específica.</strong>
                     </Typography>
                 </div>
 

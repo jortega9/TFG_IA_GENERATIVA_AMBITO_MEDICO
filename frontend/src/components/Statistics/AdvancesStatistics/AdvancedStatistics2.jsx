@@ -43,7 +43,10 @@ const AdvancedStatistics2 = () => {
             }}>
                 <div style={{ padding: 3 }}>
                     <Typography variant="body1" sx={{ color: '#333', wordBreak: 'break-word' }}>
-                        <strong>Media y Desviación Típica siguiendo una Distribución Normal. (Variables Númericas)</strong>
+                        <strong> Determinar probabilidad recaida bioquímica en función del tiempo.</strong>
+                    </Typography>
+                    <Typography variant="body1" sx={{ color: '#333', wordBreak: 'break-word' }}>
+                        <strong> Mediante análisis Curvas de Supervivencia de Kaplan Meier.</strong>
                     </Typography>
                 </div>
 
