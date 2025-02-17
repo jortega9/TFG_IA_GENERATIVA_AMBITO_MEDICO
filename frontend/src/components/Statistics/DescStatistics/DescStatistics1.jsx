@@ -42,7 +42,7 @@ const DescStatistics1 = () => {
             }}>
                 <div style={{ padding: 3 }}>
                     <Typography variant="body1" sx={{ color: '#333', wordBreak: 'break-word' }}>
-                        <strong>Media y Desviación Típica siguiendo una Distribución Normal. (Variables Númericas)</strong>
+                        <strong>Determinar Media y Desviación Típica siguiendo una Distribución Normal. (Variables Númericas)</strong>
                     </Typography>
                 </div>
 

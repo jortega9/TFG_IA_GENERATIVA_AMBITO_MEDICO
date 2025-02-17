@@ -67,7 +67,11 @@ const Report = () => {
 
 
     const nextStep = () => {
-        if (isStepValid() && currentStep < steps.length - 1) setCurrentStep(currentStep + 1);
+        if (isStepValid() && currentStep < steps.length){
+            setCurrentStep(currentStep + 1);
+            console.log(currentStep);
+        } 
+
     };
 
     const prevStep = () => {

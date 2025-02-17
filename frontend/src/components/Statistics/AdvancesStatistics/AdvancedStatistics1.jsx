@@ -43,7 +43,10 @@ const AdvancedStatistics1 = () => {
             }}>
                 <div style={{ padding: 3 }}>
                     <Typography variant="body1" sx={{ color: '#333', wordBreak: 'break-word' }}>
-                        <strong>Media y Desviación Típica siguiendo una Distribución Normal. (Variables Númericas)</strong>
+                        <strong> Determinar correlación entre resultados inmunohistoquímicos y resto de variables. </strong>
+                    </Typography>
+                    <Typography variant="body1" sx={{ color: '#333', wordBreak: 'break-word' }}>
+                        <strong> Mediante t student, Test chi cuadrado de Pearson y Test exacto de Fisher </strong>
                     </Typography>
                 </div>
 
