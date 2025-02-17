@@ -1,14 +1,31 @@
 import React from 'react';
 import '../styles/ChatWelcome.css'; // Asegúrate de crear y ajustar este archivo CSS
 import ThemeToggle from './ThemeToggle';
+import { Box, Button, Typography } from '@mui/material';
 
 const ChatWelcome = () => {
   return (
-    <div className="chat-placeholder">
-      <div className="chat-placeholder-header">
-        <h2 className="chat-placeholder-title">Bienvenido a Urolobot</h2>
-        <ThemeToggle />
-      </div>
+      <Box sx={{
+        backgroundColor: 'white',
+        borderRadius: 2,
+        padding: 2,
+        boxShadow: 1,
+        width: '100%',
+        height: "64vh",
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden'
+    }}>
+      <Box sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',               
+      }}>
+          <Typography sx={{ color: '#4D7AFF', fontSize: '1.5rem' }}>
+              <strong>Bienvenido a Urolobot</strong>
+          </Typography>
+          <ThemeToggle />
+        </Box> 
       <div className="chat-placeholder-content">
         <p className="chat-placeholder-text">
           Bienvenido a su panel de pacientes. Seleccione un chat para comenzar a revisar o inicie una nueva consulta con un paciente.
@@ -22,8 +39,7 @@ const ChatWelcome = () => {
           La información proporcionada es confidencial y se debe tratar con el más alto nivel de profesionalismo médico.
         </p>
       </div>
-
-    </div>
+    </Box>
   );
 };
 
