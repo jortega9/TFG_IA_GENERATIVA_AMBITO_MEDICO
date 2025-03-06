@@ -3,17 +3,21 @@ import pandas as pd
 import configparser
 import os
 import json
+import sys
 from docx import Document
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../..")))
 
 from ai.agents.agent import Agent
 from ai.phases.etl.prepare_data.prompts import EXTRACT_INFO_VARIABLES
 from ai.phases.etl.prepare_data.schemas import Master
+from ai.phases.etl.prepare_data.agent import PrepareDataAgent
 
 SETTINGS_PATH = "ai/config.ini"
 RAW_DATA = "BD_Test.xlsx"
 JSON_DATA = "variables_dataset_actualizado.json"
 DOC_DATA = "descripcion.docx"
+MASTER_PATH = "master.json"
 
 config = configparser.ConfigParser()
 
@@ -43,8 +47,58 @@ def read_master(file: str) -> str:
     text = "\n".join([para.text for para in doc.paragraphs])
     return text
     
+def process_master(master: str) -> None:
+    """Call llm and make an structured master.
 
-            
+    Args:
+        master (str): master path.
+    """
+    # Esto no estoy muy seguro de si esta correcto para la llamada a la API
+    master = os.path.join(config["data_path"]["raw_path"], DOC_DATA)
+    text = read_master(file=master)
+    
+    agent = Agent()
+    response = agent.call_llm(model="gpt-4o", prompt=EXTRACT_INFO_VARIABLES.format(text=text), response_format=Master)
+    
+    json_path=os.path.join(config["data_path"]["processed_path"], MASTER_PATH)
+    with open(json_path, "w", encoding="utf-8") as f:
+        json.dump(response.model_dump(), f, ensure_ascii=False, indent=4)
+
+    print(f"Master loaded in: {json_path}")
+    
+    
+def process_excel(excel: str) -> None:
+    """ Clean the dataset
+    
+    Args:
+        excel (str): excel or csv path.
+    """ 
+    # No se si hay que hacer lo del config ini
+    df = read_excel(excel)
+    
+
+def controller(master_path: str, excel_path: str) -> None:
+    """Prepare Data API Controller.
+
+    Args:
+        master_path (str)
+        excel_path (str)
+    """
+    process_master(master=master_path)
+    
+    process_excel(excel=excel_path)
+    
+    
+#########################################################################################
+#                                   DELETE ME                                           #
+#########################################################################################   
+def main() :
+    agent = PrepareDataAgent()
+    agent.execute()
+    
+if __name__ == "__main__":
+    main()
+    
 """
     if isinstance(data, list) and len(data) > 0:
         data = data[0]
@@ -57,12 +111,3 @@ def read_master(file: str) -> str:
             }
     return lower_keys(data)
 """
-def main() :
-    doc_path = os.path.join(config["data_path"]["raw_path"], DOC_DATA)
-    text = read_master(file=doc_path)
-    agent = Agent()
-    response = agent.call_llm(prompt=EXTRACT_INFO_VARIABLES.format(text=text), response_format=Master)
-    print(response)
-    
-if __name__ == "__main__":
-    main()

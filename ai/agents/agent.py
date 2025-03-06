@@ -1,3 +1,8 @@
+"""TODO:
+
+Returns:
+    _type_: _description_
+"""
 import os
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -10,7 +15,7 @@ class Agent:
         self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
     def call_llm(
-        self, prompt, response_format=None, model="gpt-4o-mini", temperature=0
+        self, prompt, response_format=None, model="gpt-4o-mini", temperature=0.3
     ):
         """Internal method to call the LLM with a given prompt."""
         messages = [{"role": "system", "content": prompt}]
@@ -35,6 +40,17 @@ class Agent:
             if response_format
             else response.choices[0].message.content
         )
+        
+    def call_llm(
+        self, messages, model="gpt-4o-mini", temperature=0.3
+    ):
+        """Internal method to call the LLM with a given prompt."""
+        response = self.client.chat.completions.create(
+            model=model,
+            messages=messages,
+            temperature=temperature,
+        )
+        return ( response.choices[0].message.content )
 
     def get_text_embedding(self, text, model="text-embedding-3-small", dim=768):
         """Get embeddings for a given text"""

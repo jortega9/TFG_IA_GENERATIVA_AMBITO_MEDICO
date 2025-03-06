@@ -1,5 +1,6 @@
 """Schemas for the AI Module."""
 from pydantic import BaseModel
 
-class XLSXRequest(BaseModel):
-    file_path: str
+class PrepareDataRequest(BaseModel):
+    master_path: str
+    excel_path: str
