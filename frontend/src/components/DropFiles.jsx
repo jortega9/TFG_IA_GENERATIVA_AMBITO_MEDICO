@@ -12,75 +12,70 @@ const DropFiles = ({ files, addFiles }) => {
         return lastDotIndex !== -1 ? fileName.substring(0, lastDotIndex) : fileName;
     };
 
-    const convertTextToDictionary = (value) => {
-        const lines = value.split("\n").map(line => line.trim()).filter(line => line.length > 0);
-    
-        const data = { sections: [] };
-        let currentSection = null;
-    
-        lines.forEach(line => {
-            if (line.startsWith("# ")) {  // Nueva sección
-                currentSection = { title: line.substring(2), variables: [] };
-                data.sections.push(currentSection);
-            } else if (line.startsWith("/ ")) {  // Nueva variable
-                if (currentSection) {
-                    currentSection.variables.push({ name: line.substring(2), description: [] });
-                }
-            } else if (line.startsWith("? ")) {  // Descripción de variable
-                if (currentSection && currentSection.variables.length > 0) {
-                    currentSection.variables[currentSection.variables.length - 1].description.push(line.substring(2));
-                }
-            }
-        });
-    
-        return data;  // Retorna el diccionario directamente
-    };
-
-    const handleFileUpload = (event) => {
+    const handleFileUpload = async (event) => {
         const uploadedFiles = event.target.files;
         if (!uploadedFiles || uploadedFiles.length === 0) return;
     
         const newFiles = Array.from(uploadedFiles);
         addFiles(newFiles);
     
+        const formData = new FormData();
         newFiles.forEach((file) => {
-            if (file.name.endsWith('.xlsx')) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, { type: "array" });
-                    const firstSheet = workbook.SheetNames[0];
-                    const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
-    
-                    console.log("Contenido del archivo XLSX:", sheetData);
-                    setFileData(sheetData);
-                };
-                reader.readAsArrayBuffer(file);
-            } 
-            else if (file.name.endsWith('.docx')) {
-                console.log("Archivo Word:", file);
-            
-                const reader = new FileReader();
-                reader.onload = async (e) => {
-                    try {
-                        const arrayBuffer = e.target.result;
-                        const result = await mammoth.extractRawText({ arrayBuffer });
-                        
-                        const jsonValue = convertTextToDictionary(result.value);
-                        console.log("JSON generado:", jsonValue);
-                        setFileData(jsonValue);
-            
-                    } catch (error) {
-                        console.error("Error al leer el archivo .docx:", error);
-                    }
-                };
-                reader.readAsArrayBuffer(file);
-            }
+            formData.append('files', file);
         });
+    
+        console.log('Archivos subidos:', newFiles);
+    
+        const response = await fetch('http://127.0.0.1:8000/ai/copyDocs', {
+            method: 'POST',
+            body: formData
+        });
+    
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
+        }
+    
+        const result = await response.json();
+        console.log("Respuesta del servidor:", result);
+    };
+
+    const handlePrepareData = async () => {
+        if (files.length < 2) return;
+    
+        const excelFile = files.find(file => file.name.endsWith('.xlsx'));
+        const masterFile = files.find(file => file.name.endsWith('.docx'));
+    
+        if (!excelFile || !masterFile) {
+            console.error("Archivos necesarios no encontrados.");
+            return;
+        }
+        
+        const requestData = {
+            master_path: "/data/raw/" + masterFile.name,
+            excel_path: "/data/raw/" + excelFile.name
+        };
+    
+        try {
+            const response = await fetch('http://127.0.0.1:8000/ai/prepare-data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestData)
+            });
+    
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+    
+            const result = await response.json();
+            console.log("Respuesta del servidor:", result);
+        } catch (error) {
+            console.error("Error al realizar la petición:", error);
+        }
     };
     
     
-
     return (
         <Box sx={{
             backgroundColor: 'white',
@@ -143,19 +138,29 @@ const DropFiles = ({ files, addFiles }) => {
                     </>
                 )}
 
-                <Button
-                    variant="contained"
-                    component="label"
-                    sx={{ backgroundColor: '#4D7AFF', fontSize: '1.1rem', marginTop: 6, alignSelf: 'center' }}
-                >
-                    Buscar Archivos
-                    <input
-                        type="file"
-                        hidden
-                        multiple
-                        onChange={handleFileUpload}
-                    />
-                </Button>
+                {files.length < 2 ? (
+                    <Button
+                        variant="contained"
+                        component="label"
+                        sx={{ backgroundColor: '#4D7AFF', fontSize: '1.1rem', marginTop: 6, alignSelf: 'center' }}
+                    >
+                        Buscar Archivos
+                        <input
+                            type="file"
+                            hidden
+                            multiple
+                            onChange={handleFileUpload}
+                        />
+                    </Button>
+                ) : (
+                    <Button
+                        variant="contained"
+                        sx={{ backgroundColor: '#4D7AFF', fontSize: '1.1rem', marginTop: 6, alignSelf: 'center' }}
+                        onClick={handlePrepareData}
+                    >
+                        Preparar Datos
+                    </Button>
+                )}
             </Box>
         </Box>
     );
