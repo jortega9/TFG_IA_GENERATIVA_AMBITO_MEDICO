@@ -41,16 +41,16 @@ class Agent:
             else response.choices[0].message.content
         )
         
-    def call_llm(
-        self, messages, model="gpt-4o-mini", temperature=0.3
-    ):
-        """Internal method to call the LLM with a given prompt."""
-        response = self.client.chat.completions.create(
-            model=model,
-            messages=messages,
-            temperature=temperature,
-        )
-        return ( response.choices[0].message.content )
+    # def call_llm(
+    #     self, messages, model="gpt-4o-mini", temperature=0.3
+    # ):
+    #     """Internal method to call the LLM with a given prompt."""
+    #     response = self.client.chat.completions.create(
+    #         model=model,
+    #         messages=messages,
+    #         temperature=temperature,
+    #     )
+    #     return ( response.choices[0].message.content )
 
     def get_text_embedding(self, text, model="text-embedding-3-small", dim=768):
         """Get embeddings for a given text"""

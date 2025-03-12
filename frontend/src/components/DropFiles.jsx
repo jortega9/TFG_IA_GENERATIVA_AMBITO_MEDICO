@@ -5,7 +5,7 @@ import * as XLSX from 'xlsx';
 import mammoth from 'mammoth';
 
 const DropFiles = ({ files, addFiles }) => {
-    const [fileData, setFileData] = useState(null);
+    const [fileData, setFileData] = useState([]);
 
     const getFileNameWithoutExtension = (fileName) => {
         const lastDotIndex = fileName.lastIndexOf('.');
@@ -36,14 +36,14 @@ const DropFiles = ({ files, addFiles }) => {
         }
     
         const result = await response.json();
+        setFileData(result.paths)
+        // console.log("paths:", result.paths);
         console.log("Respuesta del servidor:", result);
     };
 
     const handlePrepareData = async () => {
-        if (files.length < 2) return;
-    
-        const excelFile = files.find(file => file.name.endsWith('.xlsx'));
-        const masterFile = files.find(file => file.name.endsWith('.docx'));
+        const excelFile = fileData.find((file) => file.includes('.xlsx'));
+        const masterFile = fileData.find((file) => file.includes('.docx'));
     
         if (!excelFile || !masterFile) {
             console.error("Archivos necesarios no encontrados.");
@@ -51,9 +51,11 @@ const DropFiles = ({ files, addFiles }) => {
         }
         
         const requestData = {
-            master_path: "/data/raw/" + masterFile.name,
-            excel_path: "/data/raw/" + excelFile.name
+            master_path: masterFile,
+            excel_path: excelFile
         };
+
+        console.log("Request Data:", requestData);
     
         try {
             const response = await fetch('http://127.0.0.1:8000/ai/prepare-data', {

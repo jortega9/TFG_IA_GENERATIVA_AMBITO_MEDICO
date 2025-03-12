@@ -6,7 +6,7 @@ from ..vector_db.chroma_controller import collection
 print("\n📌 Datos almacenados en ChromaDB:")
 print(collection.peek())  # Muestra algunos datos en la base de datos
 
-csv_path = "./ai/data/raw/BD_Test.xlsx"
+csv_path = "./ai/data/raw/BD.xlsx"
 
 print("\n🔹 Loading data in ChromaDB...")
 response = load_csv_to_chroma(csv_path)

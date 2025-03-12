@@ -12,7 +12,7 @@ import numpy as np
 from ai.agents.agent import Agent
 from ai.phases.etl.prepare_data.prompts import AGENT_WORKFLOW
 
-SETTINGS_PATH = "ai/config.ini"
+SETTINGS_PATH = "/home/joort/TFG/TFG_IA_GENERATIVA_AMBITO_MEDICO/ai/config.ini"
 
 config = configparser.ConfigParser()
 
