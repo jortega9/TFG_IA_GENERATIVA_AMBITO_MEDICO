@@ -13,8 +13,8 @@ from ai.phases.etl.prepare_data.prompts import EXTRACT_INFO_VARIABLES
 from ai.phases.etl.prepare_data.schemas import Master
 from ai.phases.etl.prepare_data.agent import PrepareDataAgent
 
-SETTINGS_PATH = "ai/config.ini"
-RAW_DATA = "BD_Test.xlsx"
+SETTINGS_PATH = "/home/joort/TFG/TFG_IA_GENERATIVA_AMBITO_MEDICO/ai/config.ini"
+RAW_DATA = "BD.xlsx"
 JSON_DATA = "variables_dataset_actualizado.json"
 DOC_DATA = "descripcion.docx"
 MASTER_PATH = "master.json"
@@ -22,7 +22,6 @@ MASTER_PATH = "master.json"
 config = configparser.ConfigParser()
 
 config.read(SETTINGS_PATH)
-
 def read_excel(excel_path:str) -> pd.DataFrame :
     """_summary_
 
