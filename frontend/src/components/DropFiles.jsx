@@ -6,6 +6,7 @@ import mammoth from 'mammoth';
 
 const DropFiles = ({ files, addFiles }) => {
     const [fileData, setFileData] = useState([]);
+    const [text, setText] = useState("");
 
     const getFileNameWithoutExtension = (fileName) => {
         const lastDotIndex = fileName.lastIndexOf('.');
@@ -69,7 +70,7 @@ const DropFiles = ({ files, addFiles }) => {
             if (!response.ok) {
                 throw new Error(`Error HTTP: ${response.status}`);
             }
-    
+            
             const result = await response.json();
             console.log("Respuesta del servidor:", result);
         } catch (error) {
