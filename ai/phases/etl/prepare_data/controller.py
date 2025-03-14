@@ -83,9 +83,22 @@ def controller(master_path: str, excel_path: str) -> None:
         master_path (str)
         excel_path (str)
     """
-    process_master(master=master_path)
     
+    process_master(master=master_path)
     process_excel(excel=excel_path)
+
+
+def execute(max_turns: int) -> list:
+    """Execute the agent workflow.
+
+    Args:
+        max_turns (int): Maximum number of turns.
+
+    Returns:
+        list: List of results.
+    """
+    agent = PrepareDataAgent()
+    return agent.execute(max_turns=max_turns)
     
     
 #########################################################################################

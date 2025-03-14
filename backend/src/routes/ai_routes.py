@@ -19,6 +19,11 @@ async def prepare_data(request: PrepareDataRequest):
     print(request)
     return {"message": "Datos preparados exitosamente"}
 
+@router.post('/executeData')
+async def execute_data():
+    result = prepare_data_controller.execute(max_turns=100)
+    return {"result": result}
+
 @router.post('/copyDocs')
 async def copy_docs(files: list[UploadFile] = File(...)):
     raw_data_path = os.path.join(os.path.dirname(__file__), '../../../data/raw')

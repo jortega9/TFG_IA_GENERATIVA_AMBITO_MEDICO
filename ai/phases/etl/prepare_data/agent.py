@@ -60,18 +60,21 @@ class PrepareDataAgent(Agent) :
         return result
     
 
-    def execute(self, max_turns=100) :
+    def execute(self, max_turns=100) -> list:
         i = 0
         next_prompt = AGENT_WORKFLOW.format()
+        all_results = []
         while i < max_turns:
             i += 1
             result = self.call(message=next_prompt)
-            print(result)
+            all_results.append(result)
+            print("result: " + result)
             actions = [
                 self.action_re.match(a)
                 for a in result.split('\n')
                 if self.action_re.match(a)
             ]
+            print("actions: ", actions)
             if actions:
                 action, action_input = actions[0].groups()
                 if action not in self.known_actions:
@@ -86,7 +89,8 @@ class PrepareDataAgent(Agent) :
                 print("Observacion:\n", observation)
                 next_prompt = "Observacion: {}".format(observation)
             else:
-                return   
+                break
+        return all_results
 
     def read_excel(self):
         """Carga el archivo Excel en un DataFrame."""
