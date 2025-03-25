@@ -15,26 +15,38 @@ const ProcessData = () => {
         let currentKeyword = null;
         let currentContent = "";
     
-        const lines = input.split('\n').map(line => line.trim());
-        lines.forEach(line => {
-            const keyword = keywords.find(kw => line.startsWith(kw));
+        // Crear una expresión regular que detecte las palabras clave
+        const regex = new RegExp(`(${keywords.join('|')})`, 'g');
+    
+        // Dividir el texto por las palabras clave, manteniendo las palabras clave en el resultado
+        const parts = input.split(regex).filter(Boolean);
+    
+        parts.forEach(part => {
+            const keyword = keywords.find(kw => part.startsWith(kw));
             if (keyword) {
                 if (currentKeyword) {
-                    result.push({ tipo: currentKeyword, contenido: currentContent.trim() });
+                    result.push({
+                        tipo: currentKeyword,
+                        contenido: currentContent.trim()
+                    });
                 }
                 currentKeyword = keyword.replace(':', '');
-                currentContent = line.replace(keyword, '').trim();
+                currentContent = part.replace(keyword, '').trim();
             } else if (currentKeyword) {
-                currentContent += ' ' + line.trim();
+                currentContent += ' ' + part.trim();
             }
         });
     
         if (currentKeyword) {
-            result.push({ tipo: currentKeyword, contenido: currentContent.trim() });
+            result.push({
+                tipo: currentKeyword,
+                contenido: currentContent.trim()
+            });
         }
     
         return result;
     };
+    
 
     const getColor = (tipo) => {
         switch (tipo) {
