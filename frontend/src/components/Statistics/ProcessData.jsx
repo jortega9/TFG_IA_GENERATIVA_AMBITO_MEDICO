@@ -112,8 +112,8 @@ const ProcessData = () => {
                 justifyContent: 'space-between',
                 alignItems: 'center',
             }}>
-                <Typography sx={{ color: '#4D7AFF', fontSize: '1.5rem' }}>
-                    <strong>Generador de Informes</strong>
+                <Typography sx={{ color: '#4D7AFF', fontSize: '1rem' }}>
+                    <strong> PROCESANDO DATOS DE BBDD Y MAESTRO. </strong>
                 </Typography>
                 <ThemeToggle />
             </Box>
