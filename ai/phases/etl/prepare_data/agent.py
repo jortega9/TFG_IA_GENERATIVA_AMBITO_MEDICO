@@ -9,10 +9,14 @@ import re
 import pandas as pd
 import numpy as np
 
+from dotenv import load_dotenv
+
 from ai.agents.agent import Agent
 from ai.phases.etl.prepare_data.prompts import AGENT_WORKFLOW
 
-SETTINGS_PATH = "/home/joort/TFG/TFG_IA_GENERATIVA_AMBITO_MEDICO/ai/config.ini"
+load_dotenv()
+
+SETTINGS_PATH = os.getenv("SETTINGS_PATH")
 
 config = configparser.ConfigParser()
 
@@ -23,7 +27,7 @@ MASTER_PATH=os.path.join(config["data_path"]["processed_path"], "master.json")
 OUTPUT_PATH=os.path.join(config["data_path"]["processed_path"], "dataset.json")
 
 class PrepareDataAgent(Agent) :
-    """_summary_
+    """ Class that prepare the data for the nexts steps
     """
     
     def __init__(self, system=""):
@@ -50,6 +54,7 @@ class PrepareDataAgent(Agent) :
             "drop_corrupt_records": self.drop_corrupt_records,
             "drop_corrupt_columns": self.drop_corrupt_columns,
             "drop_duplicates": self.drop_duplicates,
+            "save_files_in_processed_data": self.save_files_in_processed_data,
         }
         
     
@@ -60,41 +65,45 @@ class PrepareDataAgent(Agent) :
         return result
     
 
-    def execute(self, max_turns=100) -> list:
-        i = 0
-        next_prompt = AGENT_WORKFLOW.format()
-        all_results = []
-        while i < max_turns:
-            i += 1
-            result = self.call(message=next_prompt)
-            all_results.append(result)
-            print("result: " + result)
-            actions = [
-                self.action_re.match(a)
-                for a in result.split('\n')
-                if self.action_re.match(a)
-            ]
-            print("actions: ", actions)
-            if actions:
-                action, action_input = actions[0].groups()
-                if action not in self.known_actions:
-                    raise Exception("Unknown action: {}: {}".format(action, action_input))
-                print("-- running {} {}".format(action, action_input))
-                input("texto")
-                print(action_input)
-                if action_input and len(action_input.strip()) > 1:
-                    observation = self.known_actions[action](action_input)
-                else:
-                    observation = self.known_actions[action]()
-                print("Observacion:\n", observation)
-                next_prompt = "Observacion: {}".format(observation)
-            else:
-                break
-        return all_results
+    def execute(self, max_turns=100) :
+         i = 0
+         next_prompt = AGENT_WORKFLOW.format()
+         while i < max_turns:
+             i += 1
+             result = self.call(message=next_prompt)
+             print(result)
+             actions = [
+                 self.action_re.match(a)
+                 for a in result.split('\n')
+                 if self.action_re.match(a)
+             ]
+             if actions:
+                 action, action_input = actions[0].groups()
+                 if action not in self.known_actions:
+                     raise Exception("Unknown action: {}: {}".format(action, action_input))
+                 print("-- running {} {}".format(action, action_input))
+                 input("texto")
+                 print(action_input)
+                 if action_input and len(action_input.strip()) > 1:
+                     observation = self.known_actions[action](action_input)
+                 else:
+                     observation = self.known_actions[action]()
+                 print("Observacion:\n", observation)
+                 next_prompt = "Observacion: {}".format(observation)
+             else:
+                 return   
+    
+    def standardize_name(self, name: str) -> str:
+        """Estandariza un nombre: minúsculas, reemplaza espacios por guiones bajos y elimina caracteres no alfanuméricos."""
+        name = name.lower()
+        name = re.sub(r"[^\w\s]", "", name)  
+        name = re.sub(r"\s+", "_", name.strip())
+        return name
 
     def read_excel(self):
         """Carga el archivo Excel en un DataFrame."""
         self.df = pd.read_excel(EXCEL_PATH, header=1, sheet_name=0, dtype=str)
+        self.df.columns = [self.standardize_name(col) for col in self.df.columns]
         return "El Excel se ha cargado en un DataFrame."
 
     def open_master(self):
@@ -103,7 +112,7 @@ class PrepareDataAgent(Agent) :
             master_data = json.load(f)
 
         self.master = {
-            entry["column_name"]: entry["column_info"]
+            self.standardize_name(entry["column_name"]): entry["column_info"]
             for entry in master_data.get("column", []) 
         }
 
@@ -179,3 +188,12 @@ class PrepareDataAgent(Agent) :
         return f"Se han eliminado {removed_rows} registros duplicados."
     
 
+    def save_files_in_processed_data(self) -> str:
+        """Guarda los archivos modificados en la carpeta data processed"""
+        self.df.to_csv(OUTPUT_PATH, index=False)
+        
+        with open(MASTER_PATH, "w") as file:
+            json.dump(self.master, file, indent=4)
+            
+        return "Se han guardado exitosamente los archivos."
+        
