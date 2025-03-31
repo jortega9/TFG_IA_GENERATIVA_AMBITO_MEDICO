@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Button, Typography, Tooltip } from '@mui/material';
+
+import ThemeToggle from './ThemeToggle';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import * as XLSX from 'xlsx';
 import mammoth from 'mammoth';
@@ -90,9 +92,12 @@ const DropFiles = ({ files, addFiles }) => {
             display: 'flex',
             flexDirection: 'column'
         }}>
-            <Typography sx={{ color: '#4D7AFF', fontSize: '1.5rem' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography sx={{ color: '#4D7AFF', fontSize: '1.5rem' }}>
                 <strong>Generador de Informes</strong>
-            </Typography>
+                </Typography>
+                <ThemeToggle />
+            </Box>
 
             <Box sx={{
                 border: '2px dashed gray',

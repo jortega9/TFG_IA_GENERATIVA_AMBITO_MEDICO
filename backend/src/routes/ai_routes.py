@@ -7,6 +7,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../../..'))
 from backend.src.schemas.ai import PrepareDataRequest
 import backend.src.controllers.ai_controller as controller
 import ai.phases.etl.prepare_data.controller as prepare_data_controller
+import ai.phases.test.med_desv_tipica.controller as test_controller
 
 router = APIRouter()
 
@@ -22,6 +23,16 @@ async def prepare_data(request: PrepareDataRequest):
 @router.post('/executeData')
 async def execute_data():
     result = prepare_data_controller.execute(max_turns=100)
+    return {"result": result}
+
+@router.post('/test')
+async def calc_media_desv_normal() :
+    """
+    Media y Desviación Típica siguiendo una Distribución Normal
+
+    """
+
+    result = test_controller.execute(max_turns=100)
     return {"result": result}
 
 @router.post('/copyDocs')
