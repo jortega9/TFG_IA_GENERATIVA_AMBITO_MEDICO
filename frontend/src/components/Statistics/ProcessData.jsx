@@ -112,6 +112,7 @@ const ProcessData = () => {
                 justifyContent: 'space-between',
                 alignItems: 'center',
             }}>
+
                 <Typography sx={{ color: '#4D7AFF', fontSize: '1rem' }}>
                     <strong> PROCESANDO DATOS DE BBDD Y MAESTRO. </strong>
                 </Typography>

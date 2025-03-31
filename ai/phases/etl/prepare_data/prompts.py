@@ -72,56 +72,47 @@ Las acciones disponibles son:
 IMPORTANTE! NO DEBES HACER NINGUNA ACCION QUE NO SE ESPECIFIQUE AQUI, SOLO HAZ ACCIONES
 QUE CONSIDERES OPORTUNAS DENTRO DE ESTE LISTADO.
 
-read_excel:
-Ejemplo: read_excel:
+Ejecuta: read_excel: 
 Carga un archivo de Excel en un DataFrame de Pandas, leyendo solo la primera hoja y asumiendo que los encabezados están en la segunda fila, y lo almacena.
 
-open_master:
-Ejemplo: open_master:
+Ejecuta: open_master: 
 Carga un archivo JSON que contiene las descripciones de las variables y lo almacena.
 
-sample_df:
-Ejemplo: sample_df:
+Ejecuta: sample_df: 
 Devuelve un sample aleatorio de 10 registros del DataFrame, para observarlo.
 
-info_df:
-Ejemplo: info_df:
+Ejecuta: info_df: 
 Devuelve información general del DataFrame usando df.info().
 
-view_column_description:
-Ejemplo: view_column_description: <columna>(str)
+Ejecuta: view_column_description: <columna>(str) 
 Devuelve el significado de una columna concreta usando el maestro
 
-drop_column:
-Ejemplo: drop_column: <columna>(str)
+Ejecuta: drop_column: <columna>(str) 
 Elimina una columna específica si el usuario la considera irrelevante.
-Ejemplo 2: drop_column: Edad paciente 
+Ejemplo: Ejecuta: drop_column: Edad paciente
 
-ask_question:
-Ejemplo: ask_question: <pregunta>(str)
-Si tras acceder al maestro y al dataframe no te queda claro algo, usa esta funcion 
+Ejecuta: ask_question: <pregunta>(str)
+Si tras acceder al maestro y al dataframe no te queda claro algo, usa esta función 
 para preguntar al usuario cualquier duda sobre el maestro o el dataset para modificarlos.
 
-add_to_master:
-Ejemplo: add_to_master: <columna>(str), <Descripción de la variable>(str)
-Añade una nueva variable al maestro con la descripción proporcionada por el usuario y los valores si la variable es categorica
+Ejecuta: add_to_master: <columna>(str), <Descripción de la variable>(str)
+Añade una nueva variable al maestro con la descripción proporcionada por el usuario y los valores si la variable es categórica.
 
-update_master_description:
-Ejemplo: update_master_description: <columna>(str), <Nueva descripción>(str)
+Ejecuta: update_master_description: <columna>(str), <Nueva descripción>(str)
 Actualiza la descripción de una variable en el maestro para hacerla más clara. Cuando
-despues de leer esa descripcion sea demasiado concisa o poco clara.
+después de leer esa descripción sea demasiado concisa o poco clara.
 
-drop_corrupt_records:
-Ejemplo: drop_corrupt_records
+Ejecuta: drop_corrupt_records: 
 Identifica y elimina registros corruptos o con errores graves en los datos.
 
-drop_corrupt_columns:
-Ejemplo: drop_corrupt_columns
+Ejecuta: drop_corrupt_columns: 
 Identifica y elimina columnas corruptas o con información inconsistente.
 
-drop_duplicates:
-Ejemplo: drop_duplicates
+Ejecuta: drop_duplicates: 
 Identifica y elimina filas duplicadas en el dataset.
+
+Ejecuta: save_files_in_processed_data:
+Una vez hayas identificado que el dataset y el maestro esten preparados para poder hacerle un analisis estadistico guarda el maestro y df
 
 </acciones>
 
@@ -178,7 +169,7 @@ add_to_master, update_master_description, ask_question
 
 <respuesta>
 Una vez ya tengas todo claro y SEPAS que tanto el maestro como el dataset son correctos y están preparados para
-futuros analisis, esto es lo que debes devolver:
+futuros analisis **Y ESTEN GUARDADOS EN UN ARCHIVO**, esto es lo que debes devolver:
 
 Respuesta: El DataFrame está limpio y listo para su uso.
 </respuesta>

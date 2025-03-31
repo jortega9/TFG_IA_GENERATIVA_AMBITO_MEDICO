@@ -1,0 +1,4 @@
+[data_path]
+raw_path = .../TFG/data/raw
+processed_path = .../TFG/data/processed
+
