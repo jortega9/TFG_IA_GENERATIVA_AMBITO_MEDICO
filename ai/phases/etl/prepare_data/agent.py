@@ -24,7 +24,7 @@ config.read(SETTINGS_PATH)
 
 EXCEL_PATH=os.path.join(config["data_path"]["raw_path"], "BD.xlsx")
 MASTER_PATH=os.path.join(config["data_path"]["processed_path"], "master.json")
-OUTPUT_PATH=os.path.join(config["data_path"]["processed_path"], "dataset.json")
+OUTPUT_PATH=os.path.join(config["data_path"]["processed_path"], "dataset.csv")
 
 class PrepareDataAgent(Agent) :
     """ Class that prepare the data for the nexts steps
