@@ -25,21 +25,21 @@ const Report = () => {
             case 0:
                 return <DropFiles files={files} addFiles={addFiles} />;
             case 1:
-                return <ProcessData/>;
+                return <ProcessData />;
             case 2:
-                return <DescStatistics1/>;
+                return <DescStatistics1 />;
             case 3:
-                return <DescStatistics2/>;
+                return <DescStatistics2 />;
             case 4:
-                return <DescStatistics3/>;
+                return <DescStatistics3 />;
             case 5:
-                return <AdvancedStatistics1/>;
+                return <AdvancedStatistics1 />;
             case 6:
-                return <AdvancedStatistics2/>;
+                return <AdvancedStatistics2 />;
             case 7:
-                return <AdvancedStatistics3/>;
+                return <AdvancedStatistics3 />;
             case 8:
-                return <AdvancedStatistics4/>;
+                return <AdvancedStatistics4 />;
             default:
                 return <p>Error: Paso desconocido</p>;
             }

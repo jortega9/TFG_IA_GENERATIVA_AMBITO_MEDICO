@@ -10,7 +10,7 @@ import pandas as pd
 import numpy as np
 
 from ai.agents.agent import Agent
-from ai.phases.test.med_desv_tipica.prompts import CALC_MEDIA, CALC_DESV
+from ai.phases.test.desc1.prompts import CALC_MEDIA, CALC_DESV
 
 
 SETTINGS_PATH = "/home/joort/TFG/TFG_IA_GENERATIVA_AMBITO_MEDICO/ai/config.ini"
@@ -23,7 +23,7 @@ EXCEL_PATH=os.path.join(config["data_path"]["processed_path"], "BD.xlsx")
 MASTER_PATH=os.path.join(config["data_path"]["processed_path"], "master.json")
 OUTPUT_PATH=os.path.join(config["data_path"]["processed_path"], "dataset.json")
 
-class TestAgent(Agent) :
+class TestAgentDesc1(Agent) :
     """_summary_
     """
     
@@ -50,18 +50,31 @@ class TestAgent(Agent) :
         """
 
         ejemplo_input = """
-            Pensamiento: Antes de realizar el análisis, es crucial verificar que los datos demográficos estén completos y sin valores atípicos significativos.
-            Ejecuta: Realiza un análisis exploratorio inicial de las variables demográficas edad, ingresos y tamaño del hogar, identificando valores faltantes y atípicos.
+            Pensamiento: Antes de iniciar el análisis, es fundamental cargar los datos clínicos desde el archivo correspondiente para poder trabajar con información válida.
+            Ejecuta: read_excel('datos_clinicos_urologia.xlsx')
 
-            Pensamiento: Ahora que los datos han sido limpiados y los valores atípicos identificados, procedemos a calcular las estadísticas descriptivas básicas.
-            Ejecuta: Calcula la media y la desviación típica para cada una de las variables demográficas: edad, ingresos y tamaño del hogar.
+            Pensamiento: Una vez cargados los datos, es necesario revisar su estructura general para entender qué columnas están disponibles y qué tipo de datos contiene cada una.
+            Ejecuta: info_df()
 
-            Pensamiento: La interpretación de estas estadísticas es fundamental para comprender las características poblacionales y tomar decisiones basadas en datos sólidos.
-            Ejecuta: Genera gráficos de distribución para edad, ingresos y tamaño del hogar, destacando la media y la desviación típica obtenidas anteriormente.
+            Pensamiento: Para garantizar la integridad del análisis, se deben eliminar registros corruptos o inconsistentes que puedan introducir ruido en los cálculos estadísticos.
+            Ejecuta: drop_corrupt_records()
 
-            Pensamiento: Finalmente, es recomendable comparar estas estadísticas con datos históricos para evaluar posibles cambios o tendencias a lo largo del tiempo.
-            Ejecuta: Compara las medias y desviaciones típicas actuales con las registradas en años anteriores y presenta un informe con las conclusiones obtenidas.
+            Pensamiento: También se deben eliminar duplicados que puedan alterar las medidas de tendencia central y dispersión.
+            Ejecuta: drop_duplicates()
+
+            Pensamiento: Una vez que los datos están limpios, se puede explorar una muestra representativa para identificar rápidamente las variables clínicas relevantes.
+            Ejecuta: sample_df()
+
+            Pensamiento: Para contextualizar el análisis, se revisarán las descripciones de columnas relacionadas con volumen prostático, PSA total y flujo urinario máximo.
+            Ejecuta: view_column_description(['volumen_prostatico', 'psa_total', 'flujo_urinario_max'])
+
+            Pensamiento: Considerando que estas variables tienden a seguir una distribución normal en la mayoría de los pacientes, es adecuado calcular la media y la desviación típica para cada una.
+            Ejecuta: ask_question('¿Cuál es la media y la desviación típica de volumen prostático, PSA total y flujo urinario máximo?')
+
+            Pensamiento: Por último, se guarda esta versión limpia y procesada del archivo para su uso en reportes posteriores o modelos estadísticos.
+            Ejecuta: save_files_in_processed_data('datos_clinicos_urologia_limpios.xlsx')
             """
+
 
         razonamiento_array = [line.strip() for line in ejemplo_input.strip().split("\n") if line.strip()]
         

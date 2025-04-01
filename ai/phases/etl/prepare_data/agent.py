@@ -66,32 +66,31 @@ class PrepareDataAgent(Agent) :
     
 
     def execute(self, max_turns=100) :
-         i = 0
-         next_prompt = AGENT_WORKFLOW.format()
-         while i < max_turns:
-             i += 1
-             result = self.call(message=next_prompt)
-             print(result)
-             actions = [
-                 self.action_re.match(a)
-                 for a in result.split('\n')
-                 if self.action_re.match(a)
-             ]
-             if actions:
-                 action, action_input = actions[0].groups()
-                 if action not in self.known_actions:
-                     raise Exception("Unknown action: {}: {}".format(action, action_input))
-                 print("-- running {} {}".format(action, action_input))
-                 input("texto")
-                 print(action_input)
-                 if action_input and len(action_input.strip()) > 1:
-                     observation = self.known_actions[action](action_input)
-                 else:
-                     observation = self.known_actions[action]()
-                 print("Observacion:\n", observation)
-                 next_prompt = "Observacion: {}".format(observation)
-             else:
-                 return   
+        i = 0
+        next_prompt = AGENT_WORKFLOW.format()
+        while i < max_turns:
+            i += 1
+            result = self.call(message=next_prompt)
+            print(result)
+            actions = [
+                self.action_re.match(a)
+                for a in result.split('\n')
+                if self.action_re.match(a)
+            ]
+            if actions:
+                action, action_input = actions[0].groups()
+                if action not in self.known_actions:
+                    raise Exception("Unknown action: {}: {}".format(action, action_input))
+                print("-- running {} {}".format(action, action_input))
+                print(action_input)
+                if action_input and len(action_input.strip()) > 1:
+                    observation = self.known_actions[action](action_input)
+                else:
+                    observation = self.known_actions[action]()
+                print("Observacion:\n", observation)
+                next_prompt = "Observacion: {}".format(observation)
+            else:
+                return   
     
     def standardize_name(self, name: str) -> str:
         """Estandariza un nombre: minúsculas, reemplaza espacios por guiones bajos y elimina caracteres no alfanuméricos."""
