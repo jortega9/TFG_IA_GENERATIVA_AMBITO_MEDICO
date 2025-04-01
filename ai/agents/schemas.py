@@ -5,6 +5,6 @@ ParameterValue = Union[str, int, float, bool, None]
 
 class AgentResponse(BaseModel):
     thought: str
-    action: Optional[str] = None
-    parameters: Optional[Dict[str, ParameterValue]] = {}
-    final: Optional[str] = None
+    action: Optional[str] 
+    parameters: Optional[Dict[str, object]] 
+    final: Optional[str] 
