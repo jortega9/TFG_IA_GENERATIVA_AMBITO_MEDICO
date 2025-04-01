@@ -1,4 +1,5 @@
 """TODO: Comment"""
+from dotenv import load_dotenv
 import pandas as pd
 import configparser
 import os
@@ -13,7 +14,9 @@ from ai.phases.etl.prepare_data.prompts import EXTRACT_INFO_VARIABLES
 from ai.phases.etl.prepare_data.schemas import Master
 from ai.phases.etl.prepare_data.agent import PrepareDataAgent
 
-SETTINGS_PATH = "/home/joort/TFG/TFG_IA_GENERATIVA_AMBITO_MEDICO/ai/config.ini"
+load_dotenv()
+
+SETTINGS_PATH = os.getenv("SETTINGS_PATH")
 RAW_DATA = "BD.xlsx"
 JSON_DATA = "variables_dataset_actualizado.json"
 DOC_DATA = "descripcion.docx"
@@ -59,10 +62,22 @@ def process_master(master: str) -> None:
     agent = Agent()
     response = agent.call_llm(model="gpt-4o", prompt=EXTRACT_INFO_VARIABLES.format(text=text), response_format=Master)
     
+    
+    if isinstance(response, str):
+        parsed_response = json.loads(response)
+    else:
+        parsed_response = response.model_dump() if hasattr(response, "model_dump") else response
+
+    # Transformar al nuevo formato
+    new_master = {
+        entry["column_name"]: entry["column_info"]
+        for entry in parsed_response["column"]
+    }
+
+    # Guardar archivo JSON
     json_path=os.path.join(config["data_path"]["processed_path"], MASTER_PATH)
     with open(json_path, "w", encoding="utf-8") as f:
-        json.dump(response.model_dump(), f, ensure_ascii=False, indent=4)
-
+        json.dump(new_master, f, ensure_ascii=False, indent=4)
     print(f"Master loaded in: {json_path}")
     
     
@@ -105,6 +120,7 @@ def execute(max_turns: int) -> list:
 #                                   DELETE ME                                           #
 #########################################################################################   
 def main() :
+    process_master(DOC_DATA)
     agent = PrepareDataAgent()
     agent.execute()
     

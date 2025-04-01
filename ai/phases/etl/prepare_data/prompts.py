@@ -1,5 +1,7 @@
 # STRING = """hola {text}"""
 # STRING.format(text=variable1, text2=variable2)
+import json
+from ai.phases.etl.prepare_data.tool_functions import FUNCTION_DEFINITIONS
 
 EXTRACT_INFO_VARIABLES = """ 
 <contexto>
@@ -173,4 +175,21 @@ futuros analisis **Y ESTEN GUARDADOS EN UN ARCHIVO**, esto es lo que debes devol
 
 Respuesta: El DataFrame está limpio y listo para su uso.
 </respuesta>
+"""
+
+
+# Nuevo prompt de workflow para el agente, adaptado para tool_calls
+AGENT_WORKFLOW1 = f"""
+{{
+  "context": "Tu tarea es preparar los datos para análisis. Tienes acceso al Excel y al diccionario maestro (JSON). Utiliza las siguientes acciones: read_excel, open_master, sample_df, info_df, view_column_description, drop_column, ask_question, add_to_master, update_master_description, drop_corrupt_records, drop_corrupt_columns, drop_duplicates, save_files_in_processed_data.",
+  "instructions": "En cada turno, analiza la observación recibida y decide la siguiente acción a ejecutar. Responde siempre en formato JSON válido con la siguiente estructura: {{\"thought\": \"explicación breve\", \"action\": \"nombre_de_la_accion\", \"parameters\": {{ ... }} }}. Si ya no hay más acciones y el dataset está listo, omite la clave 'action' y añade 'final' con tu respuesta final. No incluyas texto adicional fuera del JSON.",
+  "functions": {json.dumps(FUNCTION_DEFINITIONS)},
+  "example": {{
+    "thought": "Primero cargaré el Excel.",
+    "action": "read_excel",
+    "parameters": {{}}
+  }},
+  "phase": "Una vez ya tengas todo claro y **SEPAS** que tanto el maestro como el dataset son correctos y están preparados para
+futuros analisis **Y ESTEN GUARDADOS EN UN ARCHIVO**"
+}}
 """
