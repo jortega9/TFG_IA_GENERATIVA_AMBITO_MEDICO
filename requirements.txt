@@ -40,4 +40,6 @@ tiktoken
 python-docx
 scikit-learn
 stats
-langchain
+langchain 
+langchain-openai
+langgraph
