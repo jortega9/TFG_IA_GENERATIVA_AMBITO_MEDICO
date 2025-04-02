@@ -16,6 +16,8 @@ import ai.phases.test.adv3.controller as test_controller_adv3
 import ai.phases.test.adv4.controller as test_controller_adv4
 import ai.phases.test.executeData.controller as test_controller_executeData
 
+import time
+
 router = APIRouter()
 
 @router.post('/prepare-data')
@@ -32,6 +34,7 @@ async def execute_data():
     # result = prepare_data_controller.execute(max_turns=100)
 
     result = test_controller_executeData.execute(max_turns=100)
+    time.sleep(5)
     return {"result": result}
 
 @router.post('/testDescStatistics1')
@@ -42,6 +45,7 @@ async def calc_media_desv_normal() :
     """
 
     result = test_controller_desc1.execute(max_turns=100)
+    time.sleep(5)
     return {"result": result}
 
 @router.post('/testDescStatistics2')
@@ -52,6 +56,7 @@ async def calc_mediana_rangoI() :
     """
 
     result = test_controller_desc2.execute(max_turns=100)
+    time.sleep(5)
     return {"result": result}
 
 @router.post('/testDescStatistics3')
@@ -62,6 +67,7 @@ async def calc_porcentajes_frecuencias() :
     """
 
     result = test_controller_desc3.execute(max_turns=100)
+    time.sleep(5)
     return {"result": result}
 
 @router.post('/testAdvStatistics1')
@@ -74,6 +80,7 @@ async def calc_correlacion_resultados() :
     """
 
     result = test_controller_adv1.execute(max_turns=100)
+    time.sleep(5)
     return {"result": result}
 
 @router.post('/testAdvStatistics2')
@@ -86,10 +93,11 @@ async def calc_recaida_tiempo() :
     """
 
     result = test_controller_adv2.execute(max_turns=100)
+    time.sleep(5)
     return {"result": result}
 
 @router.post('/testAdvStatistics3')
-async def calc_porcentajes_frecuencias() :
+async def analiz_curvas_supervivencia() :
     """
     Determinar correlación entre resultados inmunohistoquímicos y resto de variables.
 
@@ -98,10 +106,11 @@ async def calc_porcentajes_frecuencias() :
     """
 
     result = test_controller_adv3.execute(max_turns=100)
+    time.sleep(5)
     return {"result": result}
 
 @router.post('/testAdvStatistics4')
-async def calc_porcentajes_frecuencias() :
+async def det_vars_riesgo_recaida() :
     """
     Determinar correlación entre resultados inmunohistoquímicos y resto de variables.
 
@@ -110,6 +119,7 @@ async def calc_porcentajes_frecuencias() :
     """
 
     result = test_controller_adv4.execute(max_turns=100)
+    time.sleep(5)
     return {"result": result}
 
 @router.post('/copyDocs')

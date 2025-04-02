@@ -116,7 +116,7 @@ const AdvancedStatistics3 = () => {
                                 <Typography key={`global-${idx}`}>Tras {item.variable} el valor determinado es {item.valor}</Typography>
                             ))}
                             <Typography variant="body1"><strong>Curvas Supervicencia Específica:</strong></Typography>
-                            {global.map((item, idx) => (
+                            {especifica.map((item, idx) => (
                                 <Typography key={`espe-${idx}`}>Tras {item.variable} el valor determinado es {item.valor}</Typography>
                             ))}
                             </>
