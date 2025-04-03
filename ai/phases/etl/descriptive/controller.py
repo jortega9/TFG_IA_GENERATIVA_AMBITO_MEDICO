@@ -7,9 +7,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.
 from ai.phases.etl.descriptive.agent import DescriptiveAgent
 
 # Numeric
-from ai.phases.etl.descriptive.numeric.context import DataContext as numeric_data_context
-from ai.phases.etl.descriptive.numeric.tools import create_tools as numeric_create_tools
-from ai.phases.etl.descriptive.numeric.prompts import AGENT_WORKFLOW as NUMERIC_WORKFLOW
+from ai.phases.etl.descriptive.numeric.agent import NumericDescriptiveAgent
 
 # Categoric
 from ai.phases.etl.descriptive.categoric.context import DataContext as categoric_data_context
@@ -30,15 +28,26 @@ def run_numeric_analysis() -> dict:
 	Returns:
 		dict: returns the report and result of the numeric analysis.
 	"""
-	data_context = numeric_data_context()
-	tools = numeric_create_tools(data_context)
+	agent = NumericDescriptiveAgent()
+	agent.execute()
+	return "Analisis numérico hecho exitosamente."
+
+def run_categorical_analysis() -> dict:
+	"""Call the LLM Agent for the categorical analysis.
+
+	Returns:
+		dict: returns the report and result of the categorical analysis.
+	"""
+	data_context = categoric_data_context()
+	tools = categoric_create_tools(data_context)
 	agent = DescriptiveAgent(
 		data_context=data_context,
 		tools=tools,
-		agent_workflow=NUMERIC_WORKFLOW
+		agent_workflow=CATEGORIC_WORKFLOW
 	)
-	response = agent.execute(user_input="Comienza el análisis descriptivo numérico.")
+	response = agent.execute(user_input="Comienza el análisis descriptivo categórico.")
 	return {"response" : response}
+
 
 #########################################################################################
 #                                   DELETE ME                                           #

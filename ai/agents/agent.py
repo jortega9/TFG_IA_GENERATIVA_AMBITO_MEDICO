@@ -16,54 +16,45 @@ class Agent:
 
     def call_llm(
         self,
-        prompt=None,
-        messages=None,
+        prompt: str,
         response_format=None,
-        model="gpt-4o",
-        temperature=0.3,
-        tools=None,
-        tool_choice="auto"  # puede ser "auto", "none", o dict con una función concreta
+        model: str = "gpt-4o-mini",
+        temperature: float = 0.3,
     ):
-        """Internal method to call the LLM with either a prompt or messages and optional tool calling support."""
+        """Calls the OpenAI API.
 
-        if prompt:
-            messages_payload = [{"role": "system", "content": prompt}]
-        elif messages:
-            messages_payload = messages
-        else:
-            raise ValueError("Either prompt or messages must be provided.")
+        Args:
+            prompt (str): The given prompt.
+            response_format (FormatSchema): format schema for the response.
+            model (str, optional): Set the model from the OpenAI models availables. Defaults to "gpt-4o-mini".
+            temperature (float, optional): Set the temperature model. Defaults to 0.3.
 
-        # OpenAI con herramientas y Pydantic
+        Returns:
+            Schema: Returns the format schema with the new scores and explanations.
+            or
+            str: Returns a response from OpenAI API if there is not a response_format
+        """
+
+        messages = [{"role": "system", "content": prompt}]
+
         if response_format:
             response = self.client.beta.chat.completions.parse(
                 model=model,
-                messages=messages_payload,
+                messages=messages,
                 response_format=response_format,
-                tools=tools,
-                tool_choice=tool_choice,
             )
-            return response.choices[0].message.parsed
-
-        # OpenAI con herramientas pero sin parseo
-        elif tools:
-            response = self.client.chat.completions.create(
-                model=model,
-                messages=messages_payload,
-                temperature=temperature,
-                tools=tools,
-                tool_choice=tool_choice,
-            )
-            return response.choices[0].message.function_call  
-
-        # Sin herramientas
         else:
             response = self.client.chat.completions.create(
                 model=model,
-                messages=messages_payload,
+                messages=messages,
                 temperature=temperature,
             )
-            return response.choices[0].message.content
 
+        return (
+            response.choices[0].message.parsed
+            if response_format
+            else response.choices[0].message.content
+        )
 
 
     def get_text_embedding(self, text, model="text-embedding-3-small", dim=768):

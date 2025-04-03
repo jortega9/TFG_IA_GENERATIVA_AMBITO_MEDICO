@@ -1,138 +1,52 @@
-AGENT_WORKFLOW = """
+IDENTIFY_WORKFLOW = """
 <contexto>
-Tu objetivo es construir un resumen estadístico de las variables numéricas continuas del DataFrame `df`,
-usando también un diccionario `master` que describe las variables.
+Eres un experto en análisis de datos médicos y estadística aplicada. Se te proporcionarán dos estructuras:
 
-Definición precisa:
-Una variable numérica continua es una magnitud cuantitativa que puede asumir un número infinito de valores dentro de un rango. Proviene de un subconjunto de los números reales y permite operaciones como media, desviación estándar, mediana o percentiles. Estas variables no tienen categorías predefinidas y sus valores no están limitados a opciones discretas.
-
-Ejemplos típicos: edad, peso, altura, tiempo, concentraciones, porcentajes, medidas continuas de laboratorio, etc.
-
-Ejemplos que NO son variables numéricas continuas:
-- Fechas o identificadores (e.g. `fecha`, `nhis`)
-- Variables binarias o dicotómicas
-- Códigos que representan categorías (aunque usen números)
-- Variables con menos de 10 valores únicos
-
-Identificación correcta:
-Para detectar correctamente estas variables, debes combinar la información de:
-- El diccionario `master` (clave: `"valores": null`)
-- Una muestra real del DataFrame (`sample_df`)
-y analizar ambos para comprobar que las variables son verdaderamente numéricas continuas.
-
-NO incluyas variables dudosas. Si tienes dudas, **omite la variable**.
+- Un diccionario llamado `master` que contiene metadatos sobre las variables del dataset. Cada entrada incluye el nombre de la variable, una breve descripción, y un campo `"valores"` que puede ser `null` (para variables numéricas continuas) o contener categorías/precios discretos (para variables cualitativas o discretas).
+- Un `sample` del DataFrame con valores reales de algunas columnas, que puedes usar para observar el tipo de dato, su distribución aparente, y comprobar si los valores parecen numéricos y continuos.
 </contexto>
+
+<importante>
+Una variable numérica continua es aquella que representa una magnitud medible y puede tomar una amplia variedad de valores numéricos, incluyendo decimales o enteros, sin limitarse a categorías fijas. Su distribución en el dataset suele mostrar variación real y no se restringe a pocos valores repetidos.
+
+Son variables numéricas continuas:
+- Las que expresan medidas como edad, tiempo, volumen, porcentaje, concentración, etc.
+- Tienen valores reales (decimales o enteros) con amplia variabilidad.
+
+No son variables numéricas continuas:
+- Variables categóricas codificadas como números (suelen tener "valores" definidos en el maestro).
+- Variables discretas (pocos valores enteros, como recuentos).
+- Fechas (aunque se expresen como números, representan eventos en el tiempo).
+- Identificadores (números únicos sin valor cuantitativo real).
+</importante>
 
 <instrucciones>
 
-Sigue este ciclo de razonamiento paso a paso:
+Tu objetivo es **identificar de forma precisa todas las variables que sean numéricas continuas** en el dataset. Para ello:
+1. Razona usando ambos elementos:
+   - Si en el `master` una variable tiene `"valores": null` y en el `sample` contiene datos numéricos con decimales o gran variabilidad, probablemente es continua.
+   - Si en el `master` la variable tiene categorías (es decir, `"valores"` no es null) pero en el `sample` contiene valores numéricos muy variados y sin codificación aparente, podría estar mal documentada y **también** deberías considerarla como continua si el patrón lo justifica.
+   - Ignora las columnas con texto, fechas, identificadores o codificaciones categóricas claras.
 
-1. Escribe un "Thought" describiendo lo que vas a hacer.
-2. Ejecuta una única herramienta.
-3. Pasa los parámetros requeridos en "Action Input".
+2. **Piensa paso a paso**. Para cada variable, analiza:
+   - ¿Qué dice el `master` sobre esta variable?
+   - ¿Qué muestran los datos reales del `sample`?
+   - ¿Hay evidencia de que sea continua a pesar de la definición del `master`?
 
-Formato ESTRICTO:
+3. No asumas que el `master` es siempre correcto. Prioriza el razonamiento basado en los datos reales si hay contradicciones.
 
-Thought: descripción del paso.
-Action: nombre_de_la_función
-Action Input: {{ "param1": "valor", ... }}
+4. Devuelve **únicamente una lista en formato Python** con los nombres (str) de las variables que consideres numéricas continuas. No incluyas explicación, encabezados, ni justificaciones. Solo la lista.
 
-Cuando termines, responde con:
-
-Thought: He terminado el análisis.
-Final Answer: El resumen estadístico ha sido generado y guardado correctamente.
+5. **NO INCLUYAS BAJO NINGUNA CIRCUNSTANCIA FECHAS, IDENTIFICADORES, VARIABLES CATEGORICAS Y DISCRETAS**
 </instrucciones>
 
-<reglas>
 
-REGLAS IMPORTANTES:
-- Una sola acción por paso.
-- Nunca dejes "Action Input" vacío si la función necesita parámetros.
-- Procesa las variables numéricas continuas de UNA EN UNA.
-- Siempre incluye el campo "nombre_columna".
-- NO uses lenguaje natural fuera del formato definido.
-- NO finalices tras una acción aislada. Continúa con el flujo completo hasta el Final Answer.
+<entrada>
+Sample del dataframe: {sample}
+Diccionario del maestro: {master}
+</entrada>
+"""
 
-</reglas>
+CONCLUSION_WORKFLOW = """
 
-<flujo>
-FLUJO DETALLADO DEL ANÁLISIS:
-
-0. Abre el dataset:
-Action: read_csv
-Action Input: {{}}
-
-1. Abre el archivo maestro:
-Action: open_master
-Action Input: {{}}
-
-2. Muestra el contenido del maestro:
-Action: show_master
-Action Input: {{}}
-
-3. Analiza tanto el contenido del maestro (`show_master`) como la muestra del dataset (`sample_df`) y genera una lista de TODAS las variables numéricas continuas que cumplen las siguientes condiciones:
-
-   - Tienen `"valores": null` en el maestro.
-   - Contienen muchos valores distintos en la muestra (`sample_df`), típicamente más de 10.
-   - Representan medidas cuantitativas (no fechas, IDs, ni codificaciones categóricas).
-   - NO deben tener descripciones que impliquen codificación categórica o estados fijos (como "riesgo", "positivo/negativo", etc).
-
-   Escribe la lista explícita con este formato:
-
-   Thought: Las siguientes variables cumplen criterios de variable numérica continua: ["edad", "psalt", "volumen", ...]
-
-   Luego comienza el análisis para cada una de ellas.
-
-4. Utiliza tanto el maestro como la muestra para identificar TODAS las variables numéricas continuas. (Aplica la definición anterior con cuidado.)
-
-5. Para cada variable continua detectada:
-
-   a. Verifica si sigue una distribución normal:
-   Action: check_distribution_normality
-   Action Input: {{ "nombre_columna": "..." }}
-
-   b. Si es normal:
-      - Calcula:
-        Action: calculate_mean_std
-        Action Input: {{ "nombre_columna": "..." }}
-
-      - Guarda:
-        Action: add_to_summary
-        Action Input: {{
-            "nombre_columna": "...",
-            "n": valor,
-            "media": valor,
-            "std": valor,
-            "mediana": null,
-            "ric": null,
-            "rango": "null"
-        }}
-
-   c. Si NO es normal:
-      - Calcula:
-        Action: calculate_median_iqr
-        Action Input: {{ "nombre_columna": "..." }}
-
-      - Guarda:
-        Action: add_to_summary
-        Action Input: {{
-            "nombre_columna": "...",
-            "n": valor,
-            "media": null,
-            "std": null,
-            "mediana": valor,
-            "ric": valor,
-            "rango": "x1-x2"
-        }}
-
-6. Repite el paso 5 para todas las variables continuas detectadas.
-
-7. Guarda el resumen final:
-Action: save_summary
-Action Input: {{}}
-
-8. Finaliza el proceso:
-Thought: He terminado el análisis.
-Final Answer: El resumen estadístico ha sido generado y guardado correctamente.
-</flujo>
 """
