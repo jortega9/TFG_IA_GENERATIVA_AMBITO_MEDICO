@@ -10,9 +10,7 @@ from ai.phases.etl.descriptive.agent import DescriptiveAgent
 from ai.phases.etl.descriptive.numeric.agent import NumericDescriptiveAgent
 
 # Categoric
-from ai.phases.etl.descriptive.categoric.context import DataContext as categoric_data_context
-from ai.phases.etl.descriptive.categoric.tools import create_tools as categoric_create_tools
-from ai.phases.etl.descriptive.categoric.prompts import AGENT_WORKFLOW as CATEGORIC_WORKFLOW
+from ai.phases.etl.descriptive.categoric.agent import CategoricalDescriptiveAgent
 
 def execute() -> dict:
 	"""Main call to the API.
@@ -38,22 +36,16 @@ def run_categorical_analysis() -> dict:
 	Returns:
 		dict: returns the report and result of the categorical analysis.
 	"""
-	data_context = categoric_data_context()
-	tools = categoric_create_tools(data_context)
-	agent = DescriptiveAgent(
-		data_context=data_context,
-		tools=tools,
-		agent_workflow=CATEGORIC_WORKFLOW
-	)
-	response = agent.execute(user_input="Comienza el análisis descriptivo categórico.")
-	return {"response" : response}
+	agent = CategoricalDescriptiveAgent()
+	agent.execute()
+	return "Analisis categórico hecho exitosamente."
 
 
 #########################################################################################
 #                                   DELETE ME                                           #
 #########################################################################################   
 def main() :
-	print(run_numeric_analysis())
+	print(run_categorical_analysis())
     
 if __name__ == "__main__":
     main()

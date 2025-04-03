@@ -63,6 +63,11 @@ class NumericDescriptiveAgent(Agent):
         return {}
         
     def descriptive_analysis(self, variables: List[str]) -> None:
+        """Make the descriptive analysis.
+
+        Args:
+            variables (List[str]): List of numeric continuos variables.
+        """
         
         for column in variables:
             
