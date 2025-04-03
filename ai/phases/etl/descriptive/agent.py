@@ -8,20 +8,23 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 # Incluir ruta al proyecto
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../..")))
 
-from ai.phases.etl.descriptive.context import DataContext
-from ai.phases.etl.descriptive.tools import create_tools
-from ai.phases.etl.descriptive.prompts import AGENT_WORKFLOW
+class DescriptiveAgent:
+    def __init__(self, data_context, tools, agent_workflow):
+        """Initialize the LLM Agent
 
-
-class NumericDescriptiveAgent:
-    def __init__(self):
-        self.context = DataContext()
-        self.tools = create_tools(self.context)
-        self.llm = ChatOpenAI(model="gpt-4o", temperature=0)
+        Args:
+            data_context (DataContext): The global state that the agent manipulate.
+            tools (List[functions]): The tool kits that the agent will use.
+            agent_workflow (str): The initial prompt
+        """
+        self.context = data_context
+        self.tools = tools
+        self.workflow = agent_workflow
+        self.llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
 
         # Prompt simple: solo system + input
         prompt = ChatPromptTemplate.from_messages([
-            ("system", AGENT_WORKFLOW),
+            ("system", self.workflow),
             ("human", "{input}"),
             MessagesPlaceholder(variable_name="agent_scratchpad"),
         ])
@@ -33,21 +36,11 @@ class NumericDescriptiveAgent:
         self.executor = AgentExecutor(
             agent=agent,
             tools=self.tools,
-            verbose=True
+            verbose=True,
+            max_iterations=100,  
+            max_execution_time=None,
         )
 
-    def execute(self, user_input: str = "Comienza el análisis descriptivo numérico."):
+    def execute(self, user_input: str="Comienza el análisis descriptivo numérico."):
         result = self.executor.invoke({"input": user_input})
         return result["output"]
-
-
-
-
-def main():
-    agent = NumericDescriptiveAgent()
-    result = agent.execute()
-    print(result)
-
-
-if __name__ == "__main__":
-    main()

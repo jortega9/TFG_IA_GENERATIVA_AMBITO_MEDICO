@@ -16,7 +16,7 @@ from langchain.tools import tool
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../..")))
 
-from ai.phases.etl.descriptive.context import DataContext
+from ai.phases.etl.descriptive.numeric.context import DataContext
 
 load_dotenv()
 
@@ -50,14 +50,7 @@ def create_tools(ctx: DataContext):
 	def sample_df(n:int=10) -> str:
 		"""Muestra una muestra aleatoria de n registros del DataFrame."""
 		return ctx.df.sample(n=n).to_string()
-	
-	@tool
-	def info_df() -> str:
-		"""Devuelve información general del DataFrame."""
-		buffer = io.StringIO()
-		ctx.df.info(buf=buffer)
-		return buffer.getvalue()
-	
+
 	@tool
 	def show_master():
 		"""Devuelve el maestro para su analisis."""
@@ -73,31 +66,49 @@ def create_tools(ctx: DataContext):
 		return p_value > 0.05
 	
 	@tool
-	def calculate_mean_std(nombre_columna:str):
-		"""Calcula la media y la desviación típica."""
-		media = ctx.df[nombre_columna].mean()
-		std = ctx.df[nombre_columna].std()
-		return {"media": media, "std": std}
+	def calculate_mean_std(nombre_columna: str):
+		"""Calcula media, desviación típica y n válidos."""
+		serie = ctx.df[nombre_columna].dropna()
+		n = serie.count()
+		media = round(serie.mean(), 2)
+		std = round(serie.std(), 2)
+		return {"n": n, "media": media, "std": std}
 	
 	@tool
-	def calculate_median_iqr(nombre_columna:str):
-		"""Calcula la mediana y el rango intercuartilico para las variables discretas."""
-		mediana = ctx.df[nombre_columna].median()
-		ric = ctx.df[nombre_columna].quantile(0.75) - ctx.df[nombre_columna].quantile(0.25)
-		return {"mediana": mediana, "ric": ric}
+	def calculate_median_iqr(nombre_columna: str):
+		"""Calcula la mediana, el rango absoluto (min–max), el IQR y n válidos."""
+		serie = ctx.df[nombre_columna].dropna()
+		n = serie.count()
+		mediana = round(serie.median(), 2)
+		q1 = round(serie.quantile(0.25), 2)
+		q3 = round(serie.quantile(0.75), 2)
+		ric = round(q3 - q1, 2)
+		minimo = round(serie.min(), 2)
+		maximo = round(serie.max(), 2)
+		rango = f"{minimo}-{maximo}"
+		return {"n": n, "mediana": mediana, "ric": ric, "rango": rango}
+
 	
 	@tool
-	def add_to_summary(nombre_columna:str, media=None, std=None, mediana=None, ric=None):
-		"""Añade una nueva columna con la información obtenida."""
+	def add_to_summary(nombre_columna: str, media=None, std=None, mediana=None, ric=None, rango=None, n=None):
+		"""Añade una nueva columna de la variable numerica continua que se ha estudiado al resumen."""
 		nueva_fila = {
 			"variable": nombre_columna,
+			"n": n,
 			"media": media,
 			"std": std,
 			"mediana": mediana,
-			"ric": ric
+			"ric": ric,
+			"rango": rango
 		}
+
+		for key in nueva_fila:
+			if key not in ctx.summary.columns:
+				ctx.summary[key] = None
+
 		ctx.summary = pd.concat([ctx.summary, pd.DataFrame([nueva_fila])], ignore_index=True)
 		return f"Variable '{nombre_columna}' añadida al resumen."
+
 	
 	@tool
 	def save_summary():
@@ -109,7 +120,6 @@ def create_tools(ctx: DataContext):
         read_csv,
         open_master,
         sample_df,
-        info_df,
         show_master,
         check_distribution_normality,
         calculate_mean_std,
