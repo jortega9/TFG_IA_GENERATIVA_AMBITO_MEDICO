@@ -39,3 +39,7 @@ langchain-community
 tiktoken
 python-docx
 scikit-learn
+stats
+langchain 
+langchain-openai
+langgraph
