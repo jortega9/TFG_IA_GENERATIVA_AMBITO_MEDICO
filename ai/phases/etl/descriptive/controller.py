@@ -27,8 +27,8 @@ def run_numeric_analysis() -> dict:
 		dict: returns the report and result of the numeric analysis.
 	"""
 	agent = NumericDescriptiveAgent()
-	agent.execute()
-	return "Analisis numérico hecho exitosamente."
+	response = agent.execute()
+	return response
 
 def run_categorical_analysis() -> dict:
 	"""Call the LLM Agent for the categorical analysis.
@@ -37,14 +37,15 @@ def run_categorical_analysis() -> dict:
 		dict: returns the report and result of the categorical analysis.
 	"""
 	agent = CategoricalDescriptiveAgent()
-	agent.execute()
-	return "Analisis categórico hecho exitosamente."
+	response = agent.execute()
+	return response
 
 
 #########################################################################################
 #                                   DELETE ME                                           #
 #########################################################################################   
 def main() :
+	print(run_numeric_analysis())
 	print(run_categorical_analysis())
     
 if __name__ == "__main__":
