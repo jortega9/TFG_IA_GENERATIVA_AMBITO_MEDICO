@@ -56,9 +56,14 @@ class CategoricalDescriptiveAgent(Agent):
             response_format=IdentifySchema,
             temperature=0
         )
-        print(identify_variable)
         self.descriptive_analysis(identify_variable.list)
-        return {}
+        return {
+            "explanation": identify_variable.explanation,
+            "results": {
+                "variables": identify_variable.list,
+                "csv_path": OUTPUT_PATH
+            }
+        }
     
     def descriptive_analysis(self, variables: List[str]) -> None:
         """Make the descriptive analysis.

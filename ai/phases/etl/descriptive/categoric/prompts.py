@@ -1,34 +1,49 @@
 IDENTIFY_WORKFLOW = """
 <contexto>
-Tu tarea es identificar todas las variables categóricas presentes en un conjunto de datos clínicos. Para ello, se te proporciona:
+Tu tarea es identificar **todas las variables categóricas** en un conjunto de datos clínicos. Para ello se te proporciona:
 
-1. Un fragmento (sample) del DataFrame con los datos reales (20 filas).
-2. Un diccionario llamado "maestro" que contiene las descripciones de todas las variables y, cuando aplica, los posibles valores categóricos mapeados como diccionarios.
+1. Un `sample` de 20 filas reales del dataset.
+2. Un diccionario `master` que describe cada variable y, si aplica, sus posibles valores categóricos codificados.
 
-Debes devolver **únicamente una lista con los nombres exactos** de las variables categóricas detectadas, sin ninguna explicación adicional.
+Eres un asistente experto en análisis estadístico médico y debes ser muy preciso: muchas variables están mal documentadas, así que **el dataset tiene prioridad sobre el maestro** si hay contradicciones.
 </contexto>
 
 <instrucciones>
-Ten en cuenta lo siguiente:
+Una variable categórica representa clases, grupos o categorías finitas. Puede estar representada con números o texto, pero sus valores deben pertenecer a un conjunto limitado y discreto.
 
-- Una **variable categórica** es aquella que representa clases, grupos o categorías discretas. Puede representarse con valores numéricos o de texto, pero su significado está acotado a un conjunto finito de categorías (ej: sexo, grupo sanguíneo, tipo de tumor).
-- No son categóricas las variables **numéricas continuas**, como edad, porcentaje, volumen o cualquier valor medido en una escala infinita o decimal.
-- Las **fechas** tampoco se consideran categóricas.
+Para identificar correctamente una variable categórica:
 
-Reglas para identificar correctamente una variable categórica:
-1. Si en el maestro aparece con un mapeo de valores, es probable que sea categórica.
-2. Si ese mapeo existe pero en el dataset aparecen valores completamente numéricos o con mucha variabilidad decimal, probablemente **no** es categórica y debes descartarla.
-3. Si no hay mapeo en el maestro, pero en el dataset se repiten pocos valores únicos que representan categorías, puede ser una categórica implícita.
-4. Si una variable parece ambigua, decide usando tanto el contenido del maestro como el comportamiento de la variable en el dataset (frecuencia, tipos de valores, etc.).
-</instrucciones>
+- **Sí es categórica** si:
+  - En el `master` tiene un mapeo `"valores"` que **coincide exactamente** con los valores únicos presentes en el dataset (por ejemplo: {{0: "No", 1: "Sí"}} y en el dataset solo hay 0 y 1).
+  - En el dataset aparecen **muy pocos valores únicos (por ejemplo 2 a 6)** y **no hay decimales**, y esos valores representan claramente clases, estados o grupos distintos, aunque no estén definidos en el `master`.
+
+- **NO es categórica** si:
+  - Aunque en el `master` tenga `"valores"` definidos, en el dataset:
+    - aparecen **valores decimales o continuos**,
+    - hay **gran variabilidad numérica**,
+    - o los valores no coinciden con el mapeo del `master`.
+    Por ejemplo: `psapre` tiene un mapeo discreto en el `master`, pero en el dataset contiene valores como `4.23`, `6.85`, etc., lo que indica claramente un comportamiento **numérico continuo**.
+  - Es una **fecha, identificador, porcentaje** o una **medida numérica continua**.
+  - Tiene muchos valores únicos en el sample (por ejemplo, más de 10).
+
+<requisitos>
+
+1. Revisa **cada variable** comparando lo que dice el `master` con lo que muestran los datos reales.
+2. Si hay discrepancia, **prioriza el comportamiento real en el dataset.**
+3. Justifica tus decisiones: explica **por qué** incluyes cada variable categórica.
+4. Devuelve un JSON con:
+   - `"explicacion"`: razonamiento claro y conciso de cómo llegaste a la decisión.
+   - `"variables"`: lista de nombres de columnas categóricas, sin repeticiones ni explicaciones adicionales.
+
+</requisitos>
 
 <entrada>
-A continuación se te dará el contenido del maestro y un sample del dataset. Devuelve una lista con los nombres exactos de las variables categóricas detectadas, sin explicaciones ni justificación.
-
-Maestro: {master}
+Master: {master}
 Sample del dataset: {sample}
 </entrada>
 """
+
+
 
 CONCLUSION_WORKFLOW = """
 
