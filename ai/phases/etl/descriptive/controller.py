@@ -4,8 +4,6 @@ import sys
 # Incluir ruta al proyecto
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../..")))
 
-from ai.phases.etl.descriptive.agent import DescriptiveAgent
-
 # Numeric
 from ai.phases.etl.descriptive.numeric.agent import NumericDescriptiveAgent
 
