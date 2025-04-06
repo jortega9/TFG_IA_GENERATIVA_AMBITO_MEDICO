@@ -13,21 +13,29 @@ import { Button } from '@mui/material';
 const Report = () => {
     const steps = ["1", "2", "3", "4", "5", "6", "7", "8"];
     const [currentStep, setCurrentStep] = useState(0);
-    const [files, setFiles] = useState([]);
 
-    const addFiles = (acceptedFiles) => {
-        setFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
-        console.log(acceptedFiles);
-    };
+    const [descNumVars, setDescnumVars] = useState([]);
+    const [descNumCsv, setDescNumCsv] = useState('');
+    const [descCatVars, setDescCatVars] = useState([]);
+    const [descCatCsv, setDescCatCsv] = useState('');
+
+    const [isDataPrepared, setIsDataPrepared] = useState(false);
+    const [isDataProcessed, setIsDataProcessed] = useState(false);
 
     const getStepContent = (step) => {
         switch (step) {
             case 0:
-                return <DropFiles files={files} addFiles={addFiles} />;
+                return <DropFiles setIsDataPrepared={setIsDataPrepared}/>;
             case 1:
-                return <ProcessData />;
+                return <ProcessData
+                setIsDataProcessed={setIsDataProcessed}
+                setDescnumVars={setDescnumVars}
+                setDescNumCsv={setDescNumCsv}
+                setDescCatVars={setDescCatVars}
+                setDescCatCsv={setDescCatCsv}
+            />;
             case 2:
-                return <DescStatistics1 />;
+                return <DescStatistics1 descNumVars={descNumVars} descNumCsv={descNumCsv}/>;
             case 3:
                 return <DescStatistics2 />;
             case 4:
@@ -48,9 +56,9 @@ const Report = () => {
     const isStepValid = () => {
         switch (currentStep) {
             case 0:
-                return files.length === 2;
+                return isDataPrepared;
             case 1:
-                return true;
+                return isDataProcessed;
             case 2:
                 return true;
             case 3:

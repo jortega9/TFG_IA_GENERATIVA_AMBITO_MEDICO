@@ -81,11 +81,10 @@ const AdvancedStatistics2 = () => {
     };
 
     return (
-        <Box sx={{ backgroundColor: 'white', borderRadius: 2, padding: 2, boxShadow: 1, width: '100%', height: '64vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography sx={{ color: '#4D7AFF', fontSize: '1rem' }}>
+        <Box sx={{ backgroundColor: 'white', borderRadius: 2, padding: 2, boxShadow: 1, width: '100%', height: '70vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '10%' }}>
+                <Typography sx={{ color: '#4D7AFF', fontSize: '0.9rem' }}>
                     <strong>DETERMINAR PROBABILIDAD RECAÍDA BIOQUÍMICA EN FUNCIÓN DEL TIEMPO.</strong>
-                    <strong>MEDIANTE ANÁLISIS DE CURVAS DE SUPERVIVENCIA DE KAPLAN MEIER.</strong>
                 </Typography>
                 <ThemeToggle />
             </Box>

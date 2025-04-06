@@ -1,14 +1,21 @@
 import React, { useState } from 'react';
-import { Box, Button, Typography, Tooltip } from '@mui/material';
+import { Box, Button, Typography, Tooltip, CircularProgress } from '@mui/material';
 
 import ThemeToggle from './ThemeToggle';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import * as XLSX from 'xlsx';
 import mammoth from 'mammoth';
 
-const DropFiles = ({ files, addFiles }) => {
+const DropFiles = ({ setIsDataPrepared }) => {
     const [fileData, setFileData] = useState([]);
     const [text, setText] = useState("");
+    const [files, setFiles] = useState([]);
+    const [preparingData, setPreparingData] = useState(false);
+
+    const addFiles = (acceptedFiles) => {
+        setFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
+        console.log(acceptedFiles);
+    };
 
     const getFileNameWithoutExtension = (fileName) => {
         const lastDotIndex = fileName.lastIndexOf('.');
@@ -47,6 +54,7 @@ const DropFiles = ({ files, addFiles }) => {
     const handlePrepareData = async () => {
         const excelFile = fileData.find((file) => file.includes('.xlsx'));
         const masterFile = fileData.find((file) => file.includes('.docx'));
+        setPreparingData(true);
     
         if (!excelFile || !masterFile) {
             console.error("Archivos necesarios no encontrados.");
@@ -75,8 +83,12 @@ const DropFiles = ({ files, addFiles }) => {
             
             const result = await response.json();
             console.log("Respuesta del servidor:", result);
+            setIsDataPrepared(true);
         } catch (error) {
             console.error("Error al realizar la petición:", error);
+        }
+        finally {
+            setPreparingData(false);
         }
     };
     
@@ -88,13 +100,13 @@ const DropFiles = ({ files, addFiles }) => {
             padding: 2,
             boxShadow: 1,
             width: '100%',
-            height: "64vh",
+            height: "70vh",
             display: 'flex',
             flexDirection: 'column'
         }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography sx={{ color: '#4D7AFF', fontSize: '1.5rem' }}>
-                <strong>Generador de Informes</strong>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '10%' }}>
+                <Typography sx={{ color: '#4D7AFF', fontSize: '0.9rem' }}>
+                    <strong>CARGAR BBDD Y ARCHIVO MAESTRO</strong>
                 </Typography>
                 <ThemeToggle />
             </Box>
@@ -120,7 +132,7 @@ const DropFiles = ({ files, addFiles }) => {
 
                 {files.length > 0 && (
                     <>
-                        <Typography variant="h6" sx={{ paddingBottom: '20px', color:"#333333" }}>Archivos seleccionados:</Typography>
+                        <Typography variant="h6" sx={{ paddingBottom: '20px', color:"#4D7AFF" }}><strong>Archivos seleccionados:</strong></Typography>
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
                             {files.map((file, index) => {
                                 const fileName = getFileNameWithoutExtension(file.name);
@@ -160,14 +172,32 @@ const DropFiles = ({ files, addFiles }) => {
                             onChange={handleFileUpload}
                         />
                     </Button>
-                ) : (
-                    <Button
-                        variant="contained"
-                        sx={{ backgroundColor: '#4D7AFF', fontSize: '1.1rem', marginTop: 6, alignSelf: 'center' }}
-                        onClick={handlePrepareData}
-                    >
-                        Preparar Datos
-                    </Button>
+                ) : ( 
+                    <>
+                        {
+                            preparingData ? (
+                                <Box sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    marginTop: 6
+                                }}>
+                                    <CircularProgress sx={{ color: '#4D7AFF', mb: 2 }} />
+                                    <Typography variant="body1" sx={{ color: '#4D7AFF' }}>
+                                    Preparando datos...
+                                    </Typography>
+                                </Box>
+                            ) : (
+                                <Button
+                                variant="contained"
+                                sx={{ backgroundColor: '#4D7AFF', fontSize: '1.1rem', marginTop: 6, alignSelf: 'center' }}
+                                onClick={handlePrepareData}
+                                >
+                                    Preparar Datos
+                                </Button>   
+                            )
+                        }                 
+                    </>
                 )}
             </Box>
         </Box>

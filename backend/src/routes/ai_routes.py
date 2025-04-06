@@ -5,8 +5,10 @@ from fastapi import APIRouter, UploadFile, File
 from fastapi.responses import JSONResponse
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../..'))
 from backend.src.schemas.ai import PrepareDataRequest
+from backend.src.schemas.statistics import DescRequest
 import backend.src.controllers.ai_controller as controller
 import ai.phases.etl.prepare_data.controller as prepare_data_controller
+import ai.phases.etl.descriptive.controller as descriptive_controller
 import ai.phases.test.desc1.controller as test_controller_desc1
 import ai.phases.test.desc2.controller as test_controller_desc2
 import ai.phases.test.desc3.controller as test_controller_desc3
@@ -14,52 +16,52 @@ import ai.phases.test.adv1.controller as test_controller_adv1
 import ai.phases.test.adv2.controller as test_controller_adv2
 import ai.phases.test.adv3.controller as test_controller_adv3
 import ai.phases.test.adv4.controller as test_controller_adv4
-import ai.phases.test.executeData.controller as test_controller_executeData
+# import ai.phases.test.executeData.controller as test_controller_executeData
+
+from backend.src.controllers.statistics_controller import obtener_media_std, obtener_mediana_rangoI
 
 import time
 
 router = APIRouter()
 
+DOC_DATA = "descripcion.docx"
+
 @router.post('/prepare-data')
 async def prepare_data(request: PrepareDataRequest):
-    prepare_data_controller.controller(
-        master_path=request.master_path,
-        excel_path=request.excel_path
-    )
+    prepare_data_controller.execute(max_turns=100)
     print(request)
     return {"message": "Datos preparados exitosamente"}
 
-@router.post('/testExecuteData')
+@router.post('/executeData')
 async def execute_data():
     # result = prepare_data_controller.execute(max_turns=100)
 
-    result = test_controller_executeData.execute(max_turns=100)
-    time.sleep(5)
+    result = descriptive_controller.execute()
+    # time.sleep(5)
     return {"result": result}
 
-@router.post('/testDescStatistics1')
-async def calc_media_desv_normal() :
+@router.post('/descStatistics1')
+async def calc_media_desv_normal(request: DescRequest) :
     """
     Media y Desviación Típica siguiendo una Distribución Normal
 
     """
 
-    result = test_controller_desc1.execute(max_turns=100)
-    time.sleep(5)
-    return {"result": result}
+    result = obtener_media_std(request.excel_path)
+    
+    return { "result": result }
 
-@router.post('/testDescStatistics2')
-async def calc_mediana_rangoI() :
+@router.post('/descStatistics2')
+async def calc_mediana_rangoI(request: DescRequest) :
     """
     Mediana y Rango Intercuartílico sin swguir una Distribución Normal
 
     """
 
-    result = test_controller_desc2.execute(max_turns=100)
-    time.sleep(5)
+    result = obtener_mediana_rangoI(request.excel_path)
     return {"result": result}
 
-@router.post('/testDescStatistics3')
+@router.post('/descStatistics3')
 async def calc_porcentajes_frecuencias() :
     """
     Mediana y Rango Intercuartílico sin swguir una Distribución Normal

@@ -60,7 +60,7 @@ class PrepareDataAgent(Agent) :
     
     def call(self, message):
         self.messages.append({"role": "user", "content": message})
-        result = self.call_llm(messages=self.messages, temperature=0.3)
+        result = self.call_llm(prompt=message, temperature=0)
         self.messages.append({"role": "assistant", "content": result})
         return result
     
@@ -103,7 +103,8 @@ class PrepareDataAgent(Agent) :
         """Carga el archivo Excel en un DataFrame."""
         self.df = pd.read_excel(EXCEL_PATH, header=1, sheet_name=0, dtype=str)
         self.df.columns = [self.standardize_name(col) for col in self.df.columns]
-        return "El Excel se ha cargado en un DataFrame."
+        self.df.to_csv(OUTPUT_PATH, index=False)
+        return "El Excel se ha cargado en un DataFrame, guardalo."
 
     def open_master(self):
         """Carga el diccionario maestro desde un JSON."""
@@ -190,8 +191,8 @@ class PrepareDataAgent(Agent) :
         """Guarda los archivos modificados en la carpeta data processed"""
         self.df.to_csv(OUTPUT_PATH, index=False)
         
-        with open(MASTER_PATH, "w") as file:
-            json.dump(self.master, file, indent=4)
+        # with open(MASTER_PATH, "w") as file:
+        #     json.dump(self.master, file, indent=4)
             
         return "Se han guardado exitosamente los archivos."
         

@@ -71,20 +71,20 @@ function AccountButton() {
                     backgroundColor: 'white',
                     color: 'grey',
                     borderRadius: '50%',
-                    padding: '10px',
+                    padding: '5px',
                     border: '2px solid grey',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    minWidth: '48px',
-                    minHeight: '48px',
+                    minWidth: '40px',
+                    minHeight: '40px',
                     '&:hover': {
                         backgroundColor: '#f5f5f5',
                     },
                 }}
                 onClick={handleClick}
             >
-                <FiUser size={24} />
+                <FiUser size={20} />
             </Button>
 
             <Menu

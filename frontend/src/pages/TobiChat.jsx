@@ -97,12 +97,12 @@ function TobiChat() {
 
   return (
     <div className="app-container">
-      <AppHeader />
+        <AppHeader />
       <div className="main-content" style={{ display: 'flex', height: '100%' }}>
-        <div className="controls-section">
+        <div className="controls-section" style={{ width: '15%' }}>
           <Controls onChatAccessChange={handleChatAccessChange} onReportAccessChange={handleReportAccessChange} />
         </div>
-        <div className="content-section">
+        <div className="content-section" style={{ width: '80%' }}>
           {isChatAccessible ? (
             <div className="chat-container">
               <div className="chat-header">
@@ -113,7 +113,7 @@ function TobiChat() {
               <MessageInput onSendMessage={handleSendMessage} />
             </div>
           ) : isReportAccessible ? (
-            <div>
+            <div >
               <Report />
             </div>
           ) : (

@@ -83,9 +83,9 @@ const AdvancedStatistics3 = () => {
     };
 
     return (
-        <Box sx={{ backgroundColor: 'white', borderRadius: 2, padding: 2, boxShadow: 1, width: '100%', height: '64vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography sx={{ color: '#4D7AFF', fontSize: '1rem' }}>
+        <Box sx={{ backgroundColor: 'white', borderRadius: 2, padding: 2, boxShadow: 1, width: '100%', height: '70vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '10%' }}>
+                <Typography sx={{ color: '#4D7AFF', fontSize: '0.9rem' }}>
                     <strong>ANÁLIZAR CURVAS DE SUPERVIVENCIA GLOBAL Y SUPERVIVENCIA CÁNCER ESPECÍFICA.</strong>
                 </Typography>
                 <ThemeToggle />

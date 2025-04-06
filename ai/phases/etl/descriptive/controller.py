@@ -4,7 +4,7 @@ import sys
 # Incluir ruta al proyecto
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../..")))
 
-from ai.phases.etl.descriptive.agent import DescriptiveAgent
+# from ai.phases.etl.descriptivec import DescriptiveAgent
 
 # Numeric
 from ai.phases.etl.descriptive.numeric.agent import NumericDescriptiveAgent
@@ -18,7 +18,15 @@ def execute() -> dict:
 	Returns:
 		dict: returns the reports and results.
 	"""
-	return {}
+
+	numeric = run_numeric_analysis()
+	categorical = run_categorical_analysis()
+
+
+	return {
+		"numeric": numeric,
+		"categorical": categorical
+	}
 
 def run_numeric_analysis() -> dict:
 	"""Call the LLM Agent for the numeric analysis.
