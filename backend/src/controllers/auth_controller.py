@@ -1,7 +1,7 @@
 # backend/src/controllers/auth_controller.py
 
 from fastapi import HTTPException
-from src.schemas.user import User, UserCreate, UserUpdate, PwdUpdate
+from src.schemas.user import User, UserCreate, UserUpdate, PwdUpdate, PatientCreate, UpdatePatient
 from src.services.auth_service import hash_password, verify_password, create_access_token, get_current_user
 from datetime import timedelta
 from db.database import DatabaseConnection
@@ -123,4 +123,39 @@ def delete_user(uuid: str):
         db.delete_user(uuid)
     except Exception as e:
         print("Error en get_active_user:", e)
+        raise HTTPException(status_code=500, detail="Error interno del servidor")
+    
+# ----------------------- Patients ------------------------------------
+
+def add_newPatient(patient: PatientCreate):
+
+    try:
+        db.insert_patient(patient)
+        return patient
+    except Exception as e:
+        print(f"Error en register_user: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+def update_patientName(updatePatient: UpdatePatient):
+
+    try:
+        db.update_patient(updatePatient.id, updatePatient.newName)
+        return updatePatient.newName
+    except Exception as e:
+        print(f"Error en register_user: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    
+def get_patients():
+    try:
+        patients = db.get_patients()
+        return patients
+    except Exception as e:
+        print("Error en get_active_user:", e)
+        raise HTTPException(status_code=500, detail="Error interno del servidor")
+    
+def delete_patient(id: str):
+    try:
+        db.delete_patient(id)
+    except Exception as e:
+        print("Error en delete_patient:", e)
         raise HTTPException(status_code=500, detail="Error interno del servidor")

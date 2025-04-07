@@ -1,0 +1,38 @@
+:root {
+	--primary-color: #4D7AFF;
+	--secondary-color: #F0F4F8; 
+    --title-color: #0277bd;
+	--background-color: #e0f7fa;
+	--chat-background: #FFFFFF;
+	--text-color: #333333;
+	--input-background: #F0F4F8;
+	--icon-color: #4D7AFF;
+	--error-color: #FF3366;
+	--success-color: #52ff33;
+    --hover-color: #01579b;
+}
+
+.dark-theme {
+	--primary-color: #4D7AFF;
+	--secondary-color: #4b5696;
+	--background-color: #1A1C2A;
+	--chat-background: #2A2D3E;
+	--text-color: #E0E0E0;
+	--input-background: #2A2D3E;
+	--icon-color: #4D7AFF;
+	--error-color: #FF4D7A;
+}
+
+.dropfiles-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    background-color: var(--chat-background);
+    color: var(--text-color);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}

@@ -16,11 +16,11 @@ function AppHeader() {
     return (
         <>
             <header className="app-header">
-            <div className="avatar">
-                <img src={AsistenteIcon} alt="Bot avatar" className="avatar-image"/>
-            </div>
-            <Button variant="text" sx={{color:'white', fontSize:'20px'}} onClick={handleUroloBot}><strong>UroloBot</strong></Button>
-            <AccountButton/>
+                <div className="avatar">
+                    <img src={AsistenteIcon} alt="Bot avatar" className="avatar-image"/>
+                </div>
+                <Button variant="text" sx={{color:'white', fontSize:'15px'}} onClick={handleUroloBot}><strong>UroloBot</strong></Button>
+                <AccountButton/>
 
             </header>
         </>

@@ -4,18 +4,28 @@ import MessageList from '../components/MessageList';
 import MessageInput from '../components/MessageInput';
 import AsistenteIcon from '../../public/assets/AsistenteIcon.png';
 import AppHeader from '../components/AppHeader';
-import ChatList from '../components/ChatList';
+import Controls from '../components/Controls/Controls';
 import ChatWelcome from '../components/ChatWelcome';
+import Report from '../components/Report/Report';
 import '../styles/TobiChat.css';
+import { Grid } from '@mui/material';
 
 function TobiChat() {
   const OK_API = 200;
   const API_KEY = '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';
   const ERROR_MSG = 'Error, please refresh!';
-  
-  // Estado que guarda la lista de chats
-  const [chats, setChats] = useState([]);
-  const [activeChatId, setActiveChatId] = useState(0);
+
+  const [messages, setMessages] = useState([]);
+  const [isChatAccessible, setIsChatAccessible] = useState(false);
+  const [isReportAccessible, setIsReportAccessible] = useState(false);
+
+  const handleChatAccessChange = (isAccessible) => {
+    setIsChatAccessible(isAccessible);
+  };
+
+  const handleReportAccessChange = (isAccessible) => {
+    setIsReportAccessible(isAccessible);
+  };
 
   useEffect(() => {
     if ('serviceWorker' in navigator && 'PushManager' in window) {
@@ -46,23 +56,17 @@ function TobiChat() {
   };
 
   const handleSendMessage = async (message) => {
-    setChats((prevChats) =>
-      prevChats.map((chat) => 
-        chat.id === activeChatId 
-          ? { ...chat, messages: [...chat.messages, { text: message, isUser: true, error: false }] } 
-          : chat
-      )
-    );
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { text: message, isUser: true, error: false },
+    ]);
 
     const response = await sendMessageToAPI(message);
 
-    setChats((prevChats) =>
-      prevChats.map((chat) => 
-        chat.id === activeChatId 
-          ? { ...chat, messages: [...chat.messages, { text: response, isUser: false, error: response === ERROR_MSG }] }
-          : chat
-      )
-    );
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { text: response, isUser: false, error: response === ERROR_MSG },
+    ]);
 
     sendNotification(response);
   };
@@ -88,30 +92,34 @@ function TobiChat() {
   };
 
   const sendMessageToAPI = async (message) => {
-    return query(message);
-  };
-
-  const handleSelectChat = (chatId) => {
-    setActiveChatId(chatId);
+    return query({ inputs: message });
   };
 
   return (
     <div className="app-container">
-      <AppHeader />
-      <div className="main-content">
-        <div className="menu-container">
-          <ChatList chats={chats} setChats={setChats} onSelectChat={handleSelectChat} />
+        <AppHeader />
+      <div className="main-content" style={{ display: 'flex', height: '100%' }}>
+        <div className="controls-section" style={{ width: '15%' }}>
+          <Controls onChatAccessChange={handleChatAccessChange} onReportAccessChange={handleReportAccessChange} />
         </div>
-        {activeChatId !== 0 ? (
-          <div className="chat-container">
-            <div className="chat-header">
-              <h2>Chat with me!</h2>
-              <ThemeToggle />
+        <div className="content-section" style={{ width: '80%' }}>
+          {isChatAccessible ? (
+            <div className="chat-container">
+              <div className="chat-header">
+                <h2>Chat with me!</h2>
+                <ThemeToggle />
+              </div>
+              <MessageList messages={messages} />
+              <MessageInput onSendMessage={handleSendMessage} />
             </div>
-            <MessageList messages={chats.find(chat => chat.id === activeChatId)?.messages || []} />
-            <MessageInput onSendMessage={handleSendMessage} />
-          </div>
-        ) : <ChatWelcome/> }
+          ) : isReportAccessible ? (
+            <div >
+              <Report />
+            </div>
+          ) : (
+            <ChatWelcome />
+          )}
+        </div>
       </div>
     </div>
   );

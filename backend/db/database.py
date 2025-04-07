@@ -204,7 +204,110 @@ class DatabaseConnection:
         user = cursor.fetchone()  # Obtiene solo un registro
         cursor.close()
         self.close_connectionDB()
-        return user  
+        return user
+
+# -------------------------- Patients ----------------------------
+
+    def insert_patient(self, patient) -> None:
+        self.connectDB()
+        cursor = self.connUser.cursor()
+        
+        patientExist_query = "SELECT COUNT(*) FROM patients WHERE name = %s"
+        
+        # Query para actualizar los datos si el paciente existe
+        update_query = """
+            UPDATE patients
+            SET email = %s, 
+                phone = %s, 
+                gender = %s, 
+                age = %s, 
+                diseases = %s, 
+                allergy = %s, 
+                history = %s
+            WHERE name = %s
+        """
+        
+        # Query para insertar un nuevo paciente si no existe
+        insert_query = """
+            INSERT INTO patients (
+                name, email, phone, gender, age, diseases, allergy, history
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        """
+
+        try:
+            # Comprobar si el paciente existe en la tabla
+            cursor.execute(patientExist_query, (patient.name,))
+            exists = cursor.fetchone()[0] > 0
+
+            if exists:
+                # Ejecutar la consulta de actualización si el paciente existe
+                cursor.execute(
+                    update_query,
+                    (
+                        patient.email,
+                        patient.phone,
+                        patient.gender,
+                        patient.age,
+                        patient.diseases,
+                        patient.allergy,
+                        patient.history,
+                        patient.name,  # WHERE clause
+                    )
+                )
+            else:
+                # Ejecutar la consulta de inserción si el paciente no existe
+                cursor.execute(
+                    insert_query,
+                    (
+                        patient.name,
+                        patient.email,
+                        patient.phone,
+                        patient.gender,
+                        patient.age,
+                        patient.diseases,
+                        patient.allergy,
+                        patient.history,
+                    )
+                )
+            # Confirmar los cambios en la base de datos
+            self.connUser.commit()
+        except Exception as e:
+            # Revertir los cambios en caso de error
+            self.connUser.rollback()
+            raise Exception("insert_patient: " + str(e))
+        finally:
+            # Cerrar el cursor y la conexión
+            cursor.close()
+            self.close_connectionDB()
+
+    def get_patients(self) -> List[Dict]:
+        self.connectDB()
+        cursor = self.connUser.cursor()
+        query = """SELECT * FROM patients"""
+        cursor.execute(query)
+        patients = cursor.fetchall()
+        cursor.close()
+        self.close_connectionDB()
+        return patients
+    
+    def delete_patient(self, id) -> None:
+        self.connectDB()
+        cursor = self.connUser.cursor()
+        query = """
+        DELETE FROM patients WHERE id_patient = %s
+        """
+        id_int = int(id)
+        try:
+            cursor.execute(query, (id_int,))
+            self.connUser.commit()
+        except Exception as e:
+            raise Exception("delete_patient: " + str(e))
+        finally:
+            cursor.close()
+            self.close_connectionDB()
+
+
+# --------------------------DB Connection ------------------------
 
     def close_connectionDB(self) -> None:
         self.connUser.close()
