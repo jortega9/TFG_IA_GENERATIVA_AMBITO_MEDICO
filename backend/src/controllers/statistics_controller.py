@@ -51,3 +51,35 @@ def obtener_mediana_rangoI(path_csv):
         }
     
     return resultado
+
+def obtener_freq_ic95(path_csv):
+    """
+    Lee un archivo CSV con estadísticas y devuelve un diccionario con la frecuencia y el intervalo de confianza del 95% de cada variable.
+
+    Args:
+        path_csv (str): Ruta al archivo CSV.
+
+    Returns:
+        dict: Diccionario con la forma {variable: { }}.
+    """
+    df = pd.read_csv(path_csv)
+    
+    resultado = {}
+    for _, fila in df.iterrows():
+        variable = fila['variable']
+        valor = fila['valor']
+        ic_95_inf = fila['ic_95_inf']
+        ic_95_sup = fila['ic_95_sup']
+        porcentaje = fila['porcentaje']
+        n = fila['n']
+        clave = f"{fila['variable']}_{int(fila['valor'])}"
+        resultado[clave] = {
+            'variable': variable,
+            'valor': valor,
+            'n': n,
+            'porcentaje': porcentaje,
+            'ic_95_inf': ic_95_inf,
+            'ic_95_sup': ic_95_sup
+        }
+    
+    return resultado

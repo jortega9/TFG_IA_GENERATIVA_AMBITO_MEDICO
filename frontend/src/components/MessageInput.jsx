@@ -3,14 +3,14 @@ import { Send, User } from 'lucide-react'
 
 
 // Componente que tiene el input del usuario, se le pasa el handleSendMessage del
-// componente Tobichat para manejar los mensajes al llegarle el input
+// componente Urolobot para manejar los mensajes al llegarle el input
 function MessageInput({ onSendMessage }) {
   // Estado que actualiza el input a enviar
   const [input, setInput] = useState('')
 
   /*
     Se hace trim del input, si no esta vacio se llama a la funcion onSendMessage
-    que es la que en el componente TobiChat actualizara la lista de mensajes y llamara
+    que es la que en el componente Urolobot actualizara la lista de mensajes y llamara
     a la API y vacia el input
   */
   const handleSubmit = (e) => {

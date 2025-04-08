@@ -7,10 +7,10 @@ import AppHeader from '../components/AppHeader';
 import Controls from '../components/Controls/Controls';
 import ChatWelcome from '../components/ChatWelcome';
 import Report from '../components/Report/Report';
-import '../styles/TobiChat.css';
+import '../styles/Urolobot.css';
 import { Grid } from '@mui/material';
 
-function TobiChat() {
+function Urolobot() {
   const OK_API = 200;
   const API_KEY = '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';
   const ERROR_MSG = 'Error, please refresh!';
@@ -47,7 +47,7 @@ function TobiChat() {
   const sendNotification = (message) => {
     if ('serviceWorker' in navigator && 'PushManager' in window) {
       navigator.serviceWorker.ready.then((registration) => {
-        registration.showNotification('TobiChat', {
+        registration.showNotification('Urolobot', {
           body: message,
           icon: AsistenteIcon,
         }).catch((error) => { console.log(error); });
@@ -125,4 +125,4 @@ function TobiChat() {
   );
 }
 
-export default TobiChat;
+export default Urolobot;
