@@ -1,91 +1,108 @@
 import React, { useState } from 'react';
-import { Box, Button, Typography, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import {
+    Box,
+    Button,
+    Typography,
+    ToggleButton,
+    ToggleButtonGroup,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper
+} from '@mui/material';
 import ThemeToggle from '../../ThemeToggle';
-import { Circle } from '@mui/icons-material';
 
-const DescStatistics1 = () => {
-    const [respuesta, setRespuesta] = useState([]);
-    const [texto, setTexto] = useState('');
+import BarChartNum from '../../Charts/BarChartNum';
+import PieChart from '../../Charts/PieChart';
+
+const DescStatistics1 = ({ descNumCsv }) => {
     const [procesando, setProcesando] = useState(false);
     const [loading, setLoading] = useState(false);
     const [media, setMedia] = useState([]);
     const [desviacion, setDesviacion] = useState([]);
-    const [mostrar, setMostrar] = useState('respuesta');
+    const [nPruebas, setNPruebas] = useState([]);
+    const [mostrar, setMostrar] = useState('media');
 
-    const parseString = (input) => {
-        const keywords = ["Pensamiento:", "Ejecuta:", "Observacion:", "Resultado:"];
-        const result = [];
-        let currentKeyword = null;
-        let currentContent = "";
-
-        const regex = new RegExp(`(${keywords.join('|')})`, 'g');
-        const parts = input.split(regex).filter(Boolean);
-
-        parts.forEach(part => {
-        const keyword = keywords.find(kw => part.startsWith(kw));
-        if (keyword) {
-            if (currentKeyword) {
-            result.push({ tipo: currentKeyword, contenido: currentContent.trim() });
-            }
-            currentKeyword = keyword.replace(':', '');
-            currentContent = part.replace(keyword, '').trim();
-        } else if (currentKeyword) {
-            currentContent += ' ' + part.trim();
-        }
-        });
-
-        if (currentKeyword) {
-        result.push({ tipo: currentKeyword, contenido: currentContent.trim() });
-        }
-
-        return result;
-    };
-
-    const getColor = (tipo) => {
-        switch (tipo) {
-        case 'Pensamiento': return '#1976D2';
-        case 'Ejecuta': return '#388E3C';
-        case 'Observacion': return '#D32F2F';
-        default: return '#333';
-        }
-    };
-
-    const renderMensaje = (mensaje, index) => (
-        <Box key={index} sx={{ display: 'flex', alignItems: 'center', marginBottom: 1 }}>
-        <Circle sx={{ fontSize: 12, color: getColor(mensaje.tipo), marginRight: 1 }} />
-        <Typography variant="body2" sx={{ color: '#333', wordBreak: 'break-word' }}>
-            <strong>{mensaje.tipo}:</strong> {mensaje.contenido}
-        </Typography>
-        </Box>
-    );
-
-    const handleExecuteData = async () => {
+    const handleDesc1 = async () => {
         setProcesando(true);
         setLoading(true);
 
         try {
-        const response = await fetch('http://127.0.0.1:8000/ai/test', { method: 'POST' });
-        if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
+            const response = await fetch('http://127.0.0.1:8000/ai/descStatistics1', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    excel_path: descNumCsv,
+                }),
+            });
 
-        const result = await response.json();
-        const resultText = result.result.razonamiento.join(' ');
-        const resultVars = result.result.resultado;
-        console.log(resultVars);
-        setTexto(resultText);
-        setRespuesta(parseString(resultText));
-        setMedia(resultVars.media);
-        setDesviacion(resultVars.desviacion_tipica);
+            if (!response.ok) {
+                throw new Error(`Error en la solicitud: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            const mediasArray = [];
+            const stdsArray = [];
+            const nArray = [];
+
+            for (const variable in data.result) {
+                const { n, media, std } = data.result[variable];
+                nArray.push({ variable, valor: n });
+                mediasArray.push({ variable, valor: media });
+                stdsArray.push({ variable, valor: std });
+            }
+
+            setNPruebas(nArray);
+            setMedia(mediasArray);
+            setDesviacion(stdsArray);
+
         } catch (error) {
-        console.error("Error al ejecutar el procesado:", error);
+            console.error("Error al ejecutar el desc1:", error);
         } finally {
-        setLoading(false);
+            setLoading(false);
         }
     };
 
+    const renderTable = (data, label, nArray) => (
+        <TableContainer component={Paper} sx={{ boxShadow: 2, borderRadius: 2 }}>
+            <Table size="small" sx={{ minWidth: 300, border: '1px solid #e0e0e0' }}>
+                <TableHead>
+                    <TableRow sx={{ backgroundColor: '#f1f5ff' }}>
+                        <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>Variable</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>N</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>{label}</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {data.map((item, idx) => {
+                        const nItem = nArray.find(n => n.variable === item.variable);
+                        return (
+                            <TableRow
+                                key={idx}
+                                hover
+                                sx={{ '&:hover': { backgroundColor: '#f9f9f9' } }}
+                            >
+                                <TableCell sx={{ border: '1px solid #e0e0e0' }}>{item.variable}</TableCell>
+                                <TableCell sx={{ border: '1px solid #e0e0e0' }}>{nItem ? nItem.valor : '-'}</TableCell>
+                                <TableCell sx={{ border: '1px solid #e0e0e0' }}>{item.valor}</TableCell>
+                            </TableRow>
+                        );
+                    })}
+                </TableBody>
+            </Table>
+        </TableContainer>
+    );
+    
+
     return (
-        <Box sx={{ backgroundColor: 'white', borderRadius: 2, padding: 2, boxShadow: 1, width: '100%', height: '64vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography sx={{ color: '#4D7AFF', fontSize: '1rem' }}>
+        <Box sx={{ backgroundColor: 'white', borderRadius: 2, padding: 2, boxShadow: 1, width: '100%', height: '70vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '10%' }}>
+                <Typography sx={{ color: '#4D7AFF', fontSize: '0.9rem' }}>
                     <strong>DETERMINANDO MEDIA Y DESVIACIÓN TÍPICA SIGUIENDO DISTRIBUCION NORMAL. (VARAIBLES NÚMERICAS)</strong>
                 </Typography>
                 <ThemeToggle />
@@ -93,48 +110,54 @@ const DescStatistics1 = () => {
 
             {procesando ? (
                 <>
-                <ToggleButtonGroup
-                    value={mostrar}
-                    exclusive
-                    onChange={(e, val) => val && setMostrar(val)}
-                    sx={{ marginTop: 1, height: 15 }}
-                >
-                    <ToggleButton value="respuesta">Respuesta</ToggleButton>
-                    <ToggleButton value="media">Media y Desviación</ToggleButton>
-                </ToggleButtonGroup>
+                    <ToggleButtonGroup
+                        value={mostrar}
+                        exclusive
+                        onChange={(e, val) => val && setMostrar(val)}
+                        sx={{ marginTop: 1, height: 15 }}
+                    >
+                        <ToggleButton value="media">Media</ToggleButton>
+                        <ToggleButton value="std">Desv Típica</ToggleButton>
+                    </ToggleButtonGroup>
 
-                <Box sx={{ backgroundColor: '#f5f5f5', borderRadius: 1, padding: 2, marginTop: 2, flexGrow: 1, overflowY: 'auto' }}>
-                    {loading ? (
-                    <Typography><strong>Procesando datos...</strong></Typography>
-                    ) : (
-                    mostrar === 'respuesta' ? (
-                        respuesta.map(renderMensaje)
-                    ) : (
-                        <>
-                        <Typography variant="body1"><strong>Media:</strong></Typography>
-                        {media.map((item, idx) => (
-                            <Typography key={`media-${idx}`}>{item.variable}: {item.valor}</Typography>
-                        ))}
-                        <Typography variant="body1" sx={{ marginTop: 2 }}><strong>Desviación Típica:</strong></Typography>
-                        {desviacion.map((item, idx) => (
-                            <Typography key={`desv-${idx}`}>{item.variable}: {item.valor}</Typography>
-                        ))}
-                        </>
-                    )
-                    )}
-                </Box>
+                    <Box sx={{ backgroundColor: '#f5f5f5', borderRadius: 1, padding: 2, marginTop: 2, flexGrow: 1, overflowY: 'auto' }}>
+                        {loading ? (
+                            <Typography><strong>Calculando media y desviación típica de las variables numéricas...</strong></Typography>
+                        ) : (
+                            <>
+                                {mostrar === 'media' ? (
+                                    <>
+                                        {renderTable(media, 'Media', nPruebas)}
+                                        <Box mt={4} sx={{ display: 'flex', justifyContent: 'space-around' }}>
+                                            <BarChartNum data={media} title='Medias de Variables Numéricas' variable='Medias' />
+                                            <PieChart data={media} title='Distribución de Medias' />
+                                        </Box>
+                                    </>
+                                ) : (
+                                    <>
+                                        {renderTable(desviacion, 'Desviación Típica', nPruebas)}
+                                        <Box mt={4} sx={{ display: 'flex', justifyContent: 'space-around' }}>
+                                            <BarChartNum data={desviacion} title='Desviaciones típicas de Variables Numéricas' variable='Desviaciones Típicas'/>
+                                            <PieChart data={desviacion} title='Distribución de Desviaciones Típicas' />
+                                        </Box>
+                                    </>
+                                )}
+                            </>
+                        )}
+                    </Box>
+
                 </>
             ) : (
                 <Button
                     variant="contained"
                     sx={{ backgroundColor: '#4D7AFF', fontSize: '1.1rem', marginTop: 16, alignSelf: 'center' }}
-                    onClick={handleExecuteData}
+                    onClick={handleDesc1}
                 >
-                    Calcular Media y Desviación Típica  
+                    Calcular Media y Desviación Típica
                 </Button>
             )}
-            </Box>
-        );
+        </Box>
+    );
 };
 
 export default DescStatistics1;

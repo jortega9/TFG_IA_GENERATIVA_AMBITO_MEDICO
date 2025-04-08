@@ -7,7 +7,7 @@ import sys
 from docx import Document
 import numpy as np
 
-from ai.phases.test.med_desv_tipica.agent import TestAgent
+from ai.phases.test.adv3.agent import TestAgentAdv3
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../..")))
 
 SETTINGS_PATH = "/home/joort/TFG/TFG_IA_GENERATIVA_AMBITO_MEDICO/ai/config.ini"
@@ -30,6 +30,6 @@ def execute(max_turns: int) -> list:
     Returns:
         list: List of results.
     """
-    agent = TestAgent()
+    agent = TestAgentAdv3()
     return agent.run(max_turns=max_turns)
     

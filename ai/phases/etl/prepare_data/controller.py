@@ -112,6 +112,7 @@ def execute(max_turns: int) -> list:
     Returns:
         list: List of results.
     """
+    process_master(DOC_DATA)
     agent = PrepareDataAgent()
     return agent.execute(max_turns=max_turns)
     

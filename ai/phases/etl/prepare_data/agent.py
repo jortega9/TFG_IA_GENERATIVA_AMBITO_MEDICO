@@ -60,38 +60,37 @@ class PrepareDataAgent(Agent) :
     
     def call(self, message):
         self.messages.append({"role": "user", "content": message})
-        result = self.call_llm(messages=self.messages, temperature=0.3)
+        result = self.call_llm(prompt=message, temperature=0)
         self.messages.append({"role": "assistant", "content": result})
         return result
     
 
     def execute(self, max_turns=100) :
-         i = 0
-         next_prompt = AGENT_WORKFLOW.format()
-         while i < max_turns:
-             i += 1
-             result = self.call(message=next_prompt)
-             print(result)
-             actions = [
-                 self.action_re.match(a)
-                 for a in result.split('\n')
-                 if self.action_re.match(a)
-             ]
-             if actions:
-                 action, action_input = actions[0].groups()
-                 if action not in self.known_actions:
-                     raise Exception("Unknown action: {}: {}".format(action, action_input))
-                 print("-- running {} {}".format(action, action_input))
-                 input("texto")
-                 print(action_input)
-                 if action_input and len(action_input.strip()) > 1:
-                     observation = self.known_actions[action](action_input)
-                 else:
-                     observation = self.known_actions[action]()
-                 print("Observacion:\n", observation)
-                 next_prompt = "Observacion: {}".format(observation)
-             else:
-                 return   
+        i = 0
+        next_prompt = AGENT_WORKFLOW.format()
+        while i < max_turns:
+            i += 1
+            result = self.call(message=next_prompt)
+            print(result)
+            actions = [
+                self.action_re.match(a)
+                for a in result.split('\n')
+                if self.action_re.match(a)
+            ]
+            if actions:
+                action, action_input = actions[0].groups()
+                if action not in self.known_actions:
+                    raise Exception("Unknown action: {}: {}".format(action, action_input))
+                print("-- running {} {}".format(action, action_input))
+                print(action_input)
+                if action_input and len(action_input.strip()) > 1:
+                    observation = self.known_actions[action](action_input)
+                else:
+                    observation = self.known_actions[action]()
+                print("Observacion:\n", observation)
+                next_prompt = "Observacion: {}".format(observation)
+            else:
+                return   
     
     def standardize_name(self, name: str) -> str:
         """Estandariza un nombre: minúsculas, reemplaza espacios por guiones bajos y elimina caracteres no alfanuméricos."""
@@ -104,7 +103,8 @@ class PrepareDataAgent(Agent) :
         """Carga el archivo Excel en un DataFrame."""
         self.df = pd.read_excel(EXCEL_PATH, header=1, sheet_name=0, dtype=str)
         self.df.columns = [self.standardize_name(col) for col in self.df.columns]
-        return "El Excel se ha cargado en un DataFrame."
+        self.df.to_csv(OUTPUT_PATH, index=False)
+        return "El Excel se ha cargado en un DataFrame, guardalo."
 
     def open_master(self):
         """Carga el diccionario maestro desde un JSON."""
@@ -191,8 +191,8 @@ class PrepareDataAgent(Agent) :
         """Guarda los archivos modificados en la carpeta data processed"""
         self.df.to_csv(OUTPUT_PATH, index=False)
         
-        with open(MASTER_PATH, "w") as file:
-            json.dump(self.master, file, indent=4)
+        # with open(MASTER_PATH, "w") as file:
+        #     json.dump(self.master, file, indent=4)
             
         return "Se han guardado exitosamente los archivos."
         

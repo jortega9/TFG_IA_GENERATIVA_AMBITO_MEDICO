@@ -13,33 +13,49 @@ import { Button } from '@mui/material';
 const Report = () => {
     const steps = ["1", "2", "3", "4", "5", "6", "7", "8"];
     const [currentStep, setCurrentStep] = useState(0);
-    const [files, setFiles] = useState([]);
 
-    const addFiles = (acceptedFiles) => {
-        setFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
-        console.log(acceptedFiles);
-    };
+    const [descNumVars, setDescnumVars] = useState([]);
+    const [descNumCsv, setDescNumCsv] = useState('');
+    const [descCatVars, setDescCatVars] = useState([]);
+    const [descCatCsv, setDescCatCsv] = useState('');
+
+    const [isDataPrepared, setIsDataPrepared] = useState(false);
+    const [isDataProcessed, setIsDataProcessed] = useState(false);
+
+    const [isDesc1Calculated, setIsDesc1Calculated] = useState(false);
+    const [isDesc2Calculated, setIsDesc2Calculated] = useState(false);
+    const [isDesc3Calculated, setIsDesc3Calculated] = useState(false);
+    const [isAdv1Calculated, setIsAdv1Calculated] = useState(false);
+    const [isAdv2Calculated, setIsAdv2Calculated] = useState(false);
+    const [isAdv3Calculated, setIsAdv3Calculated] = useState(false);
+    const [isAdv4Calculated, setIsAdv4Calculated] = useState(false);
 
     const getStepContent = (step) => {
         switch (step) {
             case 0:
-                return <DropFiles files={files} addFiles={addFiles} />;
+                return <DropFiles setIsDataPrepared={setIsDataPrepared}/>;
             case 1:
-                return <ProcessData/>;
+                return <ProcessData
+                setIsDataProcessed={setIsDataProcessed}
+                setDescnumVars={setDescnumVars}
+                setDescNumCsv={setDescNumCsv}
+                setDescCatVars={setDescCatVars}
+                setDescCatCsv={setDescCatCsv}
+            />;
             case 2:
-                return <DescStatistics1/>;
+                return <DescStatistics1 isDataCalculated={isDesc1Calculated} setIsDataCalculated={setIsDesc1Calculated} descNumCsv={descNumCsv}/>;
             case 3:
-                return <DescStatistics2/>;
+                return <DescStatistics2 isDataCalculated={isDesc2Calculated} setIsDataCalculated={setIsDesc2Calculated} descNumCsv={descNumCsv}/>;
             case 4:
-                return <DescStatistics3/>;
+                return <DescStatistics3 isDataCalculated={isDesc3Calculated} setIsDataCalculated={setIsDesc3Calculated} descCatCsv={descCatCsv}/>;
             case 5:
-                return <AdvancedStatistics1/>;
+                return <AdvancedStatistics1 />;
             case 6:
-                return <AdvancedStatistics2/>;
+                return <AdvancedStatistics2 />;
             case 7:
-                return <AdvancedStatistics3/>;
+                return <AdvancedStatistics3 />;
             case 8:
-                return <AdvancedStatistics4/>;
+                return <AdvancedStatistics4 />;
             default:
                 return <p>Error: Paso desconocido</p>;
             }
@@ -48,9 +64,11 @@ const Report = () => {
     const isStepValid = () => {
         switch (currentStep) {
             case 0:
-                return files.length === 2;
+                return isDataPrepared;
+                // return true;
             case 1:
-                return true;
+                return isDataProcessed;
+                // return true;
             case 2:
                 return true;
             case 3:

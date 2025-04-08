@@ -1,73 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Button, CircularProgress } from '@mui/material';
+import { Box, Button, Typography, ToggleButton, ToggleButtonGroup, CircularProgress   } from '@mui/material';
 import { Circle } from '@mui/icons-material';
 import ThemeToggle from '../ThemeToggle';
 
-const ProcessData = () => {
-    const [respuesta, setRespuesta] = useState([]);
-    const [texto, setTexto] = useState('');
+const ProcessData = ({setIsDataProcessed, setDescnumVars, setDescNumCsv, setDescCatVars, setDescCatCsv, }) => {
+    const [numRazonamiento, setNumRazonamiento] = useState('');
+    const [catRazonamiento, setCatRazonamiento] = useState('');
     const [procesando, setProcesando] = useState(false);
     const [loading, setLoading] = useState(false);
-
-    const parseString = (input) => {
-        const keywords = ["Pensamiento:", "Ejecuta:", "Observacion:", "Resultado:"];
-        const result = [];
-        let currentKeyword = null;
-        let currentContent = "";
-    
-        // Crear una expresión regular que detecte las palabras clave
-        const regex = new RegExp(`(${keywords.join('|')})`, 'g');
-    
-        // Dividir el texto por las palabras clave, manteniendo las palabras clave en el resultado
-        const parts = input.split(regex).filter(Boolean);
-    
-        parts.forEach(part => {
-            const keyword = keywords.find(kw => part.startsWith(kw));
-            if (keyword) {
-                if (currentKeyword) {
-                    result.push({
-                        tipo: currentKeyword,
-                        contenido: currentContent.trim()
-                    });
-                }
-                currentKeyword = keyword.replace(':', '');
-                currentContent = part.replace(keyword, '').trim();
-            } else if (currentKeyword) {
-                currentContent += ' ' + part.trim();
-            }
-        });
-    
-        if (currentKeyword) {
-            result.push({
-                tipo: currentKeyword,
-                contenido: currentContent.trim()
-            });
-        }
-    
-        return result;
-    };
-    
-
-    const getColor = (tipo) => {
-        switch (tipo) {
-            case 'Pensamiento': return '#1976D2';
-            case 'Ejecuta': return '#388E3C';
-            case 'Observacion': return '#D32F2F';
-            default: return '#333';
-        }
-    };
-
-    const renderMensaje = (mensaje, index) => (
-        <Box key={index} sx={{ display: 'flex', alignItems: 'center', marginBottom: 1, width: '100%' }}>
-            <Circle sx={{ fontSize: 12, color: getColor(mensaje.tipo), marginRight: 1 }} />
-            <Typography
-                variant="body2"
-                sx={{ color: '#333', textAlign: 'left', wordBreak: 'break-word' }}
-            >
-                <strong>{mensaje.tipo}:</strong> {mensaje.contenido}
-            </Typography>
-        </Box>
-    );
+    const [mostrar, setMostrar] = useState('numerico');
 
     const handleExecuteData = async () => {  
         setProcesando(true);
@@ -83,11 +24,27 @@ const ProcessData = () => {
             }
     
             const result = await response.json();
-            const resultText = result.result.join(' ');
-            setTexto(resultText);
-            setRespuesta(parseString(resultText));
-    
             console.log("Ejecutar Procesado:", result);
+
+            const numericText = result.result.numeric.explanation;
+            const numericResults = result.result.numeric.results;
+            const categoricalText = result.result.categorical.explanation;
+            const categoricalResults = result.result.categorical.results;
+
+            const numericVars = numericResults.variables;
+            const numericCsv = numericResults.csv_path;
+            const categoricalVars = categoricalResults.variables;
+            const categoricalCsv = categoricalResults.csv_path;
+
+            setNumRazonamiento(numericText);
+            setCatRazonamiento(categoricalText);
+            setDescnumVars(numericVars);
+            setDescNumCsv(numericCsv);
+            setDescCatVars(categoricalVars);
+            setDescCatCsv(categoricalCsv);        
+
+            console.log("Ejecutar Procesado:", result);
+            setIsDataProcessed(true);
         } catch (error) {
             console.error("Error al ejecutar el procesado:", error);
         } finally {
@@ -102,60 +59,77 @@ const ProcessData = () => {
             padding: 2,
             boxShadow: 1,
             width: '100%',
-            height: "64vh",
+            height: "70vh",
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden'
         }}>
-            <Box sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-            }}>
-
-                <Typography sx={{ color: '#4D7AFF', fontSize: '1rem' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '10%' }}>
+                <Typography sx={{ color: '#4D7AFF', fontSize: '0.9rem' }}>
                     <strong> PROCESANDO DATOS DE BBDD Y MAESTRO. </strong>
                 </Typography>
                 <ThemeToggle />
             </Box>
 
             {procesando ? (
-                <Box sx={{
-                    backgroundColor: '#f5f5f5',
-                    borderRadius: 1,
-                    padding: 2,
-                    flexGrow: 1,
-                    overflowY: "scroll",
-                    overflowX: "hidden",
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'flex-start',
-                    marginBottom: 1,
-                    marginTop: 1
-                }}>
+                <>
+                <ToggleButtonGroup
+                    value={mostrar}
+                    exclusive
+                    onChange={(e, val) => val && setMostrar(val)}
+                    sx={{ marginTop: 1, height: 15 }}
+                >
+                    <ToggleButton value="numerico">Vars Numéricas</ToggleButton>
+                    <ToggleButton value="categorico">Vars Categóricas </ToggleButton>
+                </ToggleButtonGroup>
+
+                <Box sx={{ backgroundColor: '#f5f5f5', borderRadius: 1, padding: 2, marginTop: 2, flexGrow: 1, overflowY: 'auto' }}>
                     {loading ? (
-                        <Typography variant="body1" sx={{ color: '#333', paddingBottom: 2 }}>
-                            <strong> Cargando datos... </strong>
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        marginTop: 6
+                    }}>
+                        <CircularProgress sx={{ color: '#4D7AFF', mb: 2 }} />
+                        <Typography variant="body1" sx={{ color: '#4D7AFF' }}>
+                        Procesando los datos...
                         </Typography>
+                    </Box>
                     ) : (
-                        <>
-                            <Typography variant="body1" sx={{ color: '#333', paddingBottom: 2 }}>
-                                <strong> Se están procesando los datos de los documentos subidos. </strong>
-                            </Typography>
-                            {respuesta.map((mensaje, index) => renderMensaje(mensaje, index))}
-                        </>
-                    )}
+                        mostrar === 'numerico' ? (
+                            <>
+                                <Typography variant="h6" sx={{ marginBottom: 2, color: '#1976D2' }}>
+                                    Razonamiento Variables Numéricas
+                                </Typography>
+                                <Typography variant="body2" sx={{ color: '#333', wordBreak: 'break-word', textAlign: 'left' }}>
+                                    <strong>Observación:</strong> {numRazonamiento}
+                                </Typography>
+                            </>
+                        ) : (
+                            <>
+                                <Typography variant="h6" sx={{ marginBottom: 2, color: '#388E3C' }}>
+                                    Razonamiento Variables Categóricas
+                                </Typography>
+                                <Typography variant="body2" sx={{ color: '#333', wordBreak: 'break-word', textAlign: 'left' }}>
+                                    <strong>Observación:</strong> {catRazonamiento}
+                                </Typography>
+                            </>
+                        )
+                    )
+                    }
                 </Box>
+                </>
             ) : (
                 <Button
                     variant="contained"
                     sx={{ backgroundColor: '#4D7AFF', fontSize: '1.1rem', marginTop: 16, alignSelf: 'center' }}
                     onClick={handleExecuteData}
                 >
-                    Ejecutar Procesado
+                    Procesar Datos Descriptivos
                 </Button>
             )}
-        </Box>
+            </Box>
     );
 };
 

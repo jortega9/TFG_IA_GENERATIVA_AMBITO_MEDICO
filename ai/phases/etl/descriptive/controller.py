@@ -16,7 +16,15 @@ def execute() -> dict:
 	Returns:
 		dict: returns the reports and results.
 	"""
-	return {}
+
+	numeric = run_numeric_analysis()
+	categorical = run_categorical_analysis()
+
+
+	return {
+		"numeric": numeric,
+		"categorical": categorical
+	}
 
 def run_numeric_analysis() -> dict:
 	"""Call the LLM Agent for the numeric analysis.

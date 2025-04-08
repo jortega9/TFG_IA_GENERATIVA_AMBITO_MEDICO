@@ -87,7 +87,7 @@ const AuthPage = () => {
 
         if (user) {
             // setUser(user);
-            navigate('/Tobichat');
+            navigate('/Urolobot');
         }
     };
 

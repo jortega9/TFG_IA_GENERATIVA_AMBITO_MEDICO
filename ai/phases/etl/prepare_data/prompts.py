@@ -167,6 +167,8 @@ de analisis sobre el dataset.
 
 Las acciones que tienes disponibles en esta fase son:  read_excel, open_master, sample_df, info_df, view_column, drop_column,
 add_to_master, update_master_description, ask_question
+
+Al final del proceso, DEBES ejecutar la acción save_files_in_processed_data justo antes de devolver tu respuesta.
 </instrucciones>
 
 <respuesta>

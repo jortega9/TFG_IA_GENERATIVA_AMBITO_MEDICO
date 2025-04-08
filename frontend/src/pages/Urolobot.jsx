@@ -7,10 +7,10 @@ import AppHeader from '../components/AppHeader';
 import Controls from '../components/Controls/Controls';
 import ChatWelcome from '../components/ChatWelcome';
 import Report from '../components/Report/Report';
-import '../styles/TobiChat.css';
+import '../styles/Urolobot.css';
 import { Grid } from '@mui/material';
 
-function TobiChat() {
+function Urolobot() {
   const OK_API = 200;
   const API_KEY = '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';
   const ERROR_MSG = 'Error, please refresh!';
@@ -47,7 +47,7 @@ function TobiChat() {
   const sendNotification = (message) => {
     if ('serviceWorker' in navigator && 'PushManager' in window) {
       navigator.serviceWorker.ready.then((registration) => {
-        registration.showNotification('TobiChat', {
+        registration.showNotification('Urolobot', {
           body: message,
           icon: AsistenteIcon,
         }).catch((error) => { console.log(error); });
@@ -97,12 +97,12 @@ function TobiChat() {
 
   return (
     <div className="app-container">
-      <AppHeader />
+        <AppHeader />
       <div className="main-content" style={{ display: 'flex', height: '100%' }}>
-        <div className="controls-section">
+        <div className="controls-section" style={{ width: '15%' }}>
           <Controls onChatAccessChange={handleChatAccessChange} onReportAccessChange={handleReportAccessChange} />
         </div>
-        <div className="content-section">
+        <div className="content-section" style={{ width: '80%' }}>
           {isChatAccessible ? (
             <div className="chat-container">
               <div className="chat-header">
@@ -113,7 +113,7 @@ function TobiChat() {
               <MessageInput onSendMessage={handleSendMessage} />
             </div>
           ) : isReportAccessible ? (
-            <div>
+            <div >
               <Report />
             </div>
           ) : (
@@ -125,4 +125,4 @@ function TobiChat() {
   );
 }
 
-export default TobiChat;
+export default Urolobot;

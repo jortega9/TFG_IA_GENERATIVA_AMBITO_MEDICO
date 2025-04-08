@@ -3,7 +3,7 @@ import { ThemeProvider } from './components/ThemeContext'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import AuthPage from './pages/AuthPage'
 import ProtectedRoute from './pages/ProtectedRoute'
-import TobiChat from './pages/TobiChat'
+import Urolobot from './pages/Urolobot'
 import AccountPage from './pages/AccountPage'
 import PasswordPage from './pages/PasswordPage'
 
@@ -16,10 +16,10 @@ function App() {
             <Routes>
                 <Route path='/login' element={<AuthPage />} />
                 <Route
-                  path='/Tobichat'
+                  path='/Urolobot'
                   element={
                     <ProtectedRoute>
-                      <TobiChat />
+                      <Urolobot />
                     </ProtectedRoute>
                   }
                 />
@@ -27,7 +27,7 @@ function App() {
                   path='/'
                   element={
                     <ProtectedRoute>
-                      <TobiChat />
+                      <Urolobot />
                     </ProtectedRoute>
                   }
                 />
