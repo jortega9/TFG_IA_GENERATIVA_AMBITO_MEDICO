@@ -80,11 +80,11 @@ class ComparativeCategoricalAgent(Agent):
             prompt=ASSIGN_CATEGORICAL_TEST.format(
                 group_variable=identify_group_variable.model_dump(),
                 categorical=self.df_categorical.to_string(),
-                master=json.dumps(self.master),
-                sample=self.df.sample(n=20).to_string(),
+                sample=self.df.to_string(),
             ),
             response_format=AssignCategoricalTestSchema,
         )
+        print(assign_categorical_test)
         
         self.comparative_analysis(
             group_variable=identify_group_variable,
@@ -98,6 +98,7 @@ class ComparativeCategoricalAgent(Agent):
             "explanation": explanation, 
             "results" : {
                 "group_variable": identify_group_variable.group_variable,
+                "valid_keys": identify_group_variable.valid_keys,
                 "csv_chi_path": CHI_PATH,
                 "csv_fisher_path": FISHER_PATH,
             }

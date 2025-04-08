@@ -7,14 +7,22 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.
 
 # Categoric
 from ai.phases.etl.comparative.categorical.agent import ComparativeCategoricalAgent
+from ai.phases.etl.comparative.numerical.agent import ComparativeNumericalAgent
 
 def execute() -> dict:
-	"""Main call to the API.
+    """Main call to the API. EXECUTE THIS FUNCTION!"""
+    categorical_response = run_categorical_analysis()
+    print(categorical_response)
+    numerical_response = run_numerical_analysis({ 
+        "name": categorical_response["results"]["group_variable"], 
+        "valid_keys": categorical_response["results"]["valid_keys"],
+        }
+    )
+    return {
+        "categorical_analysis": categorical_response,
+        "numerical_analysis": numerical_response
+    }
 
-	Returns:
-		dict: returns the reports and results.
-	"""
-	return {}
 
 def run_categorical_analysis() -> dict:
 	"""Call the LLM Agent for the numeric analysis.
@@ -26,11 +34,19 @@ def run_categorical_analysis() -> dict:
 	response = agent.execute()
 	return response
 
+def run_numerical_analysis(group_variable: dict) -> dict:
+    if not group_variable :
+        return { "error" : "You have to execute run_categorical_analysis first"}
+    agent = ComparativeNumericalAgent(group_variable=group_variable)
+    response = agent.execute()
+    return response
+    
+
 #########################################################################################
 #                                   DELETE ME                                           #
 #########################################################################################   
 def main() :
-	print(run_categorical_analysis())
+	print(execute())
     
 if __name__ == "__main__":
     main()

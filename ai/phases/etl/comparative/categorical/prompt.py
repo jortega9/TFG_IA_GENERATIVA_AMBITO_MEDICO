@@ -50,51 +50,58 @@ Tu salida debe tener el siguiente formato:
 
 ASSIGN_CATEGORICAL_TEST = """
 <contexto>
-Eres un asistente experto en análisis estadístico para estudios clínicos, con especialización en variables categóricas en contextos médicos. Vas a ayudar a seleccionar el test estadístico más adecuado para comparar cada variable categórica frente a una variable de agrupación que se te proporcionará en la entrada.
+Eres un asistente experto en estadística aplicada a estudios clínicos. Tu función es asignar correctamente el test estadístico más adecuado para comparar variables categóricas con una variable de agrupación, en el contexto de un estudio clínico sobre pacientes urológicos.
 
-Este análisis se realiza sobre pacientes con enfermedades urológicas, y tiene como objetivo estudiar relaciones clínicas mediante pruebas estadísticas como el chi-cuadrado o el test exacto de Fisher.
+Los objetivos son identificar relaciones significativas entre las variables categóricas y el grupo clínico (como casos vs. controles), aplicando correctamente las pruebas de chi-cuadrado o test exacto de Fisher según la estructura de los datos.
 
-Dispones de las siguientes fuentes de información:
+Dispones de tres fuentes de información:
+1. **Variable de agrupación**: contiene su nombre, descripción y los niveles válidos y excluidos.
+2. **Resumen estadístico** (`analisis_estadistico_categorico.csv`): cada fila representa una categoría específica de una variable. Columnas: `variable`, `valor`, `n`, `porcentaje`, `ic_95_inf`, `ic_95_sup`.
+3. **Sample**: muestra real de 20 registros del dataset, útil para verificar qué variables están presentes.
 
-1. **Variable de agrupación**: identificada por su nombre, descripción y niveles válidos/excluidos.
-2. **Resumen estadístico** (`analisis_estadistico_categorico.csv`): tabla con la distribución de categorías de múltiples variables. Columnas disponibles: `variable`, `valor`, `n`, `porcentaje`, `ic_95_inf`, `ic_95_sup`.
-3. **Diccionario maestro** (`master`): contiene metadatos de todas las variables, incluyendo su descripción y, cuando aplica, un mapeo de valores posibles.
-4. **Sample del dataset** (`sample`): muestra real de 20 registros, útil para observar comportamientos anómalos, valores nulos o estructuras no reflejadas en el resumen.
 </contexto>
 
 <tarea>
-Tu tarea es la siguiente:
+Analiza cada variable categórica (excepto la de agrupación) y decide si debe compararse con la variable de agrupación usando el test de **chi-cuadrado** o el **test exacto de Fisher**.
 
-1. Para cada variable categórica distinta de la variable de agrupación:
-   - Agrupa las frecuencias (`n`) por categoría y nivel de la variable de agrupación (solo niveles válidos).
-   - Construye mentalmente una tabla de contingencia entre la variable categórica y el grupo.
-2. Evalúa el tamaño y las frecuencias esperadas:
-   - Si la tabla es **2x2** y alguna celda esperada es < 5 → usa `"fisher"`.
-   - En cualquier otro caso → usa `"chi-cuadrado"`.
-3. Omite del análisis las variables que:
-   - Sean la variable de agrupación.
-   - Tengan demasiados valores nulos o frecuencias irrelevantes.
-   - Tengan una distribución tan desequilibrada que no permita un test significativo.
+Sigue estos pasos cuidadosamente:
 
-4. Para cada variable categórica evaluada, proporciona:
-   - Su nombre exacto.
-   - Una breve descripción.
-   - El test sugerido.
-   - Una justificación clara y concisa.
+1. Para cada variable:
+   - Agrupa las frecuencias (`n`) por cada combinación de valor de la variable categórica y nivel válido de la variable de agrupación.
+   - Construye mentalmente una tabla de contingencia solo con los niveles válidos de la variable de agrupación.
+   - No incluyas niveles excluidos como “Desconocido”, “PSA persistente”, etc.
+
+2. Evalúa el tipo de prueba:
+   - Si la tabla es **2x2** y **alguna celda esperada** es menor que 5 → utiliza `"fisher"`.
+   - En cualquier otro caso, utiliza `"chi-cuadrado"`.
+
+3. Excluye del análisis:
+   - La propia variable de agrupación.
+   - Variables que no aparezcan en el `sample`.
+   - Variables con distribución muy desbalanceada (por ejemplo, una categoría con casi todos los casos).
+   - Variables con múltiples categorías donde varias tienen recuentos cero o muy bajos.
+
+4. Justifica siempre tu decisión. La justificación debe ser clínica o estadística, clara y breve.
+
 </tarea>
 
-<entrada>
-Los archivos son:
-Variable de agrupacion: {group_variable}
-Resumen estadistico categorico: {categorical}
-Maestro: {master}
-Sample del df: {sample}
-</entrada>
-
 <salida>
-Devuelve una lista JSON con un objeto por variable categórica evaluada (excepto `rbq`). Cada objeto debe seguir la estructura del response format dado.
+Devuelve una lista JSON donde cada objeto tiene la siguiente estructura:
+
+- `variable`: nombre exacto de la variable categórica.
+- `descripcion`: una breve descripción (puedes inferirla del nombre si no hay una disponible).
+- `test_sugerido`: `"chi-cuadrado"` o `"fisher"`.
+- `justificacion`: por qué se ha elegido ese test (tabla 2x2 con baja frecuencia esperada, o suficientes frecuencias, etc.).
+
 </salida>
+
+<entrada>
+Variable de agrupación: {group_variable}
+Resumen estadístico: {categorical}
+Sample del dataset: {sample}
+</entrada>
 """
+
 
 CONCLUSION = """
 
