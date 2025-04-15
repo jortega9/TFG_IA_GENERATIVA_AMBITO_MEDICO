@@ -337,11 +337,12 @@ lerna-debug.log*
 
 .env
 .venv
-*.xlsx
-*.csv
 **/__pycache__/
 *.pyc
 chroma_db/*
 *.bin
 config.ini
-/data
+*.xlsx
+*.csv
+*.json
+*.docx
