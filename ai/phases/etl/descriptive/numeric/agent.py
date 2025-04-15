@@ -29,8 +29,8 @@ config = configparser.ConfigParser()
 
 config.read(SETTINGS_PATH)
 
-MASTER_PATH=os.path.join(config["data_path"]["processed_path"], "master.json")
 DF_PATH=os.path.join(config["data_path"]["processed_path"], "dataset.csv")
+INFO_PATH=os.path.join(config["data_path"]["processed_path"], "variable_info.json")
 
 OUTPUT_PATH=os.path.join(config["data_path"]["processed_path"], "analisis_estadistico_numerico.csv")
 
@@ -39,8 +39,8 @@ class NumericDescriptiveAgent(Agent):
     def __init__(self):
         super().__init__()
         self.df = pd.read_csv(DF_PATH)
-        with open(MASTER_PATH, "r", encoding="utf-8") as f:
-            self.master = json.load(f)
+        with open(INFO_PATH, "r", encoding="utf-8") as f:
+            self.variable_info = json.load(f)
         self.summary = pd.DataFrame(columns=["variable", "n", "media", "std", "mediana", "ric", "rango"])
         
         
@@ -50,19 +50,38 @@ class NumericDescriptiveAgent(Agent):
         Returns:
             dict: 
         """
-        identify_variable = self.call_llm(
-            prompt=IDENTIFY_WORKFLOW.format(
-                sample=self.df.sample(n=20).to_string(),
-                master=json.dumps(self.master)   
-            ), 
-            response_format=IdentifySchema,
-            temperature=0
-        )
-        self.descriptive_analysis(identify_variable.list)
+        
+        variable_list = []
+        
+        for var, info in self.variable_info.items():
+            if info["type"] == "numerical" and var in self.df.columns:
+                variable_list.append(var)
+                datos = pd.to_numeric(self.df[var], errors="coerce").dropna()
+                
+                if datos.empty:
+                    continue
+
+                n = len(datos)
+                media = round(datos.mean(), 2)
+                std = round(datos.std(), 2)
+                mediana = round(datos.median(), 2)
+                q1 = round(datos.quantile(0.25), 2)
+                q3 = round(datos.quantile(0.75), 2)
+                ric = round(q3 - q1, 2)
+                minimo = round(datos.min(), 2)
+                maximo = round(datos.max(), 2)
+                rango = f"{minimo}-{maximo}"
+
+                self.summary.loc[len(self.summary)] = [var, n, media, std, mediana, ric, rango]
+                
+        self.summary.to_csv(OUTPUT_PATH, index=False)
+        
+        # TODO: Hacer el LLM que hace la conclusion del summary 
+        
         return {
-            "explanation": identify_variable.explanation,
+            "explanation": "TODO",
             "results": {
-                "variables": identify_variable.list,
+                "variables": variable_list,
                 "csv_path": OUTPUT_PATH
             }
         }
