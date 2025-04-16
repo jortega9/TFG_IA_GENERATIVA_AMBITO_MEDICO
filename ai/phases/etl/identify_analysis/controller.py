@@ -13,7 +13,7 @@ from ai.phases.etl.identify_analysis.group_variable.agent import IdentifyGroupVa
 #                                   DELETE ME                                           #
 #########################################################################################   
 def main() :
-    agent = IdentifyGroupVariableAgent()
+    agent = CategorizeVariablesAgent()
     print(agent.execute())
     
 if __name__ == "__main__":

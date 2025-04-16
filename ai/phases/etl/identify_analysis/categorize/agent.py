@@ -26,6 +26,7 @@ config.read(SETTINGS_PATH)
 
 MASTER_PATH = os.path.join(config["data_path"]["processed_path"], "master.json")
 DF_PATH = os.path.join(config["data_path"]["processed_path"], "dataset.csv")
+GROUP_PATH = os.path.join(config["data_path"]["processed_path"], "variable_grupo.json")
 OUTPUT_PATH = os.path.join(config["data_path"]["processed_path"], "variable_info.json")
 
 class CategorizeVariablesAgent(Agent):
@@ -41,6 +42,8 @@ class CategorizeVariablesAgent(Agent):
         self.df = pd.read_csv(DF_PATH) 
         with open(MASTER_PATH, "r", encoding="utf-8") as f:
             self.master = json.load(f)
+        with open(GROUP_PATH, "r", encoding="utf-8") as f:
+            self.group_variable = json.load(f)
             
     def execute(self) -> dict:
         """Main call to the LLM Agent.
@@ -82,6 +85,7 @@ class CategorizeVariablesAgent(Agent):
                     descripcion=description,
                     valores_posibles=values,
                     datos_columna=data_column,
+                    group_variable=json.dumps(self.group_variable, ensure_ascii=False, indent=2)
                 ),
                 response_format=CategorizeSchema
             )
