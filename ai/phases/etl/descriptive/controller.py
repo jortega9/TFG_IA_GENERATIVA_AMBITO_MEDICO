@@ -51,6 +51,7 @@ def run_categorical_analysis() -> dict:
 #                                   DELETE ME                                           #
 #########################################################################################   
 def main() :
+	print(run_numeric_analysis())
 	print(run_categorical_analysis())
     
 if __name__ == "__main__":
