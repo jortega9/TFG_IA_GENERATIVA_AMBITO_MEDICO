@@ -9,6 +9,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.
 from ai.phases.etl.comparative.categorical.agent import ComparativeCategoricalAgent
 from ai.phases.etl.comparative.numerical.agent import ComparativeNumericalAgent
 
+from ai.phases.etl.comparative.categorical.chi_square import ChiSquareComparativeAgent
+
 def execute() -> dict:
     """Main call to the API. EXECUTE THIS FUNCTION!"""
     categorical_response = run_categorical_analysis()
@@ -40,13 +42,23 @@ def run_numerical_analysis(group_variable: dict) -> dict:
     agent = ComparativeNumericalAgent(group_variable=group_variable)
     response = agent.execute()
     return response
+
+def run_chi_square_analysis() -> dict:
+    """Calls the execute function of the LLM agent to do the chi square test
+
+    Returns:
+        dict: returns the dict with the reports and results.
+    """
+    agent = ChiSquareComparativeAgent()
+    response = agent.execute()
+    return response
     
 
 #########################################################################################
 #                                   DELETE ME                                           #
 #########################################################################################   
 def main() :
-	print(execute())
+	print(run_chi_square_analysis())
     
 if __name__ == "__main__":
     main()
