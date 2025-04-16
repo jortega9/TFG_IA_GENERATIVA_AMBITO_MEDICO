@@ -7,13 +7,13 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.
 
 # Categoric
 from ai.phases.etl.identify_analysis.categorize.agent import CategorizeVariablesAgent
-
+from ai.phases.etl.identify_analysis.group_variable.agent import IdentifyGroupVariableAgent
 
 #########################################################################################
 #                                   DELETE ME                                           #
 #########################################################################################   
 def main() :
-    agent = CategorizeVariablesAgent()
+    agent = IdentifyGroupVariableAgent()
     print(agent.execute())
     
 if __name__ == "__main__":

@@ -36,7 +36,7 @@ config = configparser.ConfigParser()
 
 config.read(SETTINGS_PATH)
 
-MASTER_PATH = os.path.join(config["data_path"]["processed_path"], "master.json")
+INFO_PATH = os.path.join(config["data_path"]["processed_path"], "variable_info.json")
 DF_PATH = os.path.join(config["data_path"]["processed_path"], "dataset.csv")
 CATEGORICAL_PATH = os.path.join(
     config["data_path"]["processed_path"], "analisis_estadistico_categorico.csv"
@@ -57,8 +57,8 @@ class ComparativeCategoricalAgent(Agent):
         super().__init__()
         self.df = pd.read_csv(DF_PATH)
         self.df_categorical = pd.read_csv(CATEGORICAL_PATH)
-        with open(MASTER_PATH, "r", encoding="utf-8") as f:
-            self.master = json.load(f)
+        with open(INFO_PATH, "r", encoding="utf-8") as f:
+            self.variable_info = json.load(f)
         df_chi_square = pd.DataFrame()
         df_fisher = pd.DataFrame()
 
