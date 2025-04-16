@@ -10,6 +10,7 @@ from ai.phases.etl.comparative.categorical.agent import ComparativeCategoricalAg
 from ai.phases.etl.comparative.numerical.agent import ComparativeNumericalAgent
 
 from ai.phases.etl.comparative.categorical.chi_square import ChiSquareComparativeAgent
+from ai.phases.etl.comparative.categorical.fisher import FisherExactComparativeAgent
 
 def execute() -> dict:
     """Main call to the API. EXECUTE THIS FUNCTION!"""
@@ -52,13 +53,22 @@ def run_chi_square_analysis() -> dict:
     agent = ChiSquareComparativeAgent()
     response = agent.execute()
     return response
-    
+
+def run_fisher_exact_analysis() -> dict:
+    """Calls the execute function of the LLM agent to do the fisher exact test
+
+    Returns:
+        dict: returns the dict with the reports and results.
+    """
+    agent = FisherExactComparativeAgent()
+    response = agent.execute()
+    return response  
 
 #########################################################################################
 #                                   DELETE ME                                           #
 #########################################################################################   
 def main() :
-	print(run_chi_square_analysis())
+	print(run_fisher_exact_analysis())
     
 if __name__ == "__main__":
     main()
