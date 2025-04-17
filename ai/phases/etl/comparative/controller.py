@@ -8,6 +8,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.
 from ai.phases.etl.comparative.categorical.chi_square import ChiSquareComparativeAgent
 from ai.phases.etl.comparative.categorical.fisher import FisherExactComparativeAgent
 
+from ai.phases.etl.comparative.numerical.mann_whitney import MannWhitneyComparativeAgent
 
 def run_chi_square_analysis() -> dict:
     """Calls the execute function of the LLM agent to do the chi square test
@@ -27,13 +28,23 @@ def run_fisher_exact_analysis() -> dict:
     """
     agent = FisherExactComparativeAgent()
     response = agent.execute()
-    return response  
+    return response
+
+def run_mann_whitney_u_analysis() -> dict:
+    """Calls the execute function of the LLM agent to do the mann whitney u test
+
+    Returns:
+        dict: returns the dict with the reports and results.
+    """
+    agent = MannWhitneyComparativeAgent()
+    response = agent.execute()
+    return response
 
 #########################################################################################
 #                                   DELETE ME                                           #
 #########################################################################################   
 def main() :
-	print(run_fisher_exact_analysis())
+	print(run_mann_whitney_u_analysis())
     
 if __name__ == "__main__":
     main()
