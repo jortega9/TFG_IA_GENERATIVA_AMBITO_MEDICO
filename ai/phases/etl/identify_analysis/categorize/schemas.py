@@ -7,9 +7,7 @@ class CategorizeSchema(BaseModel):
     test: Literal[
         "t_student",
         "mann_whitney",
-        "anova",
-        "kruskal-wallis",
         "chi-cuadrado",
         "fisher",
-        "mcnemar",
+        "irrelevant",
     ]
