@@ -6,3 +6,4 @@ class IdentifyTimeSchema(BaseModel):
     """Schema for the variable identified."""
     name:str
     other_options: List[str]
+    explanation: str
