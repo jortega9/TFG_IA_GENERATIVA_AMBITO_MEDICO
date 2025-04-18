@@ -27,7 +27,7 @@ config = configparser.ConfigParser()
 
 config.read(SETTINGS_PATH)
 
-MASTER_PATH = os.path.join(config["data_path"]["processed_path"], "variable_info.json")
+MASTER_PATH = os.path.join(config["data_path"]["processed_path"], "master.json")
 DF_PATH = os.path.join(config["data_path"]["processed_path"], "dataset.csv")
 
 OUTPUT_PATH = os.path.join(config["data_path"]["processed_path"], "variable_grupo.json")
