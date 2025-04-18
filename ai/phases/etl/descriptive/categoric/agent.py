@@ -28,7 +28,7 @@ config = configparser.ConfigParser()
 
 config.read(SETTINGS_PATH)
 
-MASTER_PATH=os.path.join(config["data_path"]["processed_path"], "master.json")
+INFO_PATH=os.path.join(config["data_path"]["processed_path"], "variable_info.json")
 DF_PATH=os.path.join(config["data_path"]["processed_path"], "dataset.csv")
 
 OUTPUT_PATH=os.path.join(config["data_path"]["processed_path"], "analisis_estadistico_categorico.csv")
@@ -38,29 +38,57 @@ class CategoricalDescriptiveAgent(Agent):
     def __init__(self):
         super().__init__()
         self.df = pd.read_csv(DF_PATH)
-        with open(MASTER_PATH, "r", encoding="utf-8") as f:
-            self.master = json.load(f)
+        with open(INFO_PATH, "r", encoding="utf-8") as f:
+            self.variable_info = json.load(f)
         self.summary = pd.DataFrame(columns=["variable", "valor", "n", "porcentaje", "ic_95_inf", "ic_95_sup"])
             
     def execute(self) -> dict:
-        """Main call to the LLM Agent.
+        """Main call to the LLM Agent for categorical variable analysis.
 
         Returns:
             dict: 
         """
-        identify_variable = self.call_llm(
-            prompt=IDENTIFY_WORKFLOW.format(
-                master=json.dumps(self.master),  
-                sample=self.df.sample(n=20).to_string()
-            ), 
-            response_format=IdentifySchema,
-            temperature=0
-        )
-        self.descriptive_analysis(identify_variable.list)
+        
+        variable_list = []
+
+        for var, info in self.variable_info.items():
+            if info["type"] != "categorical" or var not in self.df.columns:
+                continue
+
+            variable_list.append(var)
+            series = self.df[var].dropna()
+
+            if series.empty:
+                continue
+
+            total = len(series)
+            freq = series.value_counts().sort_index()
+
+            for valor, conteo in freq.items():
+                porcentaje = round((conteo / total) * 100, 2)
+
+                # Intervalo de confianza al 95% con método Wilson
+                ic_low, ic_up = proportion_confint(conteo, total, alpha=0.05, method='wilson')
+                ic_low = round(ic_low * 100, 2)
+                ic_up = round(ic_up * 100, 2)
+
+                self.summary.loc[len(self.summary)] = [
+                    var,
+                    valor,
+                    conteo,
+                    porcentaje,
+                    ic_low,
+                    ic_up
+                ]
+
+        self.summary.to_csv(OUTPUT_PATH, index=False)
+
+        # TODO: Hacer el LLM que hace la conclusion del summary 
+
         return {
-            "explanation": identify_variable.explanation,
+            "explanation": "TODO",
             "results": {
-                "variables": identify_variable.list,
+                "variables": variable_list,
                 "csv_path": OUTPUT_PATH
             }
         }

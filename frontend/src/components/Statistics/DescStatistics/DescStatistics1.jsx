@@ -15,10 +15,10 @@ import {
 } from '@mui/material';
 import ThemeToggle from '../../ThemeToggle';
 
-import BarChart from '../../Charts/BarChart';
+import BarChartNum from '../../Charts/BarChartNum';
 import PieChart from '../../Charts/PieChart';
 
-const DescStatistics1 = ({ descNumVars, descNumCsv }) => {
+const DescStatistics1 = ({ descNumCsv }) => {
     const [procesando, setProcesando] = useState(false);
     const [loading, setLoading] = useState(false);
     const [media, setMedia] = useState([]);
@@ -129,7 +129,7 @@ const DescStatistics1 = ({ descNumVars, descNumCsv }) => {
                                     <>
                                         {renderTable(media, 'Media', nPruebas)}
                                         <Box mt={4} sx={{ display: 'flex', justifyContent: 'space-around' }}>
-                                            <BarChart data={media} title='Medias de Variables Numéricas' variable='Medias' />
+                                            <BarChartNum data={media} title='Medias de Variables Numéricas' variable='Medias' />
                                             <PieChart data={media} title='Distribución de Medias' />
                                         </Box>
                                     </>
@@ -137,7 +137,7 @@ const DescStatistics1 = ({ descNumVars, descNumCsv }) => {
                                     <>
                                         {renderTable(desviacion, 'Desviación Típica', nPruebas)}
                                         <Box mt={4} sx={{ display: 'flex', justifyContent: 'space-around' }}>
-                                            <BarChart data={desviacion} title='Desviaciones típicas de VAriables Numéricas' variable='Desviaciones Típicas'/>
+                                            <BarChartNum data={desviacion} title='Desviaciones típicas de Variables Numéricas' variable='Desviaciones Típicas'/>
                                             <PieChart data={desviacion} title='Distribución de Desviaciones Típicas' />
                                         </Box>
                                     </>

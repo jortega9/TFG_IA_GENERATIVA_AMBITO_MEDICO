@@ -18,7 +18,7 @@ import ai.phases.test.adv3.controller as test_controller_adv3
 import ai.phases.test.adv4.controller as test_controller_adv4
 # import ai.phases.test.executeData.controller as test_controller_executeData
 
-from backend.src.controllers.statistics_controller import obtener_media_std, obtener_mediana_rangoI
+from backend.src.controllers.statistics_controller import obtener_media_std, obtener_mediana_rangoI, obtener_freq_ic95
 
 import time
 
@@ -62,14 +62,13 @@ async def calc_mediana_rangoI(request: DescRequest) :
     return {"result": result}
 
 @router.post('/descStatistics3')
-async def calc_porcentajes_frecuencias() :
+async def calc_porcentajes_frecuencias(request: DescRequest) :
     """
     Mediana y Rango Intercuartílico sin swguir una Distribución Normal
 
     """
 
-    result = test_controller_desc3.execute(max_turns=100)
-    time.sleep(5)
+    result = obtener_freq_ic95(request.excel_path)
     return {"result": result}
 
 @router.post('/testAdvStatistics1')

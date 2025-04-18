@@ -22,6 +22,14 @@ const Report = () => {
     const [isDataPrepared, setIsDataPrepared] = useState(false);
     const [isDataProcessed, setIsDataProcessed] = useState(false);
 
+    const [isDesc1Calculated, setIsDesc1Calculated] = useState(false);
+    const [isDesc2Calculated, setIsDesc2Calculated] = useState(false);
+    const [isDesc3Calculated, setIsDesc3Calculated] = useState(false);
+    const [isAdv1Calculated, setIsAdv1Calculated] = useState(false);
+    const [isAdv2Calculated, setIsAdv2Calculated] = useState(false);
+    const [isAdv3Calculated, setIsAdv3Calculated] = useState(false);
+    const [isAdv4Calculated, setIsAdv4Calculated] = useState(false);
+
     const getStepContent = (step) => {
         switch (step) {
             case 0:
@@ -35,11 +43,11 @@ const Report = () => {
                 setDescCatCsv={setDescCatCsv}
             />;
             case 2:
-                return <DescStatistics1 descNumVars={descNumVars} descNumCsv={descNumCsv}/>;
+                return <DescStatistics1 isDataCalculated={isDesc1Calculated} setIsDataCalculated={setIsDesc1Calculated} descNumCsv={descNumCsv}/>;
             case 3:
-                return <DescStatistics2 />;
+                return <DescStatistics2 isDataCalculated={isDesc2Calculated} setIsDataCalculated={setIsDesc2Calculated} descNumCsv={descNumCsv}/>;
             case 4:
-                return <DescStatistics3 />;
+                return <DescStatistics3 isDataCalculated={isDesc3Calculated} setIsDataCalculated={setIsDesc3Calculated} descCatCsv={descCatCsv}/>;
             case 5:
                 return <AdvancedStatistics1 />;
             case 6:
@@ -57,8 +65,10 @@ const Report = () => {
         switch (currentStep) {
             case 0:
                 return isDataPrepared;
+                // return true;
             case 1:
                 return isDataProcessed;
+                // return true;
             case 2:
                 return true;
             case 3:
