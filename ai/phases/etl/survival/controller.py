@@ -5,24 +5,20 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../..")))
 
 
-from ai.phases.etl.survival.agent import SurvivalAnalysisAgent
+from ai.phases.etl.survival.kaplan_meier.agent import KaplanMeierAgent 
 
-def execute() -> dict:
-	"""Main call to the API.
-
-	Returns:
-		dict: Results of the API call.
-	"""
-	agent = SurvivalAnalysisAgent()
-	response = agent.execute()
-	return response
+def run_kaplan_meier_analysis() -> dict:
+    """Run Kaplan-Meier survival analysis."""
+    agent = KaplanMeierAgent()
+    response = agent.execute()
+    return response
 
 
 #########################################################################################
 #                                   DELETE ME                                           #
 #########################################################################################   
 def main() :
-	print(execute())
+	print(run_kaplan_meier_analysis())
     
 if __name__ == "__main__":
     main()
