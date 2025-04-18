@@ -43,3 +43,5 @@ stats
 langchain 
 langchain-openai
 langgraph
+lifelines
+matplotlib
