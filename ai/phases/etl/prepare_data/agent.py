@@ -64,8 +64,14 @@ class PrepareDataAgent(Agent) :
         self.messages.append({"role": "assistant", "content": result})
         return result
     
-
     def execute(self, max_turns=100) :
+        print(self.read_excel())
+        print(self.open_master())
+        print(self.drop_corrupt_records())
+        print(self.drop_duplicates())
+        print(self.save_files_in_processed_data())
+
+    def execute_bad(self, max_turns=100) :
         i = 0
         next_prompt = AGENT_WORKFLOW.format()
         while i < max_turns:
@@ -114,7 +120,6 @@ class PrepareDataAgent(Agent) :
             self.standardize_name(key): value
             for key, value in master_data.items()
         }
-        print(self.master)
         return "El maestro se ha cargado y transformado en un diccionario."
 
     def sample_df(self, n=10):
