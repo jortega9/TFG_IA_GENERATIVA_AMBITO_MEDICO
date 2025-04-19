@@ -22,7 +22,7 @@ def main() :
     """A full execute run of the stadistic analysis."""
     print("=========================")
     # Prepara el dataset
-    PrepareDataAgent().execute_prepare_data()
+    PrepareDataAgent().execute()
     print("=========================")
     # Identifica la variable de grupo
     IdentifyGroupVariableAgent().execute()
