@@ -3,15 +3,11 @@
 """Agent that identify the categorical variables and make a csv summary.
 """
 import configparser
-import io
 import json
 import os
-import re
 import sys
 
 import pandas as pd
-import numpy as np
-from typing import List
 from dotenv import load_dotenv
 
 from scipy.stats import ttest_ind, mannwhitneyu, shapiro
