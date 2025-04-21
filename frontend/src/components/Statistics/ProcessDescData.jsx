@@ -3,7 +3,7 @@ import { Box, Button, Typography, ToggleButton, ToggleButtonGroup, CircularProgr
 import { Circle } from '@mui/icons-material';
 import ThemeToggle from '../ThemeToggle';
 
-const ProcessData = ({setIsDataProcessed, setDescnumVars, setDescNumCsv, setDescCatVars, setDescCatCsv, }) => {
+const ProcessDescData = ({setIsDataProcessed, setDescnumVars, setDescNumCsv, setDescCatVars, setDescCatCsv, }) => {
     const [numRazonamiento, setNumRazonamiento] = useState('');
     const [catRazonamiento, setCatRazonamiento] = useState('');
     const [procesando, setProcesando] = useState(false);
@@ -15,7 +15,7 @@ const ProcessData = ({setIsDataProcessed, setDescnumVars, setDescNumCsv, setDesc
         setLoading(true);
 
         try {
-            const response = await fetch('http://127.0.0.1:8000/ai/executeData', {
+            const response = await fetch('http://127.0.0.1:8000/ai/executeDataDesc', {
                 method: 'POST',
             });
     
@@ -133,4 +133,4 @@ const ProcessData = ({setIsDataProcessed, setDescnumVars, setDescNumCsv, setDesc
     );
 };
 
-export default ProcessData;
+export default ProcessDescData;

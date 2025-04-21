@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import DropFiles from '../DropFiles';
-import ProcessData from '../Statistics/ProcessData';
+import ProcessDescData from '../Statistics/ProcessDescData';
+import ProcessAdvData from '../Statistics/ProcessAdvData';
 import DescStatistics1 from '../Statistics/DescStatistics/DescStatistics1';
 import DescStatistics2 from '../Statistics/DescStatistics/DescStatistics2';
 import DescStatistics3 from '../Statistics/DescStatistics/DescStatistics3';
@@ -19,42 +20,60 @@ const Report = () => {
     const [descCatVars, setDescCatVars] = useState([]);
     const [descCatCsv, setDescCatCsv] = useState('');
 
-    const [isDataPrepared, setIsDataPrepared] = useState(false);
-    const [isDataProcessed, setIsDataProcessed] = useState(false);
+    const [csvMannWhitneyPath, setCsvMannWhitneyPath] = useState("");
+    const [csvTStudentPath, setCsvTStudentPath] = useState("");
 
-    const [isDesc1Calculated, setIsDesc1Calculated] = useState(false);
-    const [isDesc2Calculated, setIsDesc2Calculated] = useState(false);
-    const [isDesc3Calculated, setIsDesc3Calculated] = useState(false);
-    const [isAdv1Calculated, setIsAdv1Calculated] = useState(false);
-    const [isAdv2Calculated, setIsAdv2Calculated] = useState(false);
-    const [isAdv3Calculated, setIsAdv3Calculated] = useState(false);
-    const [isAdv4Calculated, setIsAdv4Calculated] = useState(false);
+    const [csvChiPath, setCsvChiPath] = useState("");
+    const [csvFisherPath, setCsvFisherPath] = useState("");
+    const [groupVariable, setGroupVariable] = useState("");
+    const [validKeys, setValidKeys] = useState([]);
+
+    const [isDataPrepared, setIsDataPrepared] = useState(false);
+    const [isDescDataProcessed, setIsDescDataProcessed] = useState(false);
+    const [isAdvDataProcessed, setIsAdvDataProcessed] = useState(false);
 
     const getStepContent = (step) => {
         switch (step) {
             case 0:
                 return <DropFiles setIsDataPrepared={setIsDataPrepared}/>;
             case 1:
-                return <ProcessData
-                setIsDataProcessed={setIsDataProcessed}
+                return <ProcessDescData
+                setIsDataProcessed={setIsDescDataProcessed}
                 setDescnumVars={setDescnumVars}
                 setDescNumCsv={setDescNumCsv}
                 setDescCatVars={setDescCatVars}
                 setDescCatCsv={setDescCatCsv}
             />;
             case 2:
-                return <DescStatistics1 isDataCalculated={isDesc1Calculated} setIsDataCalculated={setIsDesc1Calculated} descNumCsv={descNumCsv}/>;
+                return <DescStatistics1 descNumCsv={descNumCsv}/>;
             case 3:
-                return <DescStatistics2 isDataCalculated={isDesc2Calculated} setIsDataCalculated={setIsDesc2Calculated} descNumCsv={descNumCsv}/>;
+                return <DescStatistics2 descNumCsv={descNumCsv}/>;
             case 4:
-                return <DescStatistics3 isDataCalculated={isDesc3Calculated} setIsDataCalculated={setIsDesc3Calculated} descCatCsv={descCatCsv}/>;
+                return <DescStatistics3 descCatCsv={descCatCsv}/>;
             case 5:
-                return <AdvancedStatistics1 />;
+                return <ProcessAdvData 
+                setIsDataProcessed={setIsAdvDataProcessed}
+                setGroupVariable={setGroupVariable}
+                setValidKeys={setValidKeys}
+                setCsvMannWhitneyPath={setCsvMannWhitneyPath}
+                setCsvTStudentPath={setCsvTStudentPath}
+                setCsvChiPath={setCsvChiPath}
+                setCsvFisherPath={setCsvFisherPath}
+            />;
             case 6:
-                return <AdvancedStatistics2 />;
+                return <AdvancedStatistics1
+                groupVariable={groupVariable}
+                csvMannWhitneyPath={csvMannWhitneyPath}
+                csvTStudentPath={csvTStudentPath}
+                csvChiPath={csvChiPath}
+                csvFisherPath={csvFisherPath}
+
+                />;
             case 7:
-                return <AdvancedStatistics3 />;
+                return <AdvancedStatistics2 />;
             case 8:
+                return <AdvancedStatistics3 />;
+            case 9:
                 return <AdvancedStatistics4 />;
             default:
                 return <p>Error: Paso desconocido</p>;
@@ -67,7 +86,7 @@ const Report = () => {
                 return isDataPrepared;
                 // return true;
             case 1:
-                return isDataProcessed;
+                return isDescDataProcessed;
                 // return true;
             case 2:
                 return true;
@@ -76,12 +95,14 @@ const Report = () => {
             case 4:
                 return true;
             case 5:
-                return true;
+                return isAdvDataProcessed;
             case 6:
                 return true;
             case 7:
                 return true;
             case 8:
+                return true;
+            case 9:
                 return false;
             default:
                 return false;

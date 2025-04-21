@@ -5,20 +5,18 @@ from fastapi import APIRouter, UploadFile, File
 from fastapi.responses import JSONResponse
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../..'))
 from backend.src.schemas.ai import PrepareDataRequest
-from backend.src.schemas.statistics import DescRequest
+from backend.src.schemas.statistics import DescRequest, AdvRequest
 import backend.src.controllers.ai_controller as controller
 import ai.phases.etl.prepare_data.controller as prepare_data_controller
 import ai.phases.etl.descriptive.controller as descriptive_controller
-import ai.phases.test.desc1.controller as test_controller_desc1
-import ai.phases.test.desc2.controller as test_controller_desc2
-import ai.phases.test.desc3.controller as test_controller_desc3
+import ai.phases.etl.comparative.controller as comparative_controller
 import ai.phases.test.adv1.controller as test_controller_adv1
 import ai.phases.test.adv2.controller as test_controller_adv2
 import ai.phases.test.adv3.controller as test_controller_adv3
 import ai.phases.test.adv4.controller as test_controller_adv4
 # import ai.phases.test.executeData.controller as test_controller_executeData
 
-from backend.src.controllers.statistics_controller import obtener_media_std, obtener_mediana_rangoI, obtener_freq_ic95
+from backend.src.controllers.statistics_controller import obtener_media_std, obtener_mediana_rangoI, obtener_freq_ic95, det_corr_vars
 
 import time
 
@@ -32,11 +30,18 @@ async def prepare_data(request: PrepareDataRequest):
     print(request)
     return {"message": "Datos preparados exitosamente"}
 
-@router.post('/executeData')
-async def execute_data():
-    # result = prepare_data_controller.execute(max_turns=100)
+@router.post('/executeDataDesc')
+async def execute_data_desc():
 
     result = descriptive_controller.execute()
+    # time.sleep(5)
+    return {"result": result}
+
+@router.post('/executeDataAdv')
+async def execute_data_adv():
+
+    result = comparative_controller.execute()
+    print(result)
     # time.sleep(5)
     return {"result": result}
 
@@ -71,8 +76,9 @@ async def calc_porcentajes_frecuencias(request: DescRequest) :
     result = obtener_freq_ic95(request.excel_path)
     return {"result": result}
 
-@router.post('/testAdvStatistics1')
-async def calc_correlacion_resultados() :
+@router.post('/advStatistics1')
+async def calc_correlacion_resultados(request: AdvRequest) :
+    #TODO
     """
     Determinar correlación entre resultados inmunohistoquímicos y resto de variables.
 
@@ -80,7 +86,7 @@ async def calc_correlacion_resultados() :
 
     """
 
-    result = test_controller_adv1.execute(max_turns=100)
+    result = det_corr_vars()
     time.sleep(5)
     return {"result": result}
 

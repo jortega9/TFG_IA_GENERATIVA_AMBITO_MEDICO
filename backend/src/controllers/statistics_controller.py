@@ -83,3 +83,33 @@ def obtener_freq_ic95(path_csv):
         }
     
     return resultado
+
+def det_corr_vars(csvMannWhitneyPath, csvTStudentPath, csvChiPath, csvFisherPath):
+    #TODO
+    """
+    Lee un archivo CSV con estadísticas y devuelve un diccionario con la correlación entre variables.
+
+    Args:
+        path_csv (str): Ruta al archivo CSV.
+
+    Returns:
+        dict: Diccionario con la forma {variable1_variable2: {'correlacion': valor}}.
+    """
+    df_mw = pd.read_csv(csvMannWhitneyPath)
+    df_t = pd.read_csv(csvTStudentPath)
+    df_chi = pd.read_csv(csvChiPath)
+    df_fisher = pd.read_csv(csvFisherPath)
+    
+    resultado = {}
+    for _, fila in df_mw.iterrows():
+        variable1 = fila['variable1']
+        variable2 = fila['variable2']
+        correlacion = fila['correlacion']
+        n = fila['n']
+        clave = f"{fila['variable1']}_{fila['variable2']}"
+        resultado[clave] = {
+            'n': n,
+            'correlacion': correlacion
+        }
+    
+    return resultado
