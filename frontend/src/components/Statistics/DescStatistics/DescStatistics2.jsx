@@ -104,7 +104,7 @@ const DescStatistics2 = ({ descNumCsv }) => {
                 <Typography sx={{ color: '#4D7AFF', fontSize: '0.9rem' }}>
                     <strong>DETERMINANDO MEDIANA Y RANGO INTERCUARTÍLICO SIN SEGUIR UNA DISTRIBUCIÓN NORMAL (VARIABLES NUMÉRICAS).</strong>
                 </Typography>
-                <ThemeToggle />
+                {/* <ThemeToggle /> */}
             </Box>
 
             {procesando ? (

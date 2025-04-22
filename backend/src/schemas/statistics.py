@@ -5,8 +5,5 @@ class DescRequest(BaseModel):
     excel_path: str
 
 class AdvRequest(BaseModel):
-    csvMannWhitneyPath: str
-    csvTStudentPath: str
-    csvChiPath: str
-    csvFisherPath: str
+    excel_path: str
     

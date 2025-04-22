@@ -90,7 +90,9 @@ const DescStatistics3 = ({ descCatCsv }) => {
                     {data.map((item, idx) => {
                         const nItem = nArray.find(n => n.variable === item.variable);
                         const valoresItem = valores.find(v => v.variable === item.variable);
-                        const masterVariable = masterData[item.variable.split('_')[0].toUpperCase()];
+                        const masterVariable = masterData[item.variable.split('_')[0]];
+
+                        console.log('masterVariable', masterVariable);
 
                         const valorDescripcion =
                             masterVariable && masterVariable.valores[valoresItem?.valor]
@@ -132,7 +134,11 @@ const DescStatistics3 = ({ descCatCsv }) => {
                     {data.map((item, idx) => {
                         const nItem = nArray.find(n => n.variable === item.variable);
                         const valoresItem = valores.find(v => v.variable === item.variable);
-                        const masterVariable = masterData[item.variable.split('_')[0].toUpperCase()];
+
+                        console.log("variable:" + item.variable)
+                        const masterVariable = masterData[item.variable.split('_')[0]];
+
+                        console.log('masterVariable', masterVariable);
 
                         const valorDescripcion =
                             masterVariable && masterVariable.valores[valoresItem?.valor]
@@ -165,7 +171,7 @@ const DescStatistics3 = ({ descCatCsv }) => {
                 <Typography sx={{ color: '#4D7AFF', fontSize: '0.9rem' }}>
                     <strong>PORCENTAJES CON INTERVALOS DE CONFIANZA AL 95% Y FRECUENCIAS ABSOLUTAS (VARIABLES CUALITATIVAS).</strong>
                 </Typography>
-                <ThemeToggle />
+                {/* <ThemeToggle /> */}
             </Box>
 
             {procesando ? (

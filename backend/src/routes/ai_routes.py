@@ -15,10 +15,16 @@ import ai.phases.test.adv2.controller as test_controller_adv2
 import ai.phases.test.adv3.controller as test_controller_adv3
 import ai.phases.test.adv4.controller as test_controller_adv4
 # import ai.phases.test.executeData.controller as test_controller_executeData
+import ai.phases.etl.identify_analysis.controller as identify_analysis_controller
+import ai.phases.etl.significant.controller as significant_controller
 
-from backend.src.controllers.statistics_controller import obtener_media_std, obtener_mediana_rangoI, obtener_freq_ic95, det_corr_vars
+import ai.phases.etl.survival.controller as survival_controller
 
+from backend.src.controllers.statistics_controller import obtener_media_std, obtener_mediana_rangoI, obtener_freq_ic95
+from backend.src.controllers.statistics_controller import obtener_chi_cuadrado, obtener_fisher, obtener_mann_withney, obtener_t_student, obtener_significativas
 import time
+import json
+from fastapi import Body
 
 router = APIRouter()
 
@@ -27,8 +33,32 @@ DOC_DATA = "descripcion.docx"
 @router.post('/prepare-data')
 async def prepare_data(request: PrepareDataRequest):
     prepare_data_controller.execute(max_turns=100)
-    print(request)
     return {"message": "Datos preparados exitosamente"}
+
+@router.post('/identify-group-variable')
+async def identify_group_variable():
+    groupVar = identify_analysis_controller.runIdentifyGroupVariable()
+    return {"result": groupVar}
+
+@router.post('/identify-time-variable')
+async def identify_time_variable():
+    timeVar = identify_analysis_controller.runIdentifyTimeVariable()
+    return {"result": timeVar}
+
+@router.post("/save-config")
+def save_group_config(payload: dict = Body(...), jsonPath: str = Body(...)):
+    try:
+        os.makedirs(os.path.dirname(jsonPath), exist_ok=True)
+        with open(jsonPath, "w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2, ensure_ascii=False)
+        return {"status": "ok"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+@router.post('/categorize-variables')
+async def categorize_variables():
+    categorize = identify_analysis_controller.runCategorizeVariables()
+    return {"result": categorize}
 
 @router.post('/executeDataDesc')
 async def execute_data_desc():
@@ -40,10 +70,23 @@ async def execute_data_desc():
 @router.post('/executeDataAdv')
 async def execute_data_adv():
 
-    result = comparative_controller.execute()
-    print(result)
+    chi = comparative_controller.run_chi_square_analysis()
+    fisher = comparative_controller.run_fisher_exact_analysis()
+    tStudent = comparative_controller.run_t_student_analysis()
+    mann = comparative_controller.run_mann_whitney_u_analysis()
+    significant = significant_controller.collect_significant_values()
+    #kaplan = survival_controller.run_kaplan_meier_analysis()
+    # cox = survival_controller.run_cox_analysis()
+
+    print(chi, fisher, tStudent, mann, significant)
     # time.sleep(5)
-    return {"result": result}
+    return {"result": {
+        "chi": chi,
+        "fisher": fisher,
+        "tStudent": tStudent,
+        "mann": mann,
+        "significant": significant,
+    }}
 
 @router.post('/descStatistics1')
 async def calc_media_desv_normal(request: DescRequest) :
@@ -77,56 +120,49 @@ async def calc_porcentajes_frecuencias(request: DescRequest) :
     return {"result": result}
 
 @router.post('/advStatistics1')
-async def calc_correlacion_resultados(request: AdvRequest) :
-    #TODO
+async def calc_chi_cuadrado(request: AdvRequest) :
     """
-    Determinar correlación entre resultados inmunohistoquímicos y resto de variables.
-
-    Mediante t student, Test chi cuadrado de Pearson y Test exacto de Fisher
+    Realizar Análisis Categórico Chi Cuadrado
 
     """
 
-    result = det_corr_vars()
-    time.sleep(5)
+    result = obtener_chi_cuadrado(request.excel_path)
     return {"result": result}
 
-@router.post('/testAdvStatistics2')
-async def calc_recaida_tiempo() :
+@router.post('/advStatistics2')
+async def calc_fisher(request: AdvRequest) :
     """
-    Determinar correlación entre resultados inmunohistoquímicos y resto de variables.
-
-    Mediante t student, Test chi cuadrado de Pearson y Test exacto de Fisher
-
+    Realizar Análisis Categórico Fisher
     """
 
-    result = test_controller_adv2.execute(max_turns=100)
-    time.sleep(5)
+    result = obtener_fisher(request.excel_path)
     return {"result": result}
 
-@router.post('/testAdvStatistics3')
-async def analiz_curvas_supervivencia() :
+@router.post('/advStatistics3')
+async def calc_mann_whitney(request: AdvRequest) :
     """
-    Determinar correlación entre resultados inmunohistoquímicos y resto de variables.
-
-    Mediante t student, Test chi cuadrado de Pearson y Test exacto de Fisher
-
+    Realizar Análisis Categórico Mann Whitney
     """
 
-    result = test_controller_adv3.execute(max_turns=100)
-    time.sleep(5)
+    result = obtener_mann_withney(request.excel_path)
     return {"result": result}
 
-@router.post('/testAdvStatistics4')
-async def det_vars_riesgo_recaida() :
+@router.post('/advStatistics4')
+async def calc_t_student(request: AdvRequest) :
     """
-    Determinar correlación entre resultados inmunohistoquímicos y resto de variables.
-
-    Mediante t student, Test chi cuadrado de Pearson y Test exacto de Fisher
-
+    Realizar Análisis Categórico T Student
     """
 
-    result = test_controller_adv4.execute(max_turns=100)
-    time.sleep(5)
+    result = obtener_t_student(request.excel_path)
+    return {"result": result}
+
+@router.post('/advStatistics5')
+async def calc_t_student(request: AdvRequest) :
+    """
+    Realizar Análisis Categórico T Student
+    """
+
+    result = obtener_significativas(request.excel_path)
     return {"result": result}
 
 @router.post('/copyDocs')

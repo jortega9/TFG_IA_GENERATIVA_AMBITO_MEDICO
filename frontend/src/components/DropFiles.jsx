@@ -108,7 +108,7 @@ const DropFiles = ({ setIsDataPrepared }) => {
                 <Typography sx={{ color: '#4D7AFF', fontSize: '0.9rem' }}>
                     <strong>CARGAR BBDD Y ARCHIVO MAESTRO</strong>
                 </Typography>
-                <ThemeToggle />
+                {/* <ThemeToggle /> */}
             </Box>
 
             <Box sx={{

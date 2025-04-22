@@ -68,57 +68,33 @@ const ProcessDescData = ({setIsDataProcessed, setDescnumVars, setDescNumCsv, set
                 <Typography sx={{ color: '#4D7AFF', fontSize: '0.9rem' }}>
                     <strong> PROCESANDO DATOS DE BBDD Y MAESTRO. </strong>
                 </Typography>
-                <ThemeToggle />
+                {/* <ThemeToggle /> */}
             </Box>
 
             {procesando ? (
                 <>
-                <ToggleButtonGroup
-                    value={mostrar}
-                    exclusive
-                    onChange={(e, val) => val && setMostrar(val)}
-                    sx={{ marginTop: 1, height: 15 }}
-                >
-                    <ToggleButton value="numerico">Vars Numéricas</ToggleButton>
-                    <ToggleButton value="categorico">Vars Categóricas </ToggleButton>
-                </ToggleButtonGroup>
-
-                <Box sx={{ backgroundColor: '#f5f5f5', borderRadius: 1, padding: 2, marginTop: 2, flexGrow: 1, overflowY: 'auto' }}>
-                    {loading ? (
-                    <Box sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        marginTop: 6
-                    }}>
-                        <CircularProgress sx={{ color: '#4D7AFF', mb: 2 }} />
-                        <Typography variant="body1" sx={{ color: '#4D7AFF' }}>
-                        Procesando los datos...
-                        </Typography>
-                    </Box>
-                    ) : (
-                        mostrar === 'numerico' ? (
-                            <>
-                                <Typography variant="h6" sx={{ marginBottom: 2, color: '#1976D2' }}>
-                                    Razonamiento Variables Numéricas
-                                </Typography>
-                                <Typography variant="body2" sx={{ color: '#333', wordBreak: 'break-word', textAlign: 'left' }}>
-                                    <strong>Observación:</strong> {numRazonamiento}
-                                </Typography>
-                            </>
+                    <Box sx={{ backgroundColor: '#f5f5f5', borderRadius: 1, padding: 2, marginTop: 2, flexGrow: 1, overflowY: 'auto' }}>
+                        {loading ? (
+                        <Box sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            marginTop: 6
+                        }}>
+                            <CircularProgress sx={{ color: '#4D7AFF', mb: 2 }} />
+                            <Typography variant="body1" sx={{ color: '#4D7AFF' }}>
+                            Procesando los datos...
+                            </Typography>
+                        </Box>
                         ) : (
                             <>
-                                <Typography variant="h6" sx={{ marginBottom: 2, color: '#388E3C' }}>
-                                    Razonamiento Variables Categóricas
-                                </Typography>
-                                <Typography variant="body2" sx={{ color: '#333', wordBreak: 'break-word', textAlign: 'left' }}>
-                                    <strong>Observación:</strong> {catRazonamiento}
+                                <Typography elevation={2} sx={{ padding: 3, borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f5f5f5', color: '#4D7AFF' }}>
+                                    <strong>Datos procesados correctamente..</strong>
                                 </Typography>
                             </>
                         )
-                    )
-                    }
-                </Box>
+                        }
+                    </Box>
                 </>
             ) : (
                 <Button

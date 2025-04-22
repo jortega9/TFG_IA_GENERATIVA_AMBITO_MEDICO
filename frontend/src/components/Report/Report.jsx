@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import DropFiles from '../DropFiles';
+import SelectGroupVariable from '../Statistics/SelectGroupVariable';
+import SelectTimeVariable from '../Statistics/SelectTimeVariable';
 import ProcessDescData from '../Statistics/ProcessDescData';
 import ProcessAdvData from '../Statistics/ProcessAdvData';
 import DescStatistics1 from '../Statistics/DescStatistics/DescStatistics1';
@@ -9,10 +11,11 @@ import AdvancedStatistics1 from '../Statistics/AdvancesStatistics/AdvancedStatis
 import AdvancedStatistics2 from '../Statistics/AdvancesStatistics/AdvancedStatistics2';
 import AdvancedStatistics3 from '../Statistics/AdvancesStatistics/AdvancedStatistics3';
 import AdvancedStatistics4 from '../Statistics/AdvancesStatistics/AdvancedStatistics4';
+import AdvancedStatistics5 from '../Statistics/AdvancesStatistics/AdvancedStatistics5';
 import { Button } from '@mui/material';
 
 const Report = () => {
-    const steps = ["1", "2", "3", "4", "5", "6", "7", "8"];
+    const steps = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"];
     const [currentStep, setCurrentStep] = useState(0);
 
     const [descNumVars, setDescnumVars] = useState([]);
@@ -25,18 +28,21 @@ const Report = () => {
 
     const [csvChiPath, setCsvChiPath] = useState("");
     const [csvFisherPath, setCsvFisherPath] = useState("");
-    const [groupVariable, setGroupVariable] = useState("");
-    const [validKeys, setValidKeys] = useState([]);
+    const [csvSignificantPath, setCsvSignificantPath] = useState("");
 
     const [isDataPrepared, setIsDataPrepared] = useState(false);
     const [isDescDataProcessed, setIsDescDataProcessed] = useState(false);
     const [isAdvDataProcessed, setIsAdvDataProcessed] = useState(false);
+    const [isGroupIdentified, setIsGroupIdentified] = useState(false);
+    const [isTimeIdentified, setIsTimeIdentified] = useState(false);
 
     const getStepContent = (step) => {
         switch (step) {
             case 0:
                 return <DropFiles setIsDataPrepared={setIsDataPrepared}/>;
             case 1:
+                return <SelectGroupVariable setIsGroupIdentified={setIsGroupIdentified}/>;
+            case 2:
                 return <ProcessDescData
                 setIsDataProcessed={setIsDescDataProcessed}
                 setDescnumVars={setDescnumVars}
@@ -44,37 +50,33 @@ const Report = () => {
                 setDescCatVars={setDescCatVars}
                 setDescCatCsv={setDescCatCsv}
             />;
-            case 2:
-                return <DescStatistics1 descNumCsv={descNumCsv}/>;
             case 3:
-                return <DescStatistics2 descNumCsv={descNumCsv}/>;
+                return <DescStatistics1 descNumCsv={descNumCsv}/>;
             case 4:
-                return <DescStatistics3 descCatCsv={descCatCsv}/>;
+                return <DescStatistics2 descNumCsv={descNumCsv}/>;
             case 5:
+                return <DescStatistics3 descCatCsv={descCatCsv}/>;
+            case 6:
+                return <SelectTimeVariable setIsTimeIdentified={setIsTimeIdentified} />;
+            case 7:
                 return <ProcessAdvData 
                 setIsDataProcessed={setIsAdvDataProcessed}
-                setGroupVariable={setGroupVariable}
-                setValidKeys={setValidKeys}
                 setCsvMannWhitneyPath={setCsvMannWhitneyPath}
                 setCsvTStudentPath={setCsvTStudentPath}
                 setCsvChiPath={setCsvChiPath}
                 setCsvFisherPath={setCsvFisherPath}
+                setCsvSignificantPath={setCsvSignificantPath}
             />;
-            case 6:
-                return <AdvancedStatistics1
-                groupVariable={groupVariable}
-                csvMannWhitneyPath={csvMannWhitneyPath}
-                csvTStudentPath={csvTStudentPath}
-                csvChiPath={csvChiPath}
-                csvFisherPath={csvFisherPath}
-
-                />;
-            case 7:
-                return <AdvancedStatistics2 />;
             case 8:
-                return <AdvancedStatistics3 />;
+                return <AdvancedStatistics1 csvChiPath={csvChiPath} />;
             case 9:
-                return <AdvancedStatistics4 />;
+                return <AdvancedStatistics2 csvFisherPath={csvFisherPath}/>;
+            case 10:
+                return <AdvancedStatistics3 csvMannWhitneyPath={csvMannWhitneyPath}/>;
+            case 11:
+                return <AdvancedStatistics4 csvTStudentPath={csvTStudentPath}/>;
+            case 12:
+                return <AdvancedStatistics5 csvSignificantPath={csvSignificantPath}/>;
             default:
                 return <p>Error: Paso desconocido</p>;
             }
@@ -86,23 +88,30 @@ const Report = () => {
                 return isDataPrepared;
                 // return true;
             case 1:
-                return isDescDataProcessed;
+                return isGroupIdentified;
                 // return true;
             case 2:
-                return true;
+                return isDescDataProcessed;
+                // return true;
             case 3:
                 return true;
             case 4:
                 return true;
             case 5:
-                return isAdvDataProcessed;
-            case 6:
                 return true;
+            case 6:
+                return isTimeIdentified;
             case 7:
                 return true;
             case 8:
                 return true;
             case 9:
+                return true;
+            case 10:
+                return true;
+            case 11:
+                return true;
+            case 12:
                 return false;
             default:
                 return false;

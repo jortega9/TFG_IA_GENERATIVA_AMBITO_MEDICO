@@ -10,7 +10,10 @@ def obtener_media_std(path_csv):
     Returns:
         dict: Diccionario con la forma {variable: {'media': valor, 'std': valor}}.
     """
-    df = pd.read_csv(path_csv)
+    try:
+        df = pd.read_csv(path_csv)
+    except Exception as e:
+        return {}
     
     resultado = {}
     for _, fila in df.iterrows():
@@ -36,7 +39,10 @@ def obtener_mediana_rangoI(path_csv):
     Returns:
         dict: Diccionario con la forma {variable: {'mediana': valor, 'rangoI': valor}}.
     """
-    df = pd.read_csv(path_csv)
+    try :
+        df = pd.read_csv(path_csv)
+    except Exception as e:
+        return {}
     
     resultado = {}
     for _, fila in df.iterrows():
@@ -62,8 +68,11 @@ def obtener_freq_ic95(path_csv):
     Returns:
         dict: Diccionario con la forma {variable: { }}.
     """
-    df = pd.read_csv(path_csv)
-    
+    try:
+        df = pd.read_csv(path_csv)
+    except Exception as e:
+        return {}
+        
     resultado = {}
     for _, fila in df.iterrows():
         variable = fila['variable']
@@ -72,7 +81,8 @@ def obtener_freq_ic95(path_csv):
         ic_95_sup = fila['ic_95_sup']
         porcentaje = fila['porcentaje']
         n = fila['n']
-        clave = f"{fila['variable']}_{int(fila['valor'])}"
+        valor = fila['valor'].split('.')[0]
+        clave = f"{fila['variable']}_{valor}"
         resultado[clave] = {
             'variable': variable,
             'valor': valor,
@@ -84,32 +94,156 @@ def obtener_freq_ic95(path_csv):
     
     return resultado
 
-def det_corr_vars(csvMannWhitneyPath, csvTStudentPath, csvChiPath, csvFisherPath):
-    #TODO
+def obtener_chi_cuadrado(path_csv):
     """
-    Lee un archivo CSV con estadísticas y devuelve un diccionario con la correlación entre variables.
+    Lee un archivo CSV con estadísticas y devuelve un diccionario con el chi cuadrado y otros datos de cada variable.
 
     Args:
         path_csv (str): Ruta al archivo CSV.
 
     Returns:
-        dict: Diccionario con la forma {variable1_variable2: {'correlacion': valor}}.
+        dict: Diccionario con la forma {variable: {'chi_cuadrado': valor, 'tabla': valor, 'dof': valor, 'p_value': valor, 'significativo': valor}}.
     """
-    df_mw = pd.read_csv(csvMannWhitneyPath)
-    df_t = pd.read_csv(csvTStudentPath)
-    df_chi = pd.read_csv(csvChiPath)
-    df_fisher = pd.read_csv(csvFisherPath)
+    try:
+        df = pd.read_csv(path_csv)
+    except Exception as e:
+        return {}
+        
+    resultado = {}
+    for _, fila in df.iterrows():
+        variable = fila['variable']
+        tabla = fila['tabla']
+        chi_cuadrado = fila['chi2']
+        dof = fila['dof']
+        p_value = fila['p_value']
+        significativo = fila['significativo']
+        
+        resultado[variable] = {
+            'tabla': tabla,
+            'chi_cuadrado': chi_cuadrado,
+            'dof': dof,
+            'p_value': p_value,
+            'significativo': significativo
+        }
+    
+    return resultado
+
+
+def obtener_fisher(path_csv):
+    """
+    Lee un archivo CSV con estadísticas y devuelve un diccionario con el fisher y otros datos de cada variable.
+
+    Args:
+        path_csv (str): Ruta al archivo CSV.
+
+    Returns:
+        dict: Diccionario con la forma {variable: {'fisher': valor, 'tabla': valor, 'dof': valor, 'p_value': valor, 'significativo': valor}}.
+    """
+    try:
+        df = pd.read_csv(path_csv)
+    except Exception as e:
+        return {}
     
     resultado = {}
-    for _, fila in df_mw.iterrows():
-        variable1 = fila['variable1']
-        variable2 = fila['variable2']
-        correlacion = fila['correlacion']
-        n = fila['n']
-        clave = f"{fila['variable1']}_{fila['variable2']}"
-        resultado[clave] = {
-            'n': n,
-            'correlacion': correlacion
+    for _, fila in df.iterrows():
+        variable = fila['variable']
+        tabla = fila['tabla']
+        stat = fila['stat']
+        p_value = fila['p_value']
+        significativo = fila['significativo']
+        
+        resultado[variable] = {
+            'tabla': tabla,
+            'stat': stat,
+            'p_value': p_value,
+            'significativo': significativo
+        }
+    
+    return resultado
+
+    
+def obtener_mann_withney(path_csv):
+    """
+    Lee un archivo CSV con estadísticas y devuelve un diccionario con el mann withney y otros datos de cada variable.
+
+    Args:
+        path_csv (str): Ruta al archivo CSV.
+
+    Returns:
+        dict: Diccionario con la forma {variable: {'mann': valor, 'tabla': valor, 'dof': valor, 'p_value': valor, 'significativo': valor}}.
+    """
+    try:
+        df = pd.read_csv(path_csv)
+    except Exception as e:
+        return {}
+    
+    resultado = {}
+    for _, fila in df.iterrows():
+        variable = fila['variable']
+        n_casos = fila['n_casos']
+        n_controles = fila['n_controles']
+        p_value = fila['p_value']
+        significativo = fila['significativo']
+        
+        resultado[variable] = {
+            'n_casos': n_casos,
+            'n_controles': n_controles,
+            'p_value': p_value,
+            'significativo': significativo
+        }
+    
+    return resultado
+
+def obtener_t_student(path_csv):
+    """
+    Lee un archivo CSV con estadísticas y devuelve un diccionario con el t student y otros datos de cada variable.
+
+    Args:
+        path_csv (str): Ruta al archivo CSV.
+
+    Returns:
+        dict: Diccionario con la forma {variable: {'tStudent': valor, 'tabla': valor, 'dof': valor, 'p_value': valor, 'significativo': valor}}.
+    """
+    try:
+        df = pd.read_csv(path_csv)
+    except Exception as e:
+        return {}
+
+    resultado = {}
+    for _, fila in df.iterrows():
+        variable = fila['variable']
+        n_casos = fila['n_casos']
+        n_controles = fila['n_controles']
+        p_value = fila['p_value']
+        significativo = fila['significativo']
+        
+        resultado[variable] = {
+            'n_casos': n_casos,
+            'n_controles': n_controles,
+            'p_value': p_value,
+            'significativo': significativo
+        }
+    
+    return resultado
+
+def obtener_significativas(path_csv):
+
+    try:
+        df = pd.read_csv(path_csv)
+    except Exception as e:
+        return {}
+
+    resultado = {}
+    for _, fila in df.iterrows():
+        variable = fila['variable']
+        tipo = fila['tipo']
+        test_aplicado = fila['test_aplicado']
+        valor = fila['valor']
+        
+        resultado[variable] = {
+            'tipo': tipo,
+            'test_aplicado': test_aplicado,
+            'valor': valor,
         }
     
     return resultado

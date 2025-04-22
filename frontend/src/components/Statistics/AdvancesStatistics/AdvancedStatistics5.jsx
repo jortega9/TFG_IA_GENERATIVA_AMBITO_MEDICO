@@ -17,30 +17,29 @@ import ThemeToggle from '../../ThemeToggle';
 
 import ChiSquaredChart from '../../Charts/ChiSquaredChart';
 
-//TODO ChiSquare
+//TODO Significativas
 
-const AdvStatistics1 = ({csvChiPath}) => {
+const AdvStatistics5 = ({csvSignificantPath}) => {
     const [procesando, setProcesando] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [table, setTable] = useState([]);
-    const [chi2, setChi2] = useState([]);
-    const [doff, setDoff] = useState([]);
-    const [pValue, setPValue] = useState([]);
-    const [significative, setSignificative] = useState([]);
+    const [type, setType] = useState([]);
+    const [testApplied, setTestApplied] = useState([]);
+    const [value, setValue] = useState([]);
 
-    const handleAdv1 = async () => {
+    const handleAdv5 = async () => {
         setProcesando(true);
         setLoading(true);
+        // variable,tipo,test_aplicado,valor
 
         try {
-            console.log("csvChiPath:", csvChiPath);
-            const response = await fetch('http://127.0.0.1:8000/ai/advStatistics1', {
+            console.log("csvSignificantPath:", csvSignificantPath);
+            const response = await fetch('http://127.0.0.1:8000/ai/advStatistics5', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    excel_path: csvChiPath
+                    excel_path: csvSignificantPath
                 }),
             });
 
@@ -49,29 +48,23 @@ const AdvStatistics1 = ({csvChiPath}) => {
             }
 
             const data = await response.json();
-            const tablaArray = [];
-            const chi2Array = [];
-            const dofArray = [];
-            const pValueArray = [];
-            const significativoArray = [];
+            const tipoArray = [];
+            const testAplicadoArray = [];
+            const valorArray = [];
 
             for (const variable in data.result) {
-                const { tabla, chi_cuadrado, dof, p_value, significativo } = data.result[variable];
-                tablaArray.push({ variable, valor: tabla });
-                chi2Array.push({ variable, valor: chi_cuadrado });
-                dofArray.push({ variable, valor: dof });
-                pValueArray.push({ variable, valor: p_value });
-                significativoArray.push({ variable, valor: significativo });
+                const { tipo, test_aplicado, valor } = data.result[variable];
+                tipoArray.push({ variable, valor: tipo });
+                testAplicadoArray.push({ variable, valor: test_aplicado });
+                valorArray.push({ variable, valor: valor });
             }
 
-            setTable(tablaArray);
-            setChi2(chi2Array);
-            setDoff(dofArray);
-            setPValue(pValueArray);
-            setSignificative(significativoArray);
+            setType(tipoArray);
+            setTestApplied(testAplicadoArray);
+            setValue(valorArray);
 
         } catch (error) {
-            console.error("Error al ejecutar el adv1:", error);
+            console.error("Error al ejecutar el adv5:", error);
         } finally {
             setLoading(false);
         }
@@ -83,7 +76,7 @@ const AdvStatistics1 = ({csvChiPath}) => {
         <Box sx={{ backgroundColor: 'white', borderRadius: 2, padding: 2, boxShadow: 1, width: '100%', height: '70vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '10%' }}>
                 <Typography sx={{ color: '#4D7AFF', fontSize: '0.9rem' }}>
-                    <strong>ANÁLISIS CATEGÓRICO CHI CUADRADO</strong>
+                    <strong>VARIABLES SIGNIFICATIVAS</strong>
                 </Typography>
                 {/* <ThemeToggle /> */}
             </Box>
@@ -92,13 +85,13 @@ const AdvStatistics1 = ({csvChiPath}) => {
                 <>
                     <Box sx={{ backgroundColor: '#f5f5f5', borderRadius: 1, padding: 2, marginTop: 2, flexGrow: 1, overflowY: 'auto' }}>
                         {loading ? (
-                            <Typography><strong>Realizando análisis categorico Chi Cuadrado</strong></Typography>
+                            <Typography><strong>Determinando Variables Significativas</strong></Typography>
                         ) : (
                             <>
-                                {table.length === 0 ? (
+                                {type.length === 0 ? (
                                     <Box sx={{ textAlign: 'center', mt: 4 }}>
                                         <Typography elevation={2} sx={{ padding: 3, borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f5f5f5', color: '#4D7AFF' }}>
-                                            <strong>No hay datos disponibles para realizar el análisis categórico de Chi Cuadrado.</strong>
+                                            <strong>No hay variables significativas.</strong>
                                         </Typography>
                                     </Box>
                                 ) : (
@@ -108,39 +101,34 @@ const AdvStatistics1 = ({csvChiPath}) => {
                                                 <TableHead>
                                                     <TableRow sx={{ backgroundColor: '#f1f5ff' }}>
                                                         <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>Variable</TableCell>
-                                                        <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>Chi Cuadrado</TableCell>
-                                                        <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>Grado de Libertad</TableCell>
-                                                        <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>P Value</TableCell>
-                                                        <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>Significativo</TableCell>
+                                                        <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>Tipo</TableCell>
+                                                        <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>Test Aplicado</TableCell>
+                                                        <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>Valor</TableCell>
                                                     </TableRow>
                                                 </TableHead>
                                                 <TableBody>
-                                                    {table.map((item, idx) => {
-                                                        const isSignificative = significative[idx]?.valor === true;
+                                                    {type.map((item, idx) => {
 
                                                         return (
                                                             <TableRow
                                                                 key={idx}
                                                                 hover
                                                                 sx={{
-                                                                    backgroundColor: isSignificative ? '#e6f7e6' : 'inherit',
+                                                                    backgroundColor: '#d9f2d9',
                                                                     '&:hover': {
-                                                                        backgroundColor: isSignificative ? '#d9f2d9' : '#f9f9f9',
+                                                                        backgroundColor: '#d9f2d9',
                                                                     },
                                                                 }}
                                                             >
                                                                 <TableCell sx={{ border: '1px solid #e0e0e0' }}>{item.variable}</TableCell>
                                                                 <TableCell sx={{ border: '1px solid #e0e0e0' }}>
-                                                                    {chi2[idx]?.valor ?? '-'}
+                                                                    {type[idx]?.valor ?? '-'}
                                                                 </TableCell>
                                                                 <TableCell sx={{ border: '1px solid #e0e0e0' }}>
-                                                                    {doff[idx]?.valor ?? '-'}
+                                                                    {testApplied[idx]?.valor ?? '-'}
                                                                 </TableCell>
                                                                 <TableCell sx={{ border: '1px solid #e0e0e0' }}>
-                                                                    {pValue[idx]?.valor ?? '-'}
-                                                                </TableCell>
-                                                                <TableCell sx={{ border: '1px solid #e0e0e0' }}>
-                                                                    {significative[idx]?.valor != null ? (significative[idx].valor ? 'Sí' : 'No') : '-'}
+                                                                    {value[idx]?.valor ?? '-'}
                                                                 </TableCell>
                                                             </TableRow>
                                                         );
@@ -149,7 +137,7 @@ const AdvStatistics1 = ({csvChiPath}) => {
                                             </Table>
                                         </TableContainer>
                                         <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
-                                            <ChiSquaredChart table={table} data={pValue} />
+                                            <ChiSquaredChart table={testApplied} data={value} />
                                         </Box>
                                     </>
                                 )}
@@ -163,13 +151,13 @@ const AdvStatistics1 = ({csvChiPath}) => {
                 <Button
                     variant="contained"
                     sx={{ backgroundColor: '#4D7AFF', fontSize: '1.1rem', marginTop: 16, alignSelf: 'center' }}
-                    onClick={handleAdv1}
+                    onClick={handleAdv5}
                 >
-                    Realizar Análisis Categórico Chi Cuadrado
+                    Determinar Variables Significativas
                 </Button>
             )}
         </Box>
     );
 };
 
-export default AdvStatistics1;
+export default AdvStatistics5;

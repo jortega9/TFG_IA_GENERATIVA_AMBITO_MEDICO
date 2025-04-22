@@ -105,7 +105,7 @@ const DescStatistics1 = ({ descNumCsv }) => {
                 <Typography sx={{ color: '#4D7AFF', fontSize: '0.9rem' }}>
                     <strong>DETERMINANDO MEDIA Y DESVIACIÓN TÍPICA SIGUIENDO DISTRIBUCION NORMAL. (VARAIBLES NÚMERICAS)</strong>
                 </Typography>
-                <ThemeToggle />
+                {/* <ThemeToggle /> */}
             </Box>
 
             {procesando ? (

@@ -2,10 +2,13 @@ import React from 'react';
 import Chart from 'react-apexcharts';
 
 const PieChart = ({ data, title}) => {
-    const series = data.map(item => item.valor);
-    const labels = data.map(item => item.variable);
 
-    const chartColors = generateColors(data.length);
+    const dataFiltrada = data.filter(item => !item.variable.toLowerCase().includes('nhis'));
+
+    const series = dataFiltrada.map(item => item.valor);
+    const labels = dataFiltrada.map(item => item.variable);
+
+    const chartColors = generateColors(dataFiltrada.length);
 
     function generateColors(count) {
         return Array.from({ length: count }, (_, i) => {
