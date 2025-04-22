@@ -2,11 +2,12 @@ import os
 import sys
 import subprocess
 
+from concurrent.futures import ThreadPoolExecutor
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 
 from ai.phases.conclusions.agents.cover import generate_cover
 from ai.phases.conclusions.agents.toc import generate_toc
-from ai.phases.conclusions.agents.introduction import generate_introduction
 from ai.phases.conclusions.agents.dataset_description import generate_dataset_description
 from ai.phases.conclusions.agents.target_variable import generate_target_variable
 from ai.phases.conclusions.agents.numeric_summary import generate_numeric_summary
@@ -15,6 +16,7 @@ from ai.phases.conclusions.agents.chi_squared import generate_chi_squared
 from ai.phases.conclusions.agents.fisher_exact import generate_fisher_exact
 from ai.phases.conclusions.agents.t_student import generate_t_student
 from ai.phases.conclusions.agents.mann_whitney import generate_mann_whitney
+from ai.phases.conclusions.agents.comparative_significance import generate_comparative_significance
 from ai.phases.conclusions.agents.time_variable import generate_time_variable
 from ai.phases.conclusions.agents.kaplan_meier import generate_kaplan_meier
 from ai.phases.conclusions.agents.kaplan_meier_summary import generate_kaplan_meier_summary
@@ -22,10 +24,10 @@ from ai.phases.conclusions.agents.cox_regression import generate_cox_regression
 from ai.phases.conclusions.agents.discussion import generate_discussion
 from ai.phases.conclusions.agents.final_conclusion import generate_final_conclusion
 
+
 AGENTS = {
     "cover": generate_cover,
     "toc": generate_toc,
-    "intro": generate_introduction,
     "dataset": generate_dataset_description,
     "target": generate_target_variable,
     "num_summary": generate_numeric_summary,
@@ -34,10 +36,10 @@ AGENTS = {
     "fisher": generate_fisher_exact,
     "t_student": generate_t_student,
     "mann_whitney": generate_mann_whitney,
+    "comparative_summary": generate_comparative_significance,  
     "time_variable": generate_time_variable,
-    "comparative_summary": generate_time_variable,  # corregir si hay uno mejor
-    "km_analysis": generate_kaplan_meier,
     "km_summary": generate_kaplan_meier_summary,
+    "km_analysis": generate_kaplan_meier,
     "cox": generate_cox_regression,
     "discussion": generate_discussion,
     "final_conclusion": generate_final_conclusion,
@@ -46,7 +48,6 @@ AGENTS = {
 ORDER = [
     "cover",
     "toc",
-    "intro",
     "dataset",
     "target",
     "num_summary",
@@ -55,17 +56,38 @@ ORDER = [
     "fisher",
     "t_student",
     "mann_whitney",
-    "time_variable",
     "comparative_summary",
-    "km_analysis",
+    "time_variable",
     "km_summary",
+    "km_analysis",
     "cox",
     "discussion",
     "final_conclusion"
 ]
+"""
+AGENTS = {
+    "chi2": generate_chi_squared,
+    "fisher": generate_fisher_exact,
+    "t_student": generate_t_student,
+    "mann_whitney": generate_mann_whitney,
+    "comparative_summary": generate_comparative_significance,   
+    "time_variable": generate_time_variable,
+}
+
+ORDER = [
+    "chi2",
+    "fisher",
+    "t_student",
+    "mann_whitney",
+    "comparative_summary",
+    "time_variable",
+]
+"""
 
 def generate_latex_document():
-    sections = [AGENTS[name]() for name in ORDER]
+    with ThreadPoolExecutor() as executor:
+        futures = [executor.submit(AGENTS[name]) for name in ORDER]
+        sections = [future.result() for future in futures]
 
     latex_content = r"""
 \documentclass[12pt]{article}
@@ -95,7 +117,7 @@ def generate_latex_document():
     with open(tex_path, "w") as f:
         f.write(latex_content)
 
-    subprocess.run(["pdflatex", "-output-directory", "output", tex_path])
+    subprocess.run(["pdflatex", "-interaction=nonstopmode", "-output-directory", "output", tex_path])
 
 if __name__ == "__main__":
     generate_latex_document()
