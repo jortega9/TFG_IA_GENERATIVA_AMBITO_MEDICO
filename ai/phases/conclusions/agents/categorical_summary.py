@@ -85,7 +85,8 @@ class CategoricalSummaryAgent(Agent):
                 analisis=self.df_cat.to_string(),
                 dataset=self.df.sample(n=20).to_string(),
             ),
-            response_format=LaTexResponse
+            response_format=LaTexResponse,
+            temperature=0.8
         )
         return response.latex_code
 

@@ -100,7 +100,8 @@ class ChiSquareSummaryAgent(Agent):
                 dataset=self.df.sample(n=20).to_string(),
                 master=json.dumps(self.master)
             ),
-            response_format=LaTexResponse
+            response_format=LaTexResponse,
+            temperature=0.8
         )
         return response.latex_code
 

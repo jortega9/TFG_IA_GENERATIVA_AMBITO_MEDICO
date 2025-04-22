@@ -80,7 +80,8 @@ class DatasetAgent(Agent):
                 master=self.master,
                 dataset=self.df.to_string()
             ),
-            response_format=LaTexResponse
+            response_format=LaTexResponse,
+            temperature=0.8
         )
         return response.latex_code
 
