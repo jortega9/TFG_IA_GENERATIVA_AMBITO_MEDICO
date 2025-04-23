@@ -25,4 +25,6 @@ si se proporcionan, y ser coherente con las demás secciones del análisis. Todo
 Tu tarea es generar exclusivamente el contenido LaTeX correspondiente a una sección concreta del estudio. 
 No incluyas explicaciones ni respuestas fuera del entorno LaTeX. Este contenido será ensamblado en un documento 
 científico completo por un orquestador LLM.
+
+IMPORTANTE! No uses Markdown ni codigo de python, solo LaTex
 """
