@@ -347,3 +347,8 @@ config.ini
 *.json
 *.docx
 *.png
+*.tex
+*.out
+*.pdf
+*.aux
+*.toc
