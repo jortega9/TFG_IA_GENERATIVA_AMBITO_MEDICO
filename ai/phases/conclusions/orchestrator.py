@@ -1,10 +1,21 @@
 import os
 import sys
 import subprocess
+import configparser
+from dotenv import load_dotenv
 
 from concurrent.futures import ThreadPoolExecutor
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
+
+load_dotenv()
+
+SETTINGS_PATH = os.getenv("SETTINGS_PATH")
+
+config = configparser.ConfigParser()
+config.read(SETTINGS_PATH)
+
+OUTPUT_DIR = os.path.join(config["data_path"]["processed_path"], "output")
 
 from ai.phases.conclusions.agents.cover import generate_cover
 from ai.phases.conclusions.agents.dataset_description import generate_dataset_description
@@ -87,12 +98,12 @@ def generate_latex_document():
 \end{document}
 """ % (''.join(sections))
 
-    os.makedirs("output", exist_ok=True)
-    tex_path = "output/final_report.tex"
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    tex_path = os.path.join(OUTPUT_DIR, "final_report.tex")
     with open(tex_path, "w") as f:
         f.write(latex_content)
 
-    subprocess.run(["pdflatex", "-interaction=nonstopmode", "-output-directory", "output", tex_path])
+    subprocess.run(["pdflatex", "-interaction=nonstopmode", "-output-directory", OUTPUT_DIR, tex_path])
 
 if __name__ == "__main__":
     generate_latex_document()
