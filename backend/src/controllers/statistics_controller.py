@@ -247,3 +247,44 @@ def obtener_significativas(path_csv):
         }
     
     return resultado
+
+def obtener_kaplan_general(path_csv):
+
+    try:
+        df = pd.read_csv(path_csv)
+    except Exception as e:
+        return {}
+    resultado = {}
+    for _, fila in df.iterrows():
+        variable = fila['variable']
+        median_survival_time = fila['median_survival_time']
+        n_observations = fila['n_observations']
+        
+        resultado[variable] = {
+            'median_survival_time': median_survival_time,
+            'n_observations': n_observations,
+        }
+    
+    return resultado
+
+def obtener_kaplan_vars(path_csv):
+
+    try:
+        df = pd.read_csv(path_csv)
+    except Exception as e:
+        return {}
+    resultado = {}
+    for _, fila in df.iterrows():
+        variable = str(fila['variable'])
+        median_survival_time = str(fila['median_survival_time'])
+        group = str(fila['group'])
+        n_patients = str(fila['n_patients'])
+        
+        clave = f"{variable}_{group}"
+        resultado[clave] = {
+            "group": group,
+            'median_survival_time': median_survival_time,
+            'n_patients': n_patients,
+        }
+    
+    return resultado

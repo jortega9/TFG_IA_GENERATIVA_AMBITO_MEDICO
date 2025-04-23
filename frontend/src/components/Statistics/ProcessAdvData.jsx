@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Box, Button, Typography, ToggleButton, ToggleButtonGroup, CircularProgress   } from '@mui/material';
 import ThemeToggle from '../ThemeToggle';
 
-const ProcessAdvData = ({setIsDataProcessed, setCsvMannWhitneyPath, setCsvTStudentPath, setCsvChiPath, setCsvFisherPath, setCsvSignificantPath }) => {
+const ProcessAdvData = ({setIsDataProcessed, setCsvMannWhitneyPath, setCsvTStudentPath, setCsvChiPath, setCsvFisherPath, setCsvSignificantPath, setImagesKaplanPath, setCsvKaplanPath }) => {
     const [procesando, setProcesando] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -28,6 +28,8 @@ const ProcessAdvData = ({setIsDataProcessed, setCsvMannWhitneyPath, setCsvTStude
             setCsvMannWhitneyPath(result.result.mann.results.csv_mann_path);
             setCsvTStudentPath(result.result.tStudent.results.csv_t_student);
             setCsvSignificantPath(result.result.significant.results.csv_path);
+            setImagesKaplanPath(result.result.kaplan.results.images_path);
+            setCsvKaplanPath(result.result.kaplan.results.data_path);
 
             setIsDataProcessed(true);
         } catch (error) {

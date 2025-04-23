@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Button, Typography, Tooltip, CircularProgress } from '@mui/material';
-
+import { Snackbar, Alert } from '@mui/material';
 import ThemeToggle from './ThemeToggle';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import * as XLSX from 'xlsx';
@@ -11,6 +11,7 @@ const DropFiles = ({ setIsDataPrepared }) => {
     const [text, setText] = useState("");
     const [files, setFiles] = useState([]);
     const [preparingData, setPreparingData] = useState(false);
+    const [openSnackbar, setOpenSnackbar] = useState(false);  
 
     const addFiles = (acceptedFiles) => {
         setFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
@@ -84,6 +85,7 @@ const DropFiles = ({ setIsDataPrepared }) => {
             const result = await response.json();
             console.log("Respuesta del servidor:", result);
             setIsDataPrepared(true);
+            setOpenSnackbar(true);
         } catch (error) {
             console.error("Error al realizar la petición:", error);
         }
@@ -94,7 +96,8 @@ const DropFiles = ({ setIsDataPrepared }) => {
     
     
     return (
-        <Box sx={{
+        <>
+            <Box sx={{
             backgroundColor: 'white',
             borderRadius: 2,
             padding: 2,
@@ -103,104 +106,112 @@ const DropFiles = ({ setIsDataPrepared }) => {
             height: "70vh",
             display: 'flex',
             flexDirection: 'column'
-        }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '10%' }}>
-                <Typography sx={{ color: '#4D7AFF', fontSize: '0.9rem' }}>
-                    <strong>CARGAR BBDD Y ARCHIVO MAESTRO</strong>
-                </Typography>
-                {/* <ThemeToggle /> */}
-            </Box>
-
-            <Box sx={{
-                border: '2px dashed gray',
-                padding: 4,
-                textAlign: 'center',
-                borderRadius: 2,
-                backgroundColor: '#F5f5f5',
-                flexGrow: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: files.length > 0 ? 'flex-start' : 'center',
-                overflow: 'hidden'
             }}>
-                {files.length === 0 && (
-                    <Typography variant="h5" color="gray" sx={{ padding: '20px' }}>
-                        Arrastra tus archivos aquí o haz clic para seleccionarlos
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '10%' }}>
+                    <Typography sx={{ color: '#4D7AFF', fontSize: '0.9rem' }}>
+                        <strong>CARGAR BBDD Y ARCHIVO MAESTRO</strong>
                     </Typography>
-                )}
+                    {/* <ThemeToggle /> */}
+                </Box>
 
-                {files.length > 0 && (
-                    <>
-                        <Typography variant="h6" sx={{ paddingBottom: '20px', color:"#4D7AFF" }}><strong>Archivos seleccionados:</strong></Typography>
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-                            {files.map((file, index) => {
-                                const fileName = getFileNameWithoutExtension(file.name);
-                                return (
-                                    <Box key={index} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                        <InsertDriveFileIcon sx={{ fontSize: 40, color: '#4D7AFF' }} />
-                                        <Tooltip title={fileName} arrow>
-                                            <Typography variant="body2" noWrap sx={{
-                                                maxWidth: '100px',
-                                                textAlign: 'center',
-                                                overflow: 'hidden',
-                                                textOverflow: 'ellipsis',
-                                                whiteSpace: 'nowrap',
-                                                color: '#333333'
-                                            }}>
-                                                {fileName}
-                                            </Typography>
-                                        </Tooltip>
+                <Box sx={{
+                    border: '2px dashed gray',
+                    padding: 4,
+                    textAlign: 'center',
+                    borderRadius: 2,
+                    backgroundColor: '#F5f5f5',
+                    flexGrow: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: files.length > 0 ? 'flex-start' : 'center',
+                    overflow: 'hidden'
+                }}>
+                    {files.length === 0 && (
+                        <Typography variant="h5" color="gray" sx={{ padding: '20px' }}>
+                            Arrastra tus archivos aquí o haz clic para seleccionarlos
+                        </Typography>
+                    )}
+
+                    {files.length > 0 && (
+                        <>
+                            <Typography variant="h6" sx={{ paddingBottom: '20px', color:"#4D7AFF" }}><strong>Archivos seleccionados:</strong></Typography>
+                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+                                {files.map((file, index) => {
+                                    const fileName = getFileNameWithoutExtension(file.name);
+                                    return (
+                                        <Box key={index} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                            <InsertDriveFileIcon sx={{ fontSize: 40, color: '#4D7AFF' }} />
+                                            <Tooltip title={fileName} arrow>
+                                                <Typography variant="body2" noWrap sx={{
+                                                    maxWidth: '100px',
+                                                    textAlign: 'center',
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis',
+                                                    whiteSpace: 'nowrap',
+                                                    color: '#333333'
+                                                }}>
+                                                    {fileName}
+                                                </Typography>
+                                            </Tooltip>
+                                        </Box>
+                                    );
+                                })}
+                            </Box>
+                        </>
+                    )}
+
+                    {files.length < 2 ? (
+                        <Button
+                            variant="contained"
+                            component="label"
+                            sx={{ backgroundColor: '#4D7AFF', fontSize: '1.1rem', marginTop: 6, alignSelf: 'center' }}
+                        >
+                            Buscar Archivos
+                            <input
+                                type="file"
+                                hidden
+                                multiple
+                                onChange={handleFileUpload}
+                            />
+                        </Button>
+                    ) : ( 
+                        <>
+                            {
+                                preparingData ? (
+                                    <Box sx={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        marginTop: 6
+                                    }}>
+                                        <CircularProgress sx={{ color: '#4D7AFF', mb: 2 }} />
+                                        <Typography variant="body1" sx={{ color: '#4D7AFF' }}>
+                                        Preparando datos...
+                                        </Typography>
                                     </Box>
-                                );
-                            })}
-                        </Box>
-                    </>
-                )}
-
-                {files.length < 2 ? (
-                    <Button
-                        variant="contained"
-                        component="label"
-                        sx={{ backgroundColor: '#4D7AFF', fontSize: '1.1rem', marginTop: 6, alignSelf: 'center' }}
-                    >
-                        Buscar Archivos
-                        <input
-                            type="file"
-                            hidden
-                            multiple
-                            onChange={handleFileUpload}
-                        />
-                    </Button>
-                ) : ( 
-                    <>
-                        {
-                            preparingData ? (
-                                <Box sx={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    marginTop: 6
-                                }}>
-                                    <CircularProgress sx={{ color: '#4D7AFF', mb: 2 }} />
-                                    <Typography variant="body1" sx={{ color: '#4D7AFF' }}>
-                                    Preparando datos...
-                                    </Typography>
-                                </Box>
-                            ) : (
-                                <Button
-                                variant="contained"
-                                sx={{ backgroundColor: '#4D7AFF', fontSize: '1.1rem', marginTop: 6, alignSelf: 'center' }}
-                                onClick={handlePrepareData}
-                                >
-                                    Preparar Datos
-                                </Button>   
-                            )
-                        }                 
-                    </>
-                )}
+                                ) : (
+                                    <Button
+                                    variant="contained"
+                                    sx={{ backgroundColor: '#4D7AFF', fontSize: '1.1rem', marginTop: 6, alignSelf: 'center' }}
+                                    onClick={handlePrepareData}
+                                    >
+                                        Preparar Datos
+                                    </Button>   
+                                )
+                            }                 
+                        </>
+                    )}
+                </Box>
             </Box>
-        </Box>
+
+            <Snackbar open={openSnackbar} autoHideDuration={4000} onClose={() => setOpenSnackbar(false)} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}            >
+                <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{ width: '100%' }}>
+                    Datos de la base de datos y archivo maestro preparados.
+                </Alert>
+            </Snackbar>
+        </>
+        
     );
 };
 

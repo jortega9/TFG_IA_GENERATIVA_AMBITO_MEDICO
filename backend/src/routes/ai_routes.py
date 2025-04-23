@@ -5,7 +5,7 @@ from fastapi import APIRouter, UploadFile, File
 from fastapi.responses import JSONResponse
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../..'))
 from backend.src.schemas.ai import PrepareDataRequest
-from backend.src.schemas.statistics import DescRequest, AdvRequest
+from backend.src.schemas.statistics import DescRequest, AdvRequest, KaplanVRequest
 import backend.src.controllers.ai_controller as controller
 import ai.phases.etl.prepare_data.controller as prepare_data_controller
 import ai.phases.etl.descriptive.controller as descriptive_controller
@@ -22,6 +22,7 @@ import ai.phases.etl.survival.controller as survival_controller
 
 from backend.src.controllers.statistics_controller import obtener_media_std, obtener_mediana_rangoI, obtener_freq_ic95
 from backend.src.controllers.statistics_controller import obtener_chi_cuadrado, obtener_fisher, obtener_mann_withney, obtener_t_student, obtener_significativas
+from backend.src.controllers.statistics_controller import obtener_kaplan_general, obtener_kaplan_vars
 import time
 import json
 from fastapi import Body
@@ -75,10 +76,10 @@ async def execute_data_adv():
     tStudent = comparative_controller.run_t_student_analysis()
     mann = comparative_controller.run_mann_whitney_u_analysis()
     significant = significant_controller.collect_significant_values()
-    #kaplan = survival_controller.run_kaplan_meier_analysis()
+    kaplan = survival_controller.run_kaplan_meier_analysis()
     # cox = survival_controller.run_cox_analysis()
 
-    print(chi, fisher, tStudent, mann, significant)
+    print("kaplan", kaplan)
     # time.sleep(5)
     return {"result": {
         "chi": chi,
@@ -86,6 +87,7 @@ async def execute_data_adv():
         "tStudent": tStudent,
         "mann": mann,
         "significant": significant,
+        "kaplan": kaplan,
     }}
 
 @router.post('/descStatistics1')
@@ -163,6 +165,24 @@ async def calc_t_student(request: AdvRequest) :
     """
 
     result = obtener_significativas(request.excel_path)
+    return {"result": result}
+
+@router.post('/kaplanStatistics1')
+async def calc_kaplan_general(request: AdvRequest) :
+    """
+    Realizar Análisis Categórico T Student
+    """
+    excel_path = request.excel_path + "/median_summary.csv"
+    result = obtener_kaplan_general(excel_path)
+    return {"result": result}
+
+@router.post('/kaplanStatisticsVars')
+async def calc_kaplan_vars(request: KaplanVRequest) :
+    """
+    Realizar Análisis Categórico T Student
+    """
+    excel_path = request.excel_path + f"/{request.name}_median_summary.csv"
+    result = obtener_kaplan_vars(excel_path)
     return {"result": result}
 
 @router.post('/copyDocs')

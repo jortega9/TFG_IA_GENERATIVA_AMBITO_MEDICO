@@ -6,4 +6,8 @@ class DescRequest(BaseModel):
 
 class AdvRequest(BaseModel):
     excel_path: str
+
+class KaplanVRequest(BaseModel):
+    excel_path: str
+    name: str
     
