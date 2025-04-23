@@ -171,7 +171,7 @@ const KaplanStatisticsVars = ({csvKaplanPath, nameVar, plotK, plotS}) => {
                                                 boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)'
                                                 }}
                                             />
-                                            <img
+                                            {/* <img
                                                 src={plotS}
                                                 alt="Kaplan Meier Plot"
                                                 style={{
@@ -180,7 +180,7 @@ const KaplanStatisticsVars = ({csvKaplanPath, nameVar, plotK, plotS}) => {
                                                 borderRadius: '8px',
                                                 boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)'
                                                 }}
-                                            />
+                                            /> */}
                                         </Box>
                                     </>
                                 )}

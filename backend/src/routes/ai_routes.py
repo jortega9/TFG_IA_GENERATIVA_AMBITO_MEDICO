@@ -77,9 +77,9 @@ async def execute_data_adv():
     mann = comparative_controller.run_mann_whitney_u_analysis()
     significant = significant_controller.collect_significant_values()
     kaplan = survival_controller.run_kaplan_meier_analysis()
-    # cox = survival_controller.run_cox_analysis()
+    cox = survival_controller.run_cox_analysis()
 
-    print("kaplan", kaplan)
+    print("cox", cox)
     # time.sleep(5)
     return {"result": {
         "chi": chi,
@@ -88,6 +88,7 @@ async def execute_data_adv():
         "mann": mann,
         "significant": significant,
         "kaplan": kaplan,
+        "cox": cox
     }}
 
 @router.post('/descStatistics1')
