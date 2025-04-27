@@ -20,8 +20,6 @@ const KaplanVariableCard = ({ variableName, plotImage, csvKaplanPath, onLoaded }
             setMasterData(data);
         } catch (error) {
             console.error('Error cargando master.json:', error);
-        } finally {
-            setLoading(false);
         }
     };
 
