@@ -65,7 +65,7 @@ Antes de comenzar, asegúrate de tener instalados los siguientes programas y her
    uvicorn src.app:app --reload --port 8000 --host 0.0.0.0 --env-file ../.env
 ```
 
-Arrancar frontend de la aplicación
+- Arrancar frontend de la aplicación
 
 ```bash
    cd frontend
