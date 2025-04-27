@@ -3,6 +3,7 @@ import sys
 import subprocess
 import configparser
 from dotenv import load_dotenv
+import shutil
 
 from concurrent.futures import ThreadPoolExecutor
 
@@ -105,11 +106,15 @@ def generate_latex_document():
         f.write(latex_content)
 
     os.makedirs(OUTPUT_DIR, exist_ok=True)
-    tex_path = os.path.join(OUTPUT_DIR, "final_report.tex")
-    with open(tex_path, "w") as f:
-        f.write(latex_content)
 
     subprocess.run(["pdflatex", "-interaction=nonstopmode", "-output-directory", PDF_DIR, tex_path])
+
+    pdf_source_path = os.path.join(PDF_DIR, "final_report.pdf")
+    pdf_destination_path = os.path.join(OUTPUT_DIR, "final_report.pdf")
+    shutil.copy(pdf_source_path, pdf_destination_path)
+    print(f"Archivo copiado a: {pdf_destination_path}")
+
+
 
 if __name__ == "__main__":
     generate_latex_document()

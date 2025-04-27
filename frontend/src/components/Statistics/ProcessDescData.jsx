@@ -89,7 +89,7 @@ const ProcessDescData = ({setIsDataProcessed, setDescnumVars, setDescNumCsv, set
                         ) : (
                             <>
                                 <Typography elevation={2} sx={{ padding: 3, borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f5f5f5', color: '#4D7AFF' }}>
-                                    <strong>Datos procesados correctamente..</strong>
+                                    <strong>Datos procesados correctamente.</strong>
                                 </Typography>
                             </>
                         )
