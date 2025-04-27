@@ -79,7 +79,7 @@ Antes de comenzar, asegúrate de tener instalados los siguientes programas y her
 7. **Configurar archivo config.init**  
    - Crea un archivo `config.init` en el directorio ai del proyecto basandote en config.init.template .
     ```bash
-    
+   cd ai
    cp config.init.template config.ini
    ```
 ## Modo De Uso
