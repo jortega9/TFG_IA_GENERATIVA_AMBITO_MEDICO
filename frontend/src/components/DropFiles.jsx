@@ -129,7 +129,7 @@ const DropFiles = ({ setIsDataPrepared }) => {
                 }}>
                     {files.length === 0 && (
                         <Typography variant="h5" color="gray" sx={{ padding: '20px' }}>
-                            Arrastra tus archivos aquí o haz clic para seleccionarlos
+                            Arrastra tus archivos aquí o haz clic para seleccionarlos (.xlsx y .json)
                         </Typography>
                     )}
 
