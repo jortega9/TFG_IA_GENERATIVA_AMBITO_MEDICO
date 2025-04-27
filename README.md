@@ -8,10 +8,7 @@ Antes de comenzar, asegúrate de tener instalados los siguientes programas y her
 - [Python](https://www.python.org/) (versión recomendada: 3.8+)
 - [Node.js](https://nodejs.org/) (versión recomendada: 16+)
    -```bash
-      # instala nvm (Node Version Manager)
       curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
-   
-      # Descargar e instalar Node.js (Puede ser que necesites reiniciar la terminal)
       nvm install 20
      ```
 - [HeidiSQL](https://www.heidisql.com/)
