@@ -28,6 +28,7 @@ decorator==5.2.1
 Deprecated==1.2.18
 distro==1.9.0
 dnspython==2.7.0
+dotenv==0.9.9
 durationpy==0.9
 ecdsa==0.19.0
 email_validator==2.2.0
