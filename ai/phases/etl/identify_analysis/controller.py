@@ -10,6 +10,15 @@ from ai.phases.etl.identify_analysis.categorize.agent import CategorizeVariables
 from ai.phases.etl.identify_analysis.group_variable.agent import IdentifyGroupVariableAgent
 from ai.phases.etl.identify_analysis.time_variable.agent import IdentifyTimeVariableAgent
 
+def runIdentifyGroupVariable():
+    return IdentifyGroupVariableAgent().execute()
+
+def runCategorizeVariables():
+    return CategorizeVariablesAgent().execute()
+
+def runIdentifyTimeVariable():
+    return IdentifyTimeVariableAgent().execute()
+
 #########################################################################################
 #                                   DELETE ME                                           #
 #########################################################################################   

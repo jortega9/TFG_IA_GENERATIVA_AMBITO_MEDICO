@@ -12,7 +12,7 @@ import { Grid } from '@mui/material';
 
 function Urolobot() {
   const OK_API = 200;
-  const API_KEY = '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';
+  const API_KEY = "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";
   const ERROR_MSG = 'Error, please refresh!';
 
   const [messages, setMessages] = useState([]);
@@ -71,33 +71,42 @@ function Urolobot() {
     sendNotification(response);
   };
 
-  const query = async (data) => {
-    const response = await fetch(
-      'https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill',
-      {
+  const sendMessageToAPI = async (message) => {
+    try {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
         headers: {
-          Authorization: `Bearer ${API_KEY}`,
+          'Authorization': `Bearer ${API_KEY}`,
           'Content-Type': 'application/json',
         },
-        method: 'POST',
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          model: "gpt-4o",
+          messages: [
+            { role: "system", content: "You are a helpful assistant." },
+            { role: "user", content: message }
+          ],
+          temperature: 0.7,
+          max_tokens: 1000
+        })
+      });
+
+      if (response.status !== OK_API) {
+        console.error("OpenAI API error", await response.text());
+        return ERROR_MSG;
       }
-    );
 
-    if (response.status !== OK_API) {
-      return `${ERROR_MSG}`;
+      const result = await response.json();
+      const reply = result.choices[0].message.content.trim();
+      return reply;
+    } catch (error) {
+      console.error('Error sending message to API:', error);
+      return ERROR_MSG;
     }
-    const result = await response.json();
-    return result[0].generated_text;
-  };
-
-  const sendMessageToAPI = async (message) => {
-    return query({ inputs: message });
   };
 
   return (
     <div className="app-container">
-        <AppHeader />
+      <AppHeader />
       <div className="main-content" style={{ display: 'flex', height: '100%' }}>
         <div className="controls-section" style={{ width: '15%' }}>
           <Controls onChatAccessChange={handleChatAccessChange} onReportAccessChange={handleReportAccessChange} />
@@ -113,7 +122,7 @@ function Urolobot() {
               <MessageInput onSendMessage={handleSendMessage} />
             </div>
           ) : isReportAccessible ? (
-            <div >
+            <div>
               <Report />
             </div>
           ) : (

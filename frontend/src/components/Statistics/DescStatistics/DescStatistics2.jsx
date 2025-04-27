@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Box,
-    Button,
     Typography,
     ToggleButton,
     ToggleButtonGroup,
@@ -62,41 +61,45 @@ const DescStatistics2 = ({ descNumCsv }) => {
             setRangoI(rangoIArray);
 
         } catch (error) {
-            console.error("Error al ejecutar el desc1:", error);
+            console.error("Error al ejecutar el desc2:", error);
         } finally {
             setLoading(false);
         }
     };
 
+    useEffect(() => {
+        handleDesc2();
+    }, []);
+
     const renderTable = (data, label, nArray) => (
-            <TableContainer component={Paper} sx={{ boxShadow: 2, borderRadius: 2 }}>
-                <Table size="small" sx={{ minWidth: 300, border: '1px solid #e0e0e0' }}>
-                    <TableHead>
-                        <TableRow sx={{ backgroundColor: '#f1f5ff' }}>
-                            <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>Variable</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>N</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>{label}</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {data.map((item, idx) => {
-                            const nItem = nArray.find(n => n.variable === item.variable);
-                            return (
-                                <TableRow
-                                    key={idx}
-                                    hover
-                                    sx={{ '&:hover': { backgroundColor: '#f9f9f9' } }}
-                                >
-                                    <TableCell sx={{ border: '1px solid #e0e0e0' }}>{item.variable}</TableCell>
-                                    <TableCell sx={{ border: '1px solid #e0e0e0' }}>{nItem ? nItem.valor : '-'}</TableCell>
-                                    <TableCell sx={{ border: '1px solid #e0e0e0' }}>{item.valor}</TableCell>
-                                </TableRow>
-                            );
-                        })}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        );
+        <TableContainer component={Paper} sx={{ boxShadow: 2, borderRadius: 2 }}>
+            <Table size="small" sx={{ minWidth: 300, border: '1px solid #e0e0e0' }}>
+                <TableHead>
+                    <TableRow sx={{ backgroundColor: '#f1f5ff' }}>
+                        <TableCell align="center" sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>Variable</TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>N</TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>{label}</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {data.map((item, idx) => {
+                        const nItem = nArray.find(n => n.variable === item.variable);
+                        return (
+                            <TableRow
+                                key={idx}
+                                hover
+                                sx={{ '&:hover': { backgroundColor: '#f9f9f9' } }}
+                            >
+                                <TableCell align="center" sx={{ border: '1px solid #e0e0e0' }}>{item.variable}</TableCell>
+                                <TableCell align="center" sx={{ border: '1px solid #e0e0e0' }}>{nItem ? nItem.valor : '-'}</TableCell>
+                                <TableCell align="center" sx={{ border: '1px solid #e0e0e0' }}>{item.valor}</TableCell>
+                            </TableRow>
+                        );
+                    })}
+                </TableBody>
+            </Table>
+        </TableContainer>
+    );
 
     return (
         <Box sx={{ backgroundColor: 'white', borderRadius: 2, padding: 2, boxShadow: 1, width: '100%', height: '70vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
@@ -104,59 +107,43 @@ const DescStatistics2 = ({ descNumCsv }) => {
                 <Typography sx={{ color: '#4D7AFF', fontSize: '0.9rem' }}>
                     <strong>DETERMINANDO MEDIANA Y RANGO INTERCUARTÍLICO SIN SEGUIR UNA DISTRIBUCIÓN NORMAL (VARIABLES NUMÉRICAS).</strong>
                 </Typography>
-                <ThemeToggle />
             </Box>
 
-            {procesando ? (
-                <>
-                    <ToggleButtonGroup
-                        value={mostrar}
-                        exclusive
-                        onChange={(e, val) => val && setMostrar(val)}
-                        sx={{ marginTop: 1, height: 15 }}
-                    >
-                        <ToggleButton value="mediana">Mediana</ToggleButton>
-                        <ToggleButton value="rangoI">Rango Intercuartílico</ToggleButton>
-                    </ToggleButtonGroup>
+            <ToggleButtonGroup
+                value={mostrar}
+                exclusive
+                onChange={(e, val) => val && setMostrar(val)}
+                sx={{ marginTop: 1, height: 15 }}
+            >
+                <ToggleButton value="mediana">Mediana</ToggleButton>
+                <ToggleButton value="rangoI">Rango Intercuartílico</ToggleButton>
+            </ToggleButtonGroup>
 
-                    <Box sx={{ backgroundColor: '#f5f5f5', borderRadius: 1, padding: 2, marginTop: 2, flexGrow: 1, overflowY: 'auto' }}>
-                        {loading ? (
-                            <Typography><strong>Calculando mediana y rango intercuartílico de las variables numéricas...</strong></Typography>
-                        ) : (
-                            <>
-                                {mostrar === 'mediana' ? (
-                                    <>
-                                        {renderTable(mediana, 'Mediana', nPruebas)}
-                                        <Box mt={4} sx={{ display: 'flex', justifyContent: 'space-around' }}>
-                                            <BarChartNum data={mediana} title='Medianas de Variables Numéricas' variable='Medianas' />
-                                            <PieChart data={mediana} title='Distribución de Medianas' />
-                                        </Box>
-                                    </>
-                                ) : (
-                                    <>
-                                        {renderTable(rangoI, 'Rango Intercuartílico', nPruebas)}
-                                        <Box mt={4} sx={{ display: 'flex', justifyContent: 'space-around' }}>
-                                            <BarChartNum data={rangoI} title='Rangos Intercuartílicos de Variables Numéricas' variable='Rango Intercuartílico'/>
-                                            <PieChart data={rangoI} title='Distribución de Rangos Intercuartílicos' />
-                                        </Box>
-                                    </>
-                                )}
-                            </>
-                        )}
-                    </Box>
-
-                </>
-            ) : (
-                <Button
-                    variant="contained"
-                    sx={{ backgroundColor: '#4D7AFF', fontSize: '1.1rem', marginTop: 16, alignSelf: 'center' }}
-                    onClick={handleDesc2}
-                >
-                    Calcular Mediana y Rango Intercuartílico
-                </Button>
-            )}
+            <Box sx={{ backgroundColor: '#f5f5f5', borderRadius: 1, padding: 2, marginTop: 2, flexGrow: 1, overflowY: 'auto' }}>
+                {loading ? (
+                    <Typography><strong>Calculando mediana y rango intercuartílico de las variables numéricas...</strong></Typography>
+                ) : (
+                    mostrar === 'mediana' ? (
+                        <>
+                            {renderTable(mediana, 'Mediana', nPruebas)}
+                            <Box mt={4} sx={{ display: 'flex', justifyContent: 'space-around' }}>
+                                <BarChartNum data={mediana} title='Medianas de Variables Numéricas' variable='Medianas' />
+                                <PieChart data={mediana} title='Distribución de Medianas' />
+                            </Box>
+                        </>
+                    ) : (
+                        <>
+                            {renderTable(rangoI, 'Rango Intercuartílico', nPruebas)}
+                            <Box mt={4} sx={{ display: 'flex', justifyContent: 'space-around' }}>
+                                <BarChartNum data={rangoI} title='Rangos Intercuartílicos de Variables Numéricas' variable='Rango Intercuartílico'/>
+                                <PieChart data={rangoI} title='Distribución de Rangos Intercuartílicos' />
+                            </Box>
+                        </>
+                    )
+                )}
             </Box>
-        );
+        </Box>
+    );
 };
 
 export default DescStatistics2;

@@ -67,9 +67,9 @@ class COXAgent(Agent):
         
         ret.to_csv(OUTPUT_UNI_PATH, index=False)
         
-        mul = self.cox_multivariate_analysis(variables=var)
+        # mul = self.cox_multivariate_analysis(variables=var)
         
-        mul.to_csv(OUTPUT_MUL_PATH, index=False)
+        # mul.to_csv(OUTPUT_MUL_PATH, index=False)
         
         return {
             "explanation": "Cox explanation",

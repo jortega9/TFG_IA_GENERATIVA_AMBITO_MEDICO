@@ -24,7 +24,7 @@ const ChatWelcome = () => {
           <Typography sx={{ color: '#4D7AFF', fontSize: '1.5rem' }}>
               <strong>Bienvenido a Urolobot</strong>
           </Typography>
-          <ThemeToggle />
+          {/* <ThemeToggle /> */}
         </Box> 
       <div className="chat-placeholder-content">
         <p className="chat-placeholder-text">

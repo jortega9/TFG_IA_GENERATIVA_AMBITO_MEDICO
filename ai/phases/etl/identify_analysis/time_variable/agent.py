@@ -67,6 +67,7 @@ class IdentifyTimeVariableAgent(Agent):
         return {
             "explanation": identify_time_variable.explanation,
 			"results": {
-				"json_path": OUTPUT_PATH
+				"json_path": OUTPUT_PATH,
+                "ret": ret
 			}
         }

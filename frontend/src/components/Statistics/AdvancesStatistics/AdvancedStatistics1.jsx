@@ -1,146 +1,148 @@
-import React, { useState } from 'react';
-import { Box, Button, Typography, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import {
+    Box,
+    Typography,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper
+} from '@mui/material';
 import ThemeToggle from '../../ThemeToggle';
-import { Circle } from '@mui/icons-material';
 
-const AdvancedStatistics1 = () => {
-    const [respuesta, setRespuesta] = useState([]);
-    const [texto, setTexto] = useState('');
+import ChiSquaredChart from '../../Charts/ChiSquaredChart';
+
+const AdvStatistics1 = ({ csvChiPath }) => {
     const [procesando, setProcesando] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [tStudent, setTStudent] = useState([]);
+    const [table, setTable] = useState([]);
     const [chi2, setChi2] = useState([]);
-    const [fisher, setFisher] = useState([]);
-    const [mostrar, setMostrar] = useState('respuesta');
-
-    const parseString = (input) => {
-        const keywords = ["Pensamiento:", "Ejecuta:", "Observacion:", "Resultado:"];
-        const result = [];
-        let currentKeyword = null;
-        let currentContent = "";
-    
-        const regex = new RegExp(`(${keywords.join('|')})`, 'g');
-        const parts = input.split(regex).filter(Boolean);
-    
-        parts.forEach(part => {
-        const keyword = keywords.find(kw => part.startsWith(kw));
-        if (keyword) {
-            if (currentKeyword) {
-            result.push({ tipo: currentKeyword, contenido: currentContent.trim() });
-            }
-            currentKeyword = keyword.replace(':', '');
-            currentContent = part.replace(keyword, '').trim();
-        } else if (currentKeyword) {
-            currentContent += ' ' + part.trim();
-        }
-        });
-    
-        if (currentKeyword) {
-        result.push({ tipo: currentKeyword, contenido: currentContent.trim() });
-        }
-    
-        return result;
-    };
-    
-    const getColor = (tipo) => {
-        switch (tipo) {
-        case 'Pensamiento': return '#1976D2';
-        case 'Ejecuta': return '#388E3C';
-        case 'Observacion': return '#D32F2F';
-        default: return '#333';
-        }
-    };
-    
-    const renderMensaje = (mensaje, index) => (
-        <Box key={index} sx={{ display: 'flex', alignItems: 'center', marginBottom: 1 }}>
-        <Circle sx={{ fontSize: 12, color: getColor(mensaje.tipo), marginRight: 1 }} />
-        <Typography variant="body2" sx={{ color: '#333', wordBreak: 'break-word', textAlign: 'left' }}>
-            <strong>{mensaje.tipo}:</strong> {mensaje.contenido}
-        </Typography>
-        </Box>
-    );
+    const [doff, setDoff] = useState([]);
+    const [pValue, setPValue] = useState([]);
+    const [significative, setSignificative] = useState([]);
 
     const handleAdv1 = async () => {
         setProcesando(true);
         setLoading(true);
 
         try {
-        const response = await fetch('http://127.0.0.1:8000/ai/testAdvStatistics1', { method: 'POST' });
-        if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
+            const response = await fetch('http://127.0.0.1:8000/ai/advStatistics1', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    excel_path: csvChiPath
+                }),
+            });
 
-        const result = await response.json();
-        const resultText = result.result.razonamiento.join(' ');
-        const resultVars = result.result.resultado;
-        console.log(resultVars);
-        setTexto(resultText);
-        setRespuesta(parseString(resultText));
-        setTStudent(resultVars.t_student);
-        setChi2(resultVars.chi_cuadrado);
-        setFisher(resultVars.fisher_exacto);
+            if (!response.ok) {
+                throw new Error(`Error en la solicitud: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            const tablaArray = [];
+            const chi2Array = [];
+            const dofArray = [];
+            const pValueArray = [];
+            const significativoArray = [];
+
+            for (const variable in data.result) {
+                const { tabla, chi_cuadrado, dof, p_value, significativo } = data.result[variable];
+                tablaArray.push({ variable, valor: tabla });
+                chi2Array.push({ variable, valor: chi_cuadrado });
+                dofArray.push({ variable, valor: dof });
+                pValueArray.push({ variable, valor: p_value });
+                significativoArray.push({ variable, valor: significativo });
+            }
+
+            setTable(tablaArray);
+            setChi2(chi2Array);
+            setDoff(dofArray);
+            setPValue(pValueArray);
+            setSignificative(significativoArray);
+
         } catch (error) {
-        console.error("Error al ejecutar el testAdvStatistics1:", error);
+            console.error("Error al ejecutar el adv1:", error);
         } finally {
-        setLoading(false);
+            setLoading(false);
         }
     };
+
+    useEffect(() => {
+        handleAdv1();
+    }, []);
 
     return (
         <Box sx={{ backgroundColor: 'white', borderRadius: 2, padding: 2, boxShadow: 1, width: '100%', height: '70vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '10%' }}>
                 <Typography sx={{ color: '#4D7AFF', fontSize: '0.9rem' }}>
-                    <strong>DETERMINAR CORRELACIÓN ENTRE RESULTADOS INMUNOHISTOQUÍMICOS Y RESTO DE VARIABLES.</strong><br/>
+                    <strong>ANÁLISIS CATEGÓRICO CHI²</strong>
                 </Typography>
-                <ThemeToggle />
             </Box>
 
-            {procesando ? (
-                <>
-                    <ToggleButtonGroup
-                        value={mostrar}
-                        exclusive
-                        onChange={(e, val) => val && setMostrar(val)}
-                        sx={{ marginTop: 1, height: 15 }}
-                    >
-                        <ToggleButton value="razonamiento">Razonamiento</ToggleButton>
-                        <ToggleButton value="respuesta">Respuesta</ToggleButton>
-                    </ToggleButtonGroup>
-
-                    <Box sx={{ backgroundColor: '#f5f5f5', borderRadius: 1, padding: 2, marginTop: 2, flexGrow: 1, overflowY: 'auto' }}>
-                        {loading ? (
-                        <Typography><strong>Determinando correlacion entre resultados inmunohistoquimicos y resto de variables mediante t student, test chi cuadrado de pearson y test exacto de fisher...</strong></Typography>
-                        ) : (
-                        mostrar === 'razonamiento' ? (
-                            respuesta.map(renderMensaje)
+            <Box sx={{ backgroundColor: '#f5f5f5', borderRadius: 1, padding: 2, marginTop: 2, flexGrow: 1, overflowY: 'auto' }}>
+                {loading ? (
+                    <Typography><strong>Realizando análisis categórico Chi²...</strong></Typography>
+                ) : (
+                    <>
+                        {table.length === 0 ? (
+                            <Box sx={{ textAlign: 'center', mt: 4 }}>
+                                <Typography elevation={2} sx={{ padding: 3, borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f5f5f5', color: '#4D7AFF' }}>
+                                    <strong>No hay datos disponibles para realizar el análisis categórico de Chi².</strong>
+                                </Typography>
+                            </Box>
                         ) : (
                             <>
-                            <Typography variant="body1"><strong>T Student:</strong></Typography>
-                            {tStudent.map((item, idx) => (
-                                <Typography key={`tstudent-${idx}`}>{item.variable}: {item.valor}</Typography>
-                            ))}
-                            <Typography variant="body1" sx={{ marginTop: 2 }}><strong>Chi Cuadrado:</strong></Typography>
-                            {chi2.map((item, idx) => (
-                                <Typography key={`chi2-${idx}`}>{item.variable}: {item.valor}</Typography>
-                            ))}
-                            <Typography variant="body1" sx={{ marginTop: 2 }}><strong>Fisher Exacto:</strong></Typography>
-                            {fisher.map((item, idx) => (
-                                <Typography key={`fisher-${idx}`}>{item.variable}: {item.valor}</Typography>
-                            ))}
+                                <TableContainer component={Paper} sx={{ boxShadow: 2, borderRadius: 2 }}>
+                                    <Table size="small" sx={{ minWidth: 600, border: '1px solid #e0e0e0' }}>
+                                        <TableHead>
+                                            <TableRow sx={{ backgroundColor: '#f1f5ff' }}>
+                                                <TableCell align="center" sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>Variable</TableCell>
+                                                <TableCell align="center" sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>Chi²</TableCell>
+                                                <TableCell align="center" sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>Grado de Libertad</TableCell>
+                                                <TableCell align="center" sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>P-Valor</TableCell>
+                                                <TableCell align="center" sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>Significativo</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {table.map((item, idx) => {
+                                                const isSignificative = significative[idx]?.valor === true;
+                                                return (
+                                                    <TableRow
+                                                        key={idx}
+                                                        hover
+                                                        sx={{
+                                                            backgroundColor: isSignificative ? '#e6f7e6' : 'inherit',
+                                                            '&:hover': {
+                                                                backgroundColor: isSignificative ? '#d9f2d9' : '#f9f9f9',
+                                                            },
+                                                        }}
+                                                    >
+                                                        <TableCell align="center" sx={{ border: '1px solid #e0e0e0' }}>{item.variable}</TableCell>
+                                                        <TableCell align="center" sx={{ border: '1px solid #e0e0e0' }}>{chi2[idx]?.valor ?? '-'}</TableCell>
+                                                        <TableCell align="center" sx={{ border: '1px solid #e0e0e0' }}>{doff[idx]?.valor ?? '-'}</TableCell>
+                                                        <TableCell align="center" sx={{ border: '1px solid #e0e0e0' }}>{pValue[idx]?.valor ?? '-'}</TableCell>
+                                                        <TableCell align="center" sx={{ border: '1px solid #e0e0e0' }}>{significative[idx]?.valor != null ? (significative[idx].valor ? 'Sí' : 'No') : '-'}</TableCell>
+                                                    </TableRow>
+                                                );
+                                            })}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+
+                                <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
+                                    <ChiSquaredChart table={table} data={pValue} />
+                                </Box>
                             </>
-                        )
                         )}
-                    </Box>
-                </>
-            ) : (
-                <Button
-                    variant="contained"
-                    sx={{ backgroundColor: '#4D7AFF', fontSize: '1.1rem', marginTop: 16, alignSelf: 'center' }}
-                    onClick={handleAdv1}
-                >
-                    Calcular Correlacion Resultados Inmunohistoquímicos  
-                </Button>
-            )}
+                    </>
+                )}
             </Box>
-        );
+        </Box>
+    );
 };
 
-export default AdvancedStatistics1;
+export default AdvStatistics1;

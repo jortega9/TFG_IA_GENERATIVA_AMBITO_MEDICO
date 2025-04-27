@@ -15,8 +15,10 @@ const coloresBase = [
 
 
 const BarChartNum = ({ data, title, variable, height = 300, width = 480 }) => {
+
+    const dataFiltrada = data.filter(item => !item.variable.toLowerCase().includes('nhis'));
     // Extrae nombres base (sin número)
-    const categorias = data.map(item => item.variable);
+    const categorias = dataFiltrada.map(item => item.variable);
     const nombresBase = categorias.map(c => c.split('_')[0]);
 
     // Asigna un color a cada nombre base
@@ -34,7 +36,7 @@ const BarChartNum = ({ data, title, variable, height = 300, width = 480 }) => {
 
     const series = [{
         name: 'Media',
-        data: data.map(item => item.valor),
+        data: dataFiltrada.map(item => item.valor),
     }];
 
     const options = {

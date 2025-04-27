@@ -61,6 +61,7 @@ class IdentifyGroupVariableAgent(Agent):
         return {
 			"explanation": identify_group_variable.explanation,
 			"results": {
-				"json_path": OUTPUT_PATH
+				"json_path": OUTPUT_PATH,
+                "ret": ret
 			}
 		}

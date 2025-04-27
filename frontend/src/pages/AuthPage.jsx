@@ -143,6 +143,7 @@ const AuthPage = () => {
         catch(error){
             console.error("Error al realizar el registerUser: ", error);
             setErrorMsg("Error al registrarse. Por favor, verifica los datos introducidos.");
+            setSuccessMsg('');
         }
     };
 
