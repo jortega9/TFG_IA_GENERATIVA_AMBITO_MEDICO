@@ -99,12 +99,15 @@ def generate_latex_document():
 \end{document}
 """ % (''.join(sections))
 
+    os.makedirs(PDF_DIR, exist_ok=True)
+    tex_path = os.path.join(PDF_DIR, "final_report.tex")
+    with open(tex_path, "w") as f:
+        f.write(latex_content)
+
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     tex_path = os.path.join(OUTPUT_DIR, "final_report.tex")
     with open(tex_path, "w") as f:
         f.write(latex_content)
-        
-    os.makedirs(PDF_DIR, exist_ok=True)
 
     subprocess.run(["pdflatex", "-interaction=nonstopmode", "-output-directory", PDF_DIR, tex_path])
 

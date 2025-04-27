@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import ThemeToggle from '../../ThemeToggle';
 
-import masterData from '../../../../../data/processed/master.json'; 
+// import masterData from '../../../../../data/processed/master.json'; 
 
 import BarChartCat from '../../Charts/BarChartCat';
 import BarChartIC95 from '../../Charts/BarChartIC95';
@@ -27,12 +27,30 @@ const DescStatistics3 = ({ descCatCsv }) => {
     const [nPruebas, setNPruebas] = useState([]);
     const [valores, setValores] = useState([]);
     const [mostrar, setMostrar] = useState('frecuencias');
+    const [masterData, setMasterData] = useState({});
+
+    const fetchMasterData = async () => {
+        try {
+            ///home/joort/TFG/TFG_IA_GENERATIVA_AMBITO_MEDICO/
+            const response = await fetch('http://localhost:5173/master/master.json');
+            if (!response.ok) {
+            throw new Error('Archivo master.json no encontrado');
+            }
+            const data = await response.json();
+            setMasterData(data);
+        } catch (error) {
+            console.error('Error cargando master.json:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleDesc3 = async () => {
         setProcesando(true);
         setLoading(true);
 
         try {
+            fetchMasterData();
             const response = await fetch('http://127.0.0.1:8000/ai/descStatistics3', {
                 method: 'POST',
                 headers: {

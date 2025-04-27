@@ -31,10 +31,20 @@ from ai.phases.conclusions.orchestrator import generate_latex_document
 import time
 import json
 from fastapi import Body
+import configparser
+from dotenv import load_dotenv
 
 router = APIRouter()
 
+load_dotenv()
+
+SETTINGS_PATH = os.getenv("SETTINGS_PATH")
+
+config = configparser.ConfigParser()
+config.read(SETTINGS_PATH)
+
 DOC_DATA = "descripcion.docx"
+MASTER_DIR = os.path.join(config["frontend_path"]["public_path"], "master")
 
 @router.post('/prepare-data')
 async def prepare_data(request: PrepareDataRequest):
@@ -212,21 +222,36 @@ async def generate_document():
 @router.post('/copyDocs')
 async def copy_docs(files: list[UploadFile] = File(...)):
     raw_data_path = os.path.join(os.path.dirname(__file__), '../../../data/raw')
+    proc_data_path = os.path.join(os.path.dirname(__file__), '../../../data/processed')
     os.makedirs(raw_data_path, exist_ok=True)
+    os.makedirs(MASTER_DIR, exist_ok=True)
+    os.makedirs(proc_data_path, exist_ok=True)
     
     new_paths = []
+    file_path = ""
     for file in files:
-        if file.filename.endswith('.docx'):
-            new_filename = 'descripcion.docx'
+        if file.filename.endswith('.json'):
+            new_filename = 'master.json'
+            file_path = os.path.join(MASTER_DIR, new_filename)
+            proc_file_path = os.path.join(proc_data_path, new_filename)
+
+            file_content = file.file.read()
+
+            with open(file_path, 'wb') as buffer:
+                buffer.write(file_content)
+
+            with open(proc_file_path, 'wb') as buffer:
+                buffer.write(file_content)
+
+
         elif file.filename.endswith('.xlsx'):
             new_filename = 'BD.xlsx'
+            file_path = os.path.join(raw_data_path, new_filename)
+            with open(file_path, 'wb') as buffer:
+                shutil.copyfileobj(file.file, buffer)
         else:
-            new_filename = file.filename
+            return JSONResponse(status_code=400, content={"message": "Formato de archivo no permitido"})
 
-        file_path = os.path.join(raw_data_path, new_filename)
-        with open(file_path, 'wb') as buffer:
-            shutil.copyfileobj(file.file, buffer)
-        
         new_paths.append(file_path)
     
     return {"message": "Archivos copiados exitosamente", "paths": new_paths}
