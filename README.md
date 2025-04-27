@@ -48,7 +48,13 @@ Antes de comenzar, asegúrate de tener instalados los siguientes programas y her
    npm install
    ```
 
-6. **Configurar la base de datos**  
+6. **Instalar Compilador PdfLatex**
+   ```bash
+   sudo apt install texlive-latex-base
+   sudo apt install texlive-lang-spanish texlive-latex-recommended texlive-latex-extra
+   ```
+
+7. **Configurar la base de datos**  
    - Abre HeidiSQL y crea la base de datos
    - urolobot
        - user
