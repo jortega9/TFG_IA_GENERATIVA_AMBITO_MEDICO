@@ -29,7 +29,6 @@ Antes de comenzar, asegúrate de tener instalados los siguientes programas y her
    ```
 
 3. **Crear entorno virtual**
-   - Selecciona el interprete de python 3.12.7
    - Crear entorno virtual python 3.12
      ```bash
      python3.12 -m venv .venv
@@ -37,6 +36,7 @@ Antes de comenzar, asegúrate de tener instalados los siguientes programas y her
      ```
    
 3. **Instalar las dependencias de Python**  
+- Selecciona el interprete de python 3.12.7 (.venv)
    ```bash
    cd backend
    pip install -r requirements.txt
