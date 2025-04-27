@@ -42,6 +42,12 @@ Antes de comenzar, asegúrate de tener instalados los siguientes programas y her
    pip install -r requirements.txt
    ```
 
+   - En caso de dar conflicto de dependencias hacer:
+   ```bash
+   pip install openai
+   pip install langchain
+   ```
+
 5. **Instalar las dependencias de Node.js**  
    ```bash
    cd frontend
