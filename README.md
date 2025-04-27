@@ -26,10 +26,15 @@ Antes de comenzar, asegúrate de tener instalados los siguientes programas y her
 3. **Crear y activar un entorno virtual (opcional pero recomendado)**  
    En sistemas Unix/Linux:
    ```bash
-   python -m venv env
-   source env/bin/activate
+   sudo apt update
+   sudo apt install python3.10-venv
    ```
 
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
+   ```
+   
 4. **Instalar las dependencias de Python**  
    ```bash
    cd backend
