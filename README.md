@@ -27,6 +27,13 @@ Antes de comenzar, asegúrate de tener instalados los siguientes programas y her
    ```bash
    cd TFG_IA_GENERATIVA_AMBITO_MEDICO
    ```
+
+3. **A**
+   - Crear entorno virtual python 3.12
+     ```bash
+     python3.12 -m venv .venv
+     source .venv/bin/activate
+     ```
    
 3. **Instalar las dependencias de Python**  
    - Selecciona el interprete de python 3.12.7
