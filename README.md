@@ -10,6 +10,7 @@ Antes de comenzar, asegúrate de tener instalados los siguientes programas y her
    - ```bash
       curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
       nvm install 20
+      sudo apt install npm
      ```
 - [HeidiSQL](https://www.heidisql.com/)
 - Una clave API de [OpenAI](https://platform.openai.com/signup)
@@ -26,32 +27,20 @@ Antes de comenzar, asegúrate de tener instalados los siguientes programas y her
    ```bash
    cd TFG_IA_GENERATIVA_AMBITO_MEDICO
    ```
-
-3. **Crear y activar un entorno virtual (opcional pero recomendado)**  
-   En sistemas Unix/Linux:
-   ```bash
-   sudo apt update
-   sudo apt install python3.10-venv
-   ```
-
-   ```bash
-   python3 -m venv .venv
-   source .venv/bin/activate
-   ```
    
-4. **Instalar las dependencias de Python**  
+3. **Instalar las dependencias de Python**  
    ```bash
    cd backend
    pip install -r requirements.txt
    ```
 
-5. **Instalar las dependencias de Node.js**  
+4. **Instalar las dependencias de Node.js**  
    ```bash
    cd frontend
    npm install
    ```
 
-6. **Configurar la base de datos**  
+5. **Configurar la base de datos**  
    - Abre HeidiSQL y crea la base de datos
    - urolobot
        - user
@@ -61,7 +50,7 @@ Antes de comenzar, asegúrate de tener instalados los siguientes programas y her
        - user_meta
           - ![image](https://github.com/user-attachments/assets/3af4094a-4f2b-49a5-8db7-491d76c7013f)
 
-7. **Configurar archivo .env**  
+6. **Configurar archivo .env**  
    - Crea un archivo `.env` en el directorio raíz del proyecto basandote en env.template .
     ```bash
    cp .env.template .env
