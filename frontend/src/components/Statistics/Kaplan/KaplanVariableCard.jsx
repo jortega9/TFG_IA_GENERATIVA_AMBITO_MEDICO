@@ -4,13 +4,30 @@ import {
     TableContainer, TableHead, TableRow, Paper
 } from '@mui/material';
 
-import masterData from '../../../../../data/processed/master.json'; 
+// import masterData from '../../../../../data/processed/master.json'; 
 
 const KaplanVariableCard = ({ variableName, plotImage, csvKaplanPath, onLoaded }) => {
     const [data, setData] = useState([]);
+    const [masterData, setMasterData] = useState({});
+
+    const fetchMasterData = async () => {
+        try {
+            const response = await fetch('http://localhost:5173/master/master.json');
+            if (!response.ok) {
+            throw new Error('Archivo master.json no encontrado');
+            }
+            const data = await response.json();
+            setMasterData(data);
+        } catch (error) {
+            console.error('Error cargando master.json:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleExecuteData = async () => {
         try {
+            fetchMasterData();
             const response = await fetch('http://127.0.0.1:8000/ai/kaplanStatisticsVars', {
                 method: 'POST',
                 headers: {

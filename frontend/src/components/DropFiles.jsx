@@ -54,7 +54,7 @@ const DropFiles = ({ setIsDataPrepared }) => {
 
     const handlePrepareData = async () => {
         const excelFile = fileData.find((file) => file.includes('.xlsx'));
-        const masterFile = fileData.find((file) => file.includes('.docx'));
+        const masterFile = fileData.find((file) => file.includes('.json'));
         setPreparingData(true);
     
         if (!excelFile || !masterFile) {
