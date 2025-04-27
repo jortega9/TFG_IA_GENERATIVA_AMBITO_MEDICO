@@ -1,4 +1,6 @@
 [data_path]
-raw_path = .../TFG/data/raw
-processed_path = .../TFG/data/processed
+raw_path = .../TFG_IA_GENERATIVA_AMBITO_MEDICO/data/raw
+processed_path = .../TFG_IA_GENERATIVA_AMBITO_MEDICO/data/processed
 
+[frontend_path]
+public_path = .../TFG_IA_GENERATIVA_AMBITO_MEDICO/frontend/public

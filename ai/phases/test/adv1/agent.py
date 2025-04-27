@@ -12,8 +12,11 @@ import numpy as np
 from ai.agents.agent import Agent
 from ai.phases.test.desc1.prompts import CALC_MEDIA, CALC_DESV
 
+from dotenv import load_dotenv
+load_dotenv()
 
-SETTINGS_PATH = "/home/joort/TFG/TFG_IA_GENERATIVA_AMBITO_MEDICO/ai/config.ini"
+
+SETTINGS_PATH = os.getenv("SETTINGS_PATH")
 
 config = configparser.ConfigParser()
 

@@ -10,7 +10,11 @@ import numpy as np
 from ai.phases.test.desc3.agent import TestAgentDesc3
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../..")))
 
-SETTINGS_PATH = "/home/joort/TFG/TFG_IA_GENERATIVA_AMBITO_MEDICO/ai/config.ini"
+from dotenv import load_dotenv
+load_dotenv()
+
+
+SETTINGS_PATH = os.getenv("SETTINGS_PATH")
 RAW_DATA = "BD.xlsx"
 JSON_DATA = "variables_dataset_actualizado.json"
 DOC_DATA = "descripcion.docx"

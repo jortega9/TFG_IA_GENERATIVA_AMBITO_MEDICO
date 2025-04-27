@@ -39,6 +39,8 @@ router = APIRouter()
 load_dotenv()
 
 SETTINGS_PATH = os.getenv("SETTINGS_PATH")
+KAPLAN = os.getenv("KAPLAN")
+PROC = os.getenv("PROC")
 
 config = configparser.ConfigParser()
 config.read(SETTINGS_PATH)
@@ -258,7 +260,7 @@ async def copy_docs(files: list[UploadFile] = File(...)):
 
 @router.post('/download-zip')
 async def download_zip():
-    folder_path = '/home/joort/TFG/TFG_IA_GENERATIVA_AMBITO_MEDICO/data/processed'
+    folder_path = PROC
     zip_path = '/tmp/statistics.zip'
     
     # Crear el ZIP (sobreescribimos si existe)
@@ -279,7 +281,7 @@ async def download_zip():
 
 @router.get('/kaplan-image/{image_name}')
 async def get_kaplan_image(image_name: str):
-    folder_path = '/home/joort/TFG/TFG_IA_GENERATIVA_AMBITO_MEDICO/data/processed/kaplan_meier'
+    folder_path = KAPLAN
     image_path = os.path.join(folder_path, image_name)
 
     if not os.path.exists(image_path):

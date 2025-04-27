@@ -13,7 +13,11 @@ from ai.agents.agent import Agent
 from ai.phases.test.desc3.prompts import CALC_MEDIA, CALC_DESV
 
 
-SETTINGS_PATH = "/home/joort/TFG/TFG_IA_GENERATIVA_AMBITO_MEDICO/ai/config.ini"
+from dotenv import load_dotenv
+load_dotenv()
+
+
+SETTINGS_PATH = os.getenv("SETTINGS_PATH")
 
 config = configparser.ConfigParser()
 
