@@ -104,7 +104,7 @@ const SelectGroupVariable = ({setIsGroupIdentified}) => {
             }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '10%' }}>
                     <Typography sx={{ color: '#4D7AFF', fontSize: '0.9rem' }}>
-                        <strong> IDENTIFICANDO VARIABLE DE GRUPO Y CATEGORIZANDO VARIABLES. </strong>
+                        <strong> IDENTIFICACIÓN DE VARIABLE DE GRUPO Y CATEGORIZACIÓN VARIABLES. </strong>
                     </Typography>
                     {/* <ThemeToggle /> */}
                 </Box>
@@ -121,7 +121,7 @@ const SelectGroupVariable = ({setIsGroupIdentified}) => {
                         }}>
                             <CircularProgress sx={{ color: '#4D7AFF', mb: 2 }} />
                             <Typography variant="body1" sx={{ color: '#4D7AFF' }}>
-                            Procesando los datos...
+                            Categorizando variables...
                             </Typography>
                         </Box>
                         ) : (

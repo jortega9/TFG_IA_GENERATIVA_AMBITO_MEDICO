@@ -14,27 +14,12 @@ import AdvancedStatistics4 from '../Statistics/AdvancesStatistics/AdvancedStatis
 import AdvancedStatistics5 from '../Statistics/AdvancesStatistics/AdvancedStatistics5';
 import KaplanStatistics1 from '../Statistics/Kaplan/KaplanStatistics1';
 import KaplanStatisticsVars from '../Statistics/Kaplan/KaplanStatisticsVars';
+import CoxStatistics from '../Statistics/Cox/CoxStatistics';
+import DocGenerator from '../Statistics/DocGenerator/DocGenerator';
 import { Button } from '@mui/material';
 
-import bilat2_kaplan_meier_plot from '../../../../data/processed/kaplan_meier/bilat2_kaplan_meier_plot.png';
-import capras_kaplan_meier_plot from '../../../../data/processed/kaplan_meier/capras_kaplan_meier_plot.png';
-import extracap_kaplan_meier_plot from '../../../../data/processed/kaplan_meier/extracap_kaplan_meier_plot.png';
-import gleason1_kaplan_meier_plot from '../../../../data/processed/kaplan_meier/gleason1_kaplan_meier_plot.png';
-import gleason2_kaplan_meier_plot from '../../../../data/processed/kaplan_meier/gleason2_kaplan_meier_plot.png';
-import hereda_kaplan_meier_plot from '../../../../data/processed/kaplan_meier/hereda_kaplan_meier_plot.png';
-import kaplan_meier_plot from '../../../../data/processed/kaplan_meier/kaplan_meier_plot.png';
-import localiz_kaplan_meier_plot from '../../../../data/processed/kaplan_meier/localiz_kaplan_meier_plot.png';
-import margen_kaplan_meier_plot from '../../../../data/processed/kaplan_meier/margen_kaplan_meier_plot.png';
-import multifoc_kaplan_meier_plot from '../../../../data/processed/kaplan_meier/multifoc_kaplan_meier_plot.png';
-import pinag_kaplan_meier_plot from '../../../../data/processed/kaplan_meier/pinag_kaplan_meier_plot.png';
-import ra_estroma_kaplan_meier_plot from '../../../../data/processed/kaplan_meier/ra_estroma_kaplan_meier_plot.png';
-import rtpadyu_kaplan_meier_plot from '../../../../data/processed/kaplan_meier/rtpadyu_kaplan_meier_plot.png';
-import tnm2_kaplan_meier_plot from '../../../../data/processed/kaplan_meier/tnm2_kaplan_meier_plot.png';
-import vvss_kaplan_meier_plot from '../../../../data/processed/kaplan_meier/vvss_kaplan_meier_plot.png';
-
-
 const Report = () => {
-    const steps = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27"];
+    const steps = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"];
     const [currentStep, setCurrentStep] = useState(0);
 
     const [descNumVars, setDescnumVars] = useState([]);
@@ -51,6 +36,7 @@ const Report = () => {
 
     const [csvKaplanPath, setCsvKaplanPath] = useState("");
     const [imagesKaplanPath, setImagesKaplanPath] = useState("");
+    const [csvCoxPath, setCsvCoxPath] = useState("");
 
     const [isDataPrepared, setIsDataPrepared] = useState(false);
     const [isDescDataProcessed, setIsDescDataProcessed] = useState(false);
@@ -90,6 +76,7 @@ const Report = () => {
                 setCsvSignificantPath={setCsvSignificantPath}
                 setImagesKaplanPath={setImagesKaplanPath}
                 setCsvKaplanPath={setCsvKaplanPath}
+                setCsvCoxPath={setCsvCoxPath}
             />;
             case 8:
                 return <AdvancedStatistics1 csvChiPath={csvChiPath} />;
@@ -104,33 +91,11 @@ const Report = () => {
             case 13:
                 return <KaplanStatistics1 csvKaplanPath={csvKaplanPath} imagesKaplanPath={imagesKaplanPath}/>;
             case 14:
-                return <KaplanStatisticsVars key="bilat2" csvKaplanPath={csvKaplanPath} nameVar="bilat2" plotK={bilat2_kaplan_meier_plot} plotS={bilat2_kaplan_meier_plot} />;
+                return <KaplanStatisticsVars csvKaplanPath={csvKaplanPath} />
             case 15:
-                return <KaplanStatisticsVars key="capras" csvKaplanPath={csvKaplanPath} nameVar="capras" plotK={capras_kaplan_meier_plot} plotS={capras_kaplan_meier_plot} />;
+                return <CoxStatistics csvCoxPath={csvCoxPath} />
             case 16:
-                return <KaplanStatisticsVars key="extracap" csvKaplanPath={csvKaplanPath} nameVar="extracap" plotK={extracap_kaplan_meier_plot} plotS={extracap_kaplan_meier_plot} />;
-            case 17:
-                return <KaplanStatisticsVars key="gleason1" csvKaplanPath={csvKaplanPath} nameVar="gleason1" plotK={gleason1_kaplan_meier_plot} plotS={gleason1_kaplan_meier_plot} />;
-            case 18:
-                return <KaplanStatisticsVars key="gleason2" csvKaplanPath={csvKaplanPath} nameVar="gleason2" plotK={gleason2_kaplan_meier_plot} plotS={gleason2_kaplan_meier_plot} />;
-            case 19:
-                return <KaplanStatisticsVars key="hereda" csvKaplanPath={csvKaplanPath} nameVar="hereda" plotK={hereda_kaplan_meier_plot} plotS={hereda_kaplan_meier_plot} />;
-            case 20:
-                return <KaplanStatisticsVars key="localiz" csvKaplanPath={csvKaplanPath} nameVar="localiz" plotK={localiz_kaplan_meier_plot} plotS={localiz_kaplan_meier_plot} />;
-            case 21:
-                return <KaplanStatisticsVars key="margen" csvKaplanPath={csvKaplanPath} nameVar="margen" plotK={margen_kaplan_meier_plot} plotS={margen_kaplan_meier_plot} />;
-            case 22:
-                return <KaplanStatisticsVars key="multifoc" csvKaplanPath={csvKaplanPath} nameVar="multifoc" plotK={multifoc_kaplan_meier_plot} plotS={multifoc_kaplan_meier_plot} />;
-            case 23:
-                return <KaplanStatisticsVars key="pinag" csvKaplanPath={csvKaplanPath} nameVar="pinag" plotK={pinag_kaplan_meier_plot} plotS={pinag_kaplan_meier_plot} />;
-            case 24:
-                return <KaplanStatisticsVars key="ra_estroma" csvKaplanPath={csvKaplanPath} nameVar="ra_estroma" plotK={ra_estroma_kaplan_meier_plot} plotS={ra_estroma_kaplan_meier_plot} />;
-            case 25:
-                return <KaplanStatisticsVars key="rtpadyu" csvKaplanPath={csvKaplanPath} nameVar="rtpadyu" plotK={rtpadyu_kaplan_meier_plot} plotS={rtpadyu_kaplan_meier_plot} />;
-            case 26:
-                return <KaplanStatisticsVars key="tnm2" csvKaplanPath={csvKaplanPath} nameVar="tnm2" plotK={tnm2_kaplan_meier_plot} plotS={tnm2_kaplan_meier_plot} />;
-            case 27:
-                return <KaplanStatisticsVars key="vvss" csvKaplanPath={csvKaplanPath} nameVar="vvss" plotK={vvss_kaplan_meier_plot} plotS={vvss_kaplan_meier_plot} />;                
+                return <DocGenerator />
             default:
                 return <p>Error: Paso desconocido</p>;
             }
@@ -156,6 +121,47 @@ const Report = () => {
             case 6:
                 return isTimeIdentified;
             case 7:
+                return isAdvDataProcessed;
+            case 8:
+                return true;
+            case 9:
+                return true;
+            case 10:
+                return true;
+            case 11:
+                return true;
+            case 12:
+                return true;
+            case 13:
+                return true;
+            case 14:
+                return true;
+            case 15:
+                return true;
+            case 16:
+                return false;
+            default:
+                return false;
+        }
+    };
+
+    const isBackStepValid = () => {
+        switch (currentStep) {
+            case 0:
+                return false;
+            case 1:
+                return true;
+            case 2:
+                return true;
+            case 3:
+                return true;
+            case 4:
+                return true;
+            case 5:
+                return true;
+            case 6:
+                return true;
+            case 7:
                 return true;
             case 8:
                 return true;
@@ -174,28 +180,6 @@ const Report = () => {
             case 15:
                 return true;
             case 16:
-                return true;
-            case 17:
-                return true;
-            case 18:
-                return true;
-            case 19:
-                return true;
-            case 20:
-                return true;
-            case 21:
-                return true;
-            case 22:
-                return true;
-            case 23:
-                return true;
-            case 24:
-                return true;
-            case 25:
-                return true;
-            case 26:
-                return true;
-            case 27:
                 return false;
             default:
                 return false;
@@ -219,7 +203,7 @@ const Report = () => {
         <div style={{ width: "100%", height: "100%"}}>
             <div style={{ width: "100%", height: "100%", textAlign: "center" }}>
                 {getStepContent(currentStep)}
-                <Button onClick={prevStep} disabled={currentStep === 0}>
+                <Button onClick={prevStep} disabled={!isBackStepValid()}>
                 Atrás
                 </Button>
                 <Button onClick={nextStep} disabled={!isStepValid()}>

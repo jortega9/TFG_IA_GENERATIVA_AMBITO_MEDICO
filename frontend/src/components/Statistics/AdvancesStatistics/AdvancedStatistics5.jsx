@@ -1,10 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Box,
-    Button,
     Typography,
-    ToggleButton,
-    ToggleButtonGroup,
     Table,
     TableBody,
     TableCell,
@@ -17,9 +14,7 @@ import ThemeToggle from '../../ThemeToggle';
 
 import ChiSquaredChart from '../../Charts/ChiSquaredChart';
 
-//TODO Significativas
-
-const AdvStatistics5 = ({csvSignificantPath}) => {
+const AdvStatistics5 = ({ csvSignificantPath }) => {
     const [procesando, setProcesando] = useState(false);
     const [loading, setLoading] = useState(false);
     const [type, setType] = useState([]);
@@ -29,10 +24,8 @@ const AdvStatistics5 = ({csvSignificantPath}) => {
     const handleAdv5 = async () => {
         setProcesando(true);
         setLoading(true);
-        // variable,tipo,test_aplicado,valor
 
         try {
-            console.log("csvSignificantPath:", csvSignificantPath);
             const response = await fetch('http://127.0.0.1:8000/ai/advStatistics5', {
                 method: 'POST',
                 headers: {
@@ -56,7 +49,7 @@ const AdvStatistics5 = ({csvSignificantPath}) => {
                 const { tipo, test_aplicado, valor } = data.result[variable];
                 tipoArray.push({ variable, valor: tipo });
                 testAplicadoArray.push({ variable, valor: test_aplicado });
-                valorArray.push({ variable, valor: valor });
+                valorArray.push({ variable, valor });
             }
 
             setType(tipoArray);
@@ -69,8 +62,10 @@ const AdvStatistics5 = ({csvSignificantPath}) => {
             setLoading(false);
         }
     };
-    
-    
+
+    useEffect(() => {
+        handleAdv5();
+    }, []);
 
     return (
         <Box sx={{ backgroundColor: 'white', borderRadius: 2, padding: 2, boxShadow: 1, width: '100%', height: '70vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
@@ -78,84 +73,58 @@ const AdvStatistics5 = ({csvSignificantPath}) => {
                 <Typography sx={{ color: '#4D7AFF', fontSize: '0.9rem' }}>
                     <strong>VARIABLES SIGNIFICATIVAS</strong>
                 </Typography>
-                {/* <ThemeToggle /> */}
             </Box>
 
-            {procesando ? (
-                <>
-                    <Box sx={{ backgroundColor: '#f5f5f5', borderRadius: 1, padding: 2, marginTop: 2, flexGrow: 1, overflowY: 'auto' }}>
-                        {loading ? (
-                            <Typography><strong>Determinando Variables Significativas</strong></Typography>
+            <Box sx={{ backgroundColor: '#f5f5f5', borderRadius: 1, padding: 2, marginTop: 2, flexGrow: 1, overflowY: 'auto' }}>
+                {loading ? (
+                    <Typography><strong>Determinando Variables Significativas...</strong></Typography>
+                ) : (
+                    <>
+                        {type.length === 0 ? (
+                            <Box sx={{ textAlign: 'center', mt: 4 }}>
+                                <Typography elevation={2} sx={{ padding: 3, borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f5f5f5', color: '#4D7AFF' }}>
+                                    <strong>No hay variables significativas.</strong>
+                                </Typography>
+                            </Box>
                         ) : (
                             <>
-                                {type.length === 0 ? (
-                                    <Box sx={{ textAlign: 'center', mt: 4 }}>
-                                        <Typography elevation={2} sx={{ padding: 3, borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f5f5f5', color: '#4D7AFF' }}>
-                                            <strong>No hay variables significativas.</strong>
-                                        </Typography>
-                                    </Box>
-                                ) : (
-                                    <>
-                                        <TableContainer component={Paper} sx={{ boxShadow: 2, borderRadius: 2 }}>
-                                            <Table size="small" sx={{ minWidth: 600, border: '1px solid #e0e0e0' }}>
-                                                <TableHead>
-                                                    <TableRow sx={{ backgroundColor: '#f1f5ff' }}>
-                                                        <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>Variable</TableCell>
-                                                        <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>Tipo</TableCell>
-                                                        <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>Test Aplicado</TableCell>
-                                                        <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>Valor</TableCell>
-                                                    </TableRow>
-                                                </TableHead>
-                                                <TableBody>
-                                                    {type.map((item, idx) => {
-
-                                                        return (
-                                                            <TableRow
-                                                                key={idx}
-                                                                hover
-                                                                sx={{
-                                                                    backgroundColor: '#d9f2d9',
-                                                                    '&:hover': {
-                                                                        backgroundColor: '#d9f2d9',
-                                                                    },
-                                                                }}
-                                                            >
-                                                                <TableCell sx={{ border: '1px solid #e0e0e0' }}>{item.variable}</TableCell>
-                                                                <TableCell sx={{ border: '1px solid #e0e0e0' }}>
-                                                                    {type[idx]?.valor ?? '-'}
-                                                                </TableCell>
-                                                                <TableCell sx={{ border: '1px solid #e0e0e0' }}>
-                                                                    {testApplied[idx]?.valor ?? '-'}
-                                                                </TableCell>
-                                                                <TableCell sx={{ border: '1px solid #e0e0e0' }}>
-                                                                    {value[idx]?.valor ?? '-'}
-                                                                </TableCell>
-                                                            </TableRow>
-                                                        );
-                                                    })}
-                                                </TableBody>
-                                            </Table>
-                                        </TableContainer>
-                                        <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
-                                            <ChiSquaredChart table={testApplied} data={value} />
-                                        </Box>
-                                    </>
-                                )}
+                                <TableContainer component={Paper} sx={{ boxShadow: 2, borderRadius: 2 }}>
+                                    <Table size="small" sx={{ minWidth: 600, border: '1px solid #e0e0e0' }}>
+                                        <TableHead>
+                                            <TableRow sx={{ backgroundColor: '#f1f5ff' }}>
+                                                <TableCell align="center" sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>Variable</TableCell>
+                                                <TableCell align="center" sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>Tipo</TableCell>
+                                                <TableCell align="center" sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>Test Aplicado</TableCell>
+                                                <TableCell align="center" sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>P-Valor</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {type.map((item, idx) => (
+                                                <TableRow
+                                                    key={idx}
+                                                    hover
+                                                    sx={{
+                                                        backgroundColor: '#d9f2d9',
+                                                        '&:hover': { backgroundColor: '#d0ecd0' }
+                                                    }}
+                                                >
+                                                    <TableCell align="center" sx={{ border: '1px solid #e0e0e0' }}>{item.variable}</TableCell>
+                                                    <TableCell align="center" sx={{ border: '1px solid #e0e0e0' }}>{item.valor}</TableCell>
+                                                    <TableCell align="center" sx={{ border: '1px solid #e0e0e0' }}>{testApplied[idx]?.valor ?? '-'}</TableCell>
+                                                    <TableCell align="center" sx={{ border: '1px solid #e0e0e0' }}>{value[idx]?.valor ?? '-'}</TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                                <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
+                                    <ChiSquaredChart table={testApplied} data={value} />
+                                </Box>
                             </>
-
                         )}
-                    </Box>
-
-                </>
-            ) : (
-                <Button
-                    variant="contained"
-                    sx={{ backgroundColor: '#4D7AFF', fontSize: '1.1rem', marginTop: 16, alignSelf: 'center' }}
-                    onClick={handleAdv5}
-                >
-                    Determinar Variables Significativas
-                </Button>
-            )}
+                    </>
+                )}
+            </Box>
         </Box>
     );
 };

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Box, Button, Typography, ToggleButton, ToggleButtonGroup, CircularProgress   } from '@mui/material';
 import ThemeToggle from '../ThemeToggle';
 
-const ProcessAdvData = ({setIsDataProcessed, setCsvMannWhitneyPath, setCsvTStudentPath, setCsvChiPath, setCsvFisherPath, setCsvSignificantPath, setImagesKaplanPath, setCsvKaplanPath }) => {
+const ProcessAdvData = ({setIsDataProcessed, setCsvMannWhitneyPath, setCsvTStudentPath, setCsvChiPath, setCsvFisherPath, setCsvSignificantPath, setImagesKaplanPath, setCsvKaplanPath, setCsvCoxPath }) => {
     const [procesando, setProcesando] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -30,6 +30,7 @@ const ProcessAdvData = ({setIsDataProcessed, setCsvMannWhitneyPath, setCsvTStude
             setCsvSignificantPath(result.result.significant.results.csv_path);
             setImagesKaplanPath(result.result.kaplan.results.images_path);
             setCsvKaplanPath(result.result.kaplan.results.data_path);
+            setCsvCoxPath(result.result.cox.results.cox_univariante)
 
             setIsDataProcessed(true);
         } catch (error) {
@@ -76,7 +77,7 @@ const ProcessAdvData = ({setIsDataProcessed, setCsvMannWhitneyPath, setCsvTStude
                         ) : (
                             <>
                                 <Typography elevation={2} sx={{ padding: 3, borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f5f5f5', color: '#4D7AFF' }}>
-                                    <strong>Datos procesados correctamente..</strong>
+                                    <strong>Datos procesados correctamente.</strong>
                                 </Typography>
                             </>
                         )

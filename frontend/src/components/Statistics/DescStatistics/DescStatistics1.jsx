@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Box,
-    Button,
     Typography,
     ToggleButton,
     ToggleButtonGroup,
@@ -68,14 +67,18 @@ const DescStatistics1 = ({ descNumCsv }) => {
         }
     };
 
+    useEffect(() => {
+        handleDesc1();
+    }, []);
+
     const renderTable = (data, label, nArray) => (
         <TableContainer component={Paper} sx={{ boxShadow: 2, borderRadius: 2 }}>
             <Table size="small" sx={{ minWidth: 300, border: '1px solid #e0e0e0' }}>
                 <TableHead>
                     <TableRow sx={{ backgroundColor: '#f1f5ff' }}>
-                        <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>Variable</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>N</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>{label}</TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>Variable</TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>N</TableCell>
+                        <TableCell align="center" sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>{label}</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -87,9 +90,9 @@ const DescStatistics1 = ({ descNumCsv }) => {
                                 hover
                                 sx={{ '&:hover': { backgroundColor: '#f9f9f9' } }}
                             >
-                                <TableCell sx={{ border: '1px solid #e0e0e0' }}>{item.variable}</TableCell>
-                                <TableCell sx={{ border: '1px solid #e0e0e0' }}>{nItem ? nItem.valor : '-'}</TableCell>
-                                <TableCell sx={{ border: '1px solid #e0e0e0' }}>{item.valor}</TableCell>
+                                <TableCell align="center" sx={{ border: '1px solid #e0e0e0' }}>{item.variable}</TableCell>
+                                <TableCell align="center" sx={{ border: '1px solid #e0e0e0' }}>{nItem ? nItem.valor : '-'}</TableCell>
+                                <TableCell align="center" sx={{ border: '1px solid #e0e0e0' }}>{item.valor}</TableCell>
                             </TableRow>
                         );
                     })}
@@ -97,7 +100,6 @@ const DescStatistics1 = ({ descNumCsv }) => {
             </Table>
         </TableContainer>
     );
-    
 
     return (
         <Box sx={{ backgroundColor: 'white', borderRadius: 2, padding: 2, boxShadow: 1, width: '100%', height: '70vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
@@ -105,57 +107,41 @@ const DescStatistics1 = ({ descNumCsv }) => {
                 <Typography sx={{ color: '#4D7AFF', fontSize: '0.9rem' }}>
                     <strong>DETERMINANDO MEDIA Y DESVIACIÓN TÍPICA SIGUIENDO DISTRIBUCION NORMAL. (VARAIBLES NÚMERICAS)</strong>
                 </Typography>
-                {/* <ThemeToggle /> */}
             </Box>
 
-            {procesando ? (
-                <>
-                    <ToggleButtonGroup
-                        value={mostrar}
-                        exclusive
-                        onChange={(e, val) => val && setMostrar(val)}
-                        sx={{ marginTop: 1, height: 15 }}
-                    >
-                        <ToggleButton value="media">Media</ToggleButton>
-                        <ToggleButton value="std">Desv Típica</ToggleButton>
-                    </ToggleButtonGroup>
+            <ToggleButtonGroup
+                value={mostrar}
+                exclusive
+                onChange={(e, val) => val && setMostrar(val)}
+                sx={{ marginTop: 1, height: 15 }}
+            >
+                <ToggleButton value="media">Media</ToggleButton>
+                <ToggleButton value="std">Desv Típica</ToggleButton>
+            </ToggleButtonGroup>
 
-                    <Box sx={{ backgroundColor: '#f5f5f5', borderRadius: 1, padding: 2, marginTop: 2, flexGrow: 1, overflowY: 'auto' }}>
-                        {loading ? (
-                            <Typography><strong>Calculando media y desviación típica de las variables numéricas...</strong></Typography>
-                        ) : (
-                            <>
-                                {mostrar === 'media' ? (
-                                    <>
-                                        {renderTable(media, 'Media', nPruebas)}
-                                        <Box mt={4} sx={{ display: 'flex', justifyContent: 'space-around' }}>
-                                            <BarChartNum data={media} title='Medias de Variables Numéricas' variable='Medias' />
-                                            <PieChart data={media} title='Distribución de Medias' />
-                                        </Box>
-                                    </>
-                                ) : (
-                                    <>
-                                        {renderTable(desviacion, 'Desviación Típica', nPruebas)}
-                                        <Box mt={4} sx={{ display: 'flex', justifyContent: 'space-around' }}>
-                                            <BarChartNum data={desviacion} title='Desviaciones típicas de Variables Numéricas' variable='Desviaciones Típicas'/>
-                                            <PieChart data={desviacion} title='Distribución de Desviaciones Típicas' />
-                                        </Box>
-                                    </>
-                                )}
-                            </>
-                        )}
-                    </Box>
-
-                </>
-            ) : (
-                <Button
-                    variant="contained"
-                    sx={{ backgroundColor: '#4D7AFF', fontSize: '1.1rem', marginTop: 16, alignSelf: 'center' }}
-                    onClick={handleDesc1}
-                >
-                    Calcular Media y Desviación Típica
-                </Button>
-            )}
+            <Box sx={{ backgroundColor: '#f5f5f5', borderRadius: 1, padding: 2, marginTop: 2, flexGrow: 1, overflowY: 'auto' }}>
+                {loading ? (
+                    <Typography><strong>Calculando media y desviación típica de las variables numéricas...</strong></Typography>
+                ) : (
+                    mostrar === 'media' ? (
+                        <>
+                            {renderTable(media, 'Media', nPruebas)}
+                            <Box mt={4} sx={{ display: 'flex', justifyContent: 'space-around' }}>
+                                <BarChartNum data={media} title='Medias de Variables Numéricas' variable='Medias' />
+                                <PieChart data={media} title='Distribución de Medias' />
+                            </Box>
+                        </>
+                    ) : (
+                        <>
+                            {renderTable(desviacion, 'Desviación Típica', nPruebas)}
+                            <Box mt={4} sx={{ display: 'flex', justifyContent: 'space-around' }}>
+                                <BarChartNum data={desviacion} title='Desviaciones típicas de Variables Numéricas' variable='Desviaciones Típicas' />
+                                <PieChart data={desviacion} title='Distribución de Desviaciones Típicas' />
+                            </Box>
+                        </>
+                    )
+                )}
+            </Box>
         </Box>
     );
 };

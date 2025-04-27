@@ -1,8 +1,11 @@
 import os
 import sys
 import shutil
-from fastapi import APIRouter, UploadFile, File
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, UploadFile, File, HTTPException
+from fastapi.responses import JSONResponse, FileResponse
+
+
+
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../..'))
 from backend.src.schemas.ai import PrepareDataRequest
 from backend.src.schemas.statistics import DescRequest, AdvRequest, KaplanVRequest
@@ -22,7 +25,9 @@ import ai.phases.etl.survival.controller as survival_controller
 
 from backend.src.controllers.statistics_controller import obtener_media_std, obtener_mediana_rangoI, obtener_freq_ic95
 from backend.src.controllers.statistics_controller import obtener_chi_cuadrado, obtener_fisher, obtener_mann_withney, obtener_t_student, obtener_significativas
-from backend.src.controllers.statistics_controller import obtener_kaplan_general, obtener_kaplan_vars
+from backend.src.controllers.statistics_controller import obtener_kaplan_general, obtener_kaplan_vars, obtener_cox_uni
+from ai.phases.conclusions.orchestrator import generate_latex_document
+
 import time
 import json
 from fastapi import Body
@@ -186,6 +191,24 @@ async def calc_kaplan_vars(request: KaplanVRequest) :
     result = obtener_kaplan_vars(excel_path)
     return {"result": result}
 
+@router.post('/coxStatistics')
+async def calc_cox_uni(request: AdvRequest) :
+    """
+    Realizar COX UNIVARIANTE
+    """
+
+    result = obtener_cox_uni(request.excel_path)
+    return {"result": result}
+
+@router.post('/documentGenerator')
+async def generate_document():
+    """
+    Generar Documento
+    """
+
+    generate_latex_document()
+    return {"result": "http://localhost:5173/pdf/final_report.pdf"}
+
 @router.post('/copyDocs')
 async def copy_docs(files: list[UploadFile] = File(...)):
     raw_data_path = os.path.join(os.path.dirname(__file__), '../../../data/raw')
@@ -207,3 +230,34 @@ async def copy_docs(files: list[UploadFile] = File(...)):
         new_paths.append(file_path)
     
     return {"message": "Archivos copiados exitosamente", "paths": new_paths}
+
+@router.post('/download-zip')
+async def download_zip():
+    folder_path = '/home/joort/TFG/TFG_IA_GENERATIVA_AMBITO_MEDICO/data/processed'
+    zip_path = '/tmp/statistics.zip'
+    
+    # Crear el ZIP (sobreescribimos si existe)
+    shutil.make_archive(base_name=zip_path.replace('.zip', ''), format='zip', root_dir=folder_path)
+    
+    # Esperar un segundo para asegurar que el sistema de archivos termine (opcional)
+    time.sleep(0.5)
+
+    # Comprobar si el archivo existe y es correcto
+    if not os.path.exists(zip_path):
+        raise HTTPException(status_code=500, detail="No se pudo generar el ZIP")
+
+    return FileResponse(
+        path=zip_path,
+        filename="statistics.zip",
+        media_type="application/zip"
+    )
+
+@router.get('/kaplan-image/{image_name}')
+async def get_kaplan_image(image_name: str):
+    folder_path = '/home/joort/TFG/TFG_IA_GENERATIVA_AMBITO_MEDICO/data/processed/kaplan_meier'
+    image_path = os.path.join(folder_path, image_name)
+
+    if not os.path.exists(image_path):
+        raise HTTPException(status_code=404, detail="Imagen no encontrada")
+    
+    return FileResponse(image_path, media_type='image/png')

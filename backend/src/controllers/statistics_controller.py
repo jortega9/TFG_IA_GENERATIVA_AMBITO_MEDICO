@@ -288,3 +288,28 @@ def obtener_kaplan_vars(path_csv):
         }
     
     return resultado
+
+def obtener_cox_uni(path_csv):
+
+    try:
+        df = pd.read_csv(path_csv)
+    except Exception as e:
+        return {}
+    resultado = {}
+    for _, fila in df.iterrows():
+        variable = str(fila['variable'])
+        coef = str(fila['coef'])
+        hr = str(fila['HR'])
+        p = str(fila['p'])
+        ci_lower = str(fila['ci_lower'])
+        ci_upper = str(fila['ci_upper'])
+        
+        resultado[variable] = {
+            "coef": coef[:8],
+            "HR": hr[:8],
+            'p': p[:8],
+            'ci_lower': ci_lower[:8],
+            'ci_upper': ci_upper[:8],
+        }
+    
+    return resultado

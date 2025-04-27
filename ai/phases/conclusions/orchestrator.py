@@ -16,6 +16,7 @@ config = configparser.ConfigParser()
 config.read(SETTINGS_PATH)
 
 OUTPUT_DIR = os.path.join(config["data_path"]["processed_path"], "output")
+PDF_DIR = os.path.join(config["frontend_path"]["public_path"], "pdf")
 
 from ai.phases.conclusions.agents.cover import generate_cover
 from ai.phases.conclusions.agents.dataset_description import generate_dataset_description
@@ -102,8 +103,10 @@ def generate_latex_document():
     tex_path = os.path.join(OUTPUT_DIR, "final_report.tex")
     with open(tex_path, "w") as f:
         f.write(latex_content)
+        
+    os.makedirs(PDF_DIR, exist_ok=True)
 
-    subprocess.run(["pdflatex", "-interaction=nonstopmode", "-output-directory", OUTPUT_DIR, tex_path])
+    subprocess.run(["pdflatex", "-interaction=nonstopmode", "-output-directory", PDF_DIR, tex_path])
 
 if __name__ == "__main__":
     generate_latex_document()

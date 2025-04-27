@@ -116,7 +116,7 @@ const SelectTimeVariable = ({setIsTimeIdentified}) => {
                         }}>
                             <CircularProgress sx={{ color: '#4D7AFF', mb: 2 }} />
                             <Typography variant="body1" sx={{ color: '#4D7AFF' }}>
-                            Procesando los datos...
+                            Identificando variable de tiempo...
                             </Typography>
                         </Box>
                         ) : (

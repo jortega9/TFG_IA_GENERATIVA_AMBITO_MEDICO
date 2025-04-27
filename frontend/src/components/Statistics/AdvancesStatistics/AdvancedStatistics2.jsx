@@ -1,10 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Box,
-    Button,
     Typography,
-    ToggleButton,
-    ToggleButtonGroup,
     Table,
     TableBody,
     TableCell,
@@ -17,9 +14,7 @@ import ThemeToggle from '../../ThemeToggle';
 
 import ChiSquaredChart from '../../Charts/ChiSquaredChart';
 
-//TODO fisher
-
-const AdvStatistics2 = ({csvFisherPath}) => {
+const AdvStatistics2 = ({ csvFisherPath }) => {
     const [procesando, setProcesando] = useState(false);
     const [loading, setLoading] = useState(false);
     const [table, setTable] = useState([]);
@@ -32,7 +27,6 @@ const AdvStatistics2 = ({csvFisherPath}) => {
         setLoading(true);
 
         try {
-            console.log("csvFisherPath:", csvFisherPath);
             const response = await fetch('http://127.0.0.1:8000/ai/advStatistics2', {
                 method: 'POST',
                 headers: {
@@ -72,94 +66,80 @@ const AdvStatistics2 = ({csvFisherPath}) => {
             setLoading(false);
         }
     };
-    
-    
+
+    useEffect(() => {
+        handleAdv2();
+    }, []);
 
     return (
         <Box sx={{ backgroundColor: 'white', borderRadius: 2, padding: 2, boxShadow: 1, width: '100%', height: '70vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '10%' }}>
                 <Typography sx={{ color: '#4D7AFF', fontSize: '0.9rem' }}>
-                    <strong>ANÁLISIS CATEGÓRICO CHI CUADRADO</strong>
+                    <strong>ANÁLISIS CATEGÓRICO FISHER</strong>
                 </Typography>
-                {/* <ThemeToggle /> */}
             </Box>
 
-            {procesando ? (
-                <>
-                    <Box sx={{ backgroundColor: '#f5f5f5', borderRadius: 1, padding: 2, marginTop: 2, flexGrow: 1, overflowY: 'auto' }}>
-                        {loading ? (
-                            <Typography><strong>Realizando análisis categorico Chi Cuadrado</strong></Typography>
+            <Box sx={{ backgroundColor: '#f5f5f5', borderRadius: 1, padding: 2, marginTop: 2, flexGrow: 1, overflowY: 'auto' }}>
+                {loading ? (
+                    <Typography><strong>Realizando análisis categórico Fisher...</strong></Typography>
+                ) : (
+                    <>
+                        {table.length === 0 ? (
+                            <Box sx={{ textAlign: 'center', mt: 4 }}>
+                                <Typography elevation={2} sx={{ padding: 3, borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f5f5f5', color: '#4D7AFF' }}>
+                                    <strong>No hay datos disponibles para realizar el análisis categórico de Fisher.</strong>
+                                </Typography>
+                            </Box>
                         ) : (
                             <>
-                                {table.length === 0 ? (
-                                    <Box sx={{ textAlign: 'center', mt: 4 }}>
-                                        <Typography elevation={2} sx={{ padding: 3, borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f5f5f5', color: '#4D7AFF' }}>
-                                            <strong>No hay datos disponibles para realizar el análisis categórico de Fisher.</strong>
-                                        </Typography>
-                                    </Box>
-                                ) : (
-                                    <>
-                                        <TableContainer component={Paper} sx={{ boxShadow: 2, borderRadius: 2 }}>
-                                            <Table size="small" sx={{ minWidth: 600, border: '1px solid #e0e0e0' }}>
-                                                <TableHead>
-                                                    <TableRow sx={{ backgroundColor: '#f1f5ff' }}>
-                                                        <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>Variable</TableCell>
-                                                        <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>Fisher</TableCell>
-                                                        <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>P Value</TableCell>
-                                                        <TableCell sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>Significativo</TableCell>
+                                <TableContainer component={Paper} sx={{ boxShadow: 2, borderRadius: 2 }}>
+                                    <Table size="small" sx={{ minWidth: 600, border: '1px solid #e0e0e0' }}>
+                                        <TableHead>
+                                            <TableRow sx={{ backgroundColor: '#f1f5ff' }}>
+                                                <TableCell align="center" sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>Variable</TableCell>
+                                                <TableCell align="center" sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>Fisher</TableCell>
+                                                <TableCell align="center" sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>P-Valor</TableCell>
+                                                <TableCell align="center" sx={{ fontWeight: 'bold', border: '1px solid #ccc' }}>Significativo</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {table.map((item, idx) => {
+                                                const isSignificative = significative[idx]?.valor === true;
+                                                return (
+                                                    <TableRow
+                                                        key={idx}
+                                                        hover
+                                                        sx={{
+                                                            backgroundColor: isSignificative ? '#e6f7e6' : 'inherit',
+                                                            '&:hover': {
+                                                                backgroundColor: isSignificative ? '#d9f2d9' : '#f9f9f9',
+                                                            },
+                                                        }}
+                                                    >
+                                                        <TableCell align="center" sx={{ border: '1px solid #e0e0e0' }}>{item.variable}</TableCell>
+                                                        <TableCell align="center" sx={{ border: '1px solid #e0e0e0' }}>
+                                                            {statistics[idx]?.valor ?? '-'}
+                                                        </TableCell>
+                                                        <TableCell align="center" sx={{ border: '1px solid #e0e0e0' }}>
+                                                            {pValue[idx]?.valor ?? '-'}
+                                                        </TableCell>
+                                                        <TableCell align="center" sx={{ border: '1px solid #e0e0e0' }}>
+                                                            {significative[idx]?.valor != null ? (significative[idx].valor ? 'Sí' : 'No') : '-'}
+                                                        </TableCell>
                                                     </TableRow>
-                                                </TableHead>
-                                                <TableBody>
-                                                    {table.map((item, idx) => {
-                                                        const isSignificative = significative[idx]?.valor === true;
-
-                                                        return (
-                                                            <TableRow
-                                                                key={idx}
-                                                                hover
-                                                                sx={{
-                                                                    backgroundColor: isSignificative ? '#e6f7e6' : 'inherit',
-                                                                    '&:hover': {
-                                                                        backgroundColor: isSignificative ? '#d9f2d9' : '#f9f9f9',
-                                                                    },
-                                                                }}
-                                                            >
-                                                                <TableCell sx={{ border: '1px solid #e0e0e0' }}>{item.variable}</TableCell>
-                                                                <TableCell sx={{ border: '1px solid #e0e0e0' }}>
-                                                                    {statistics[idx]?.valor ?? '-'}
-                                                                </TableCell>
-                                                                <TableCell sx={{ border: '1px solid #e0e0e0' }}>
-                                                                    {pValue[idx]?.valor ?? '-'}
-                                                                </TableCell>
-                                                                <TableCell sx={{ border: '1px solid #e0e0e0' }}>
-                                                                    {significative[idx]?.valor != null ? (significative[idx].valor ? 'Sí' : 'No') : '-'}
-                                                                </TableCell>
-                                                            </TableRow>
-                                                        );
-                                                    })}
-                                                </TableBody>
-                                            </Table>
-                                        </TableContainer>
-                                        <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
-                                            <ChiSquaredChart table={table} data={pValue} />
-                                        </Box>
-                                    </>
-                                )}
+                                                );
+                                            })}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                                <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
+                                    <ChiSquaredChart table={table} data={pValue} />
+                                </Box>
                             </>
-
                         )}
-                    </Box>
-
-                </>
-            ) : (
-                <Button
-                    variant="contained"
-                    sx={{ backgroundColor: '#4D7AFF', fontSize: '1.1rem', marginTop: 16, alignSelf: 'center' }}
-                    onClick={handleAdv2}
-                >
-                    Realizar Análisis Categórico Fisher
-                </Button>
-            )}
+                    </>
+                )}
+            </Box>
         </Box>
     );
 };
