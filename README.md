@@ -74,7 +74,7 @@ Antes de comenzar, asegúrate de tener instalados los siguientes programas y her
    - Crea un archivo `config.init` en el directorio ai del proyecto basandote en config.init.template .
     ```bash
     
-   cp config.init.template config.init
+   cp config.init.template config.ini
    ```
 ## Modo De Uso
 - Arrancar el backend de la aplicación
