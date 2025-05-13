@@ -80,7 +80,8 @@ Antes de comenzar, asegúrate de tener instalados los siguientes programas y her
    ipconfig
    ```
 
-    <img width="582" alt="image" src="https://github.com/user-attachments/assets/0195c565-d2a8-4c9c-866d-c8c6210fc715" />
+    ![image](https://github.com/user-attachments/assets/e9012a50-d6f9-4f8c-9954-9b74290d31fe)
+
 
     
 7. **Configurar archivo config.init**  
