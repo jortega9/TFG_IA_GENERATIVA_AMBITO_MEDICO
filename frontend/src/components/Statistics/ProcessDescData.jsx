@@ -3,6 +3,12 @@ import { Box, Button, Typography, ToggleButton, ToggleButtonGroup, CircularProgr
 import { Circle } from '@mui/icons-material';
 import ThemeToggle from '../ThemeToggle';
 
+/**
+ *  Visualización del proceso de analisis descriptivos para variables numericas y categóricas
+ * 
+ * @param {*} param0 
+ * @returns 
+ */
 const ProcessDescData = ({setIsDataProcessed, setDescnumVars, setDescNumCsv, setDescCatVars, setDescCatCsv, }) => {
     const [numRazonamiento, setNumRazonamiento] = useState('');
     const [catRazonamiento, setCatRazonamiento] = useState('');
@@ -10,6 +16,9 @@ const ProcessDescData = ({setIsDataProcessed, setDescnumVars, setDescNumCsv, set
     const [loading, setLoading] = useState(false);
     const [mostrar, setMostrar] = useState('numerico');
 
+    /**
+     * Función para comenzar el proceso de ejecución de los análisis descriptivos para las variables numéricas y categóricas.
+     */
     const handleExecuteData = async () => {  
         setProcesando(true);
         setLoading(true);
@@ -83,13 +92,13 @@ const ProcessDescData = ({setIsDataProcessed, setDescnumVars, setDescNumCsv, set
                         }}>
                             <CircularProgress sx={{ color: '#4D7AFF', mb: 2 }} />
                             <Typography variant="body1" sx={{ color: '#4D7AFF' }}>
-                            Procesando los datos...
+                            Procesando los datos descriptivos...
                             </Typography>
                         </Box>
                         ) : (
                             <>
                                 <Typography elevation={2} sx={{ padding: 3, borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f5f5f5', color: '#4D7AFF' }}>
-                                    <strong>Datos procesados correctamente.</strong>
+                                    <strong>Datos descriptivos procesados correctamente.</strong>
                                 </Typography>
                             </>
                         )

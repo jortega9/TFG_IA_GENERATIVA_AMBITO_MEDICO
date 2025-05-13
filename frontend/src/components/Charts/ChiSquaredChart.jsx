@@ -27,7 +27,7 @@ const ChiSquaredChart = ({ table, data }) => {
                 horizontal: false,
                 columnWidth: '55%',
                 endingShape: 'rounded',
-                distributed: true // ✅ aplica un color por categoría
+                distributed: true 
             }
         },
         dataLabels: {
@@ -49,7 +49,7 @@ const ChiSquaredChart = ({ table, data }) => {
                 style: { fontWeight: 600 }
             }
         },
-        colors: coloresBase, // ✅ aplica tus colores personalizados
+        colors: coloresBase,
         tooltip: {
             y: {
                 formatter: (val) => val.toFixed(2)

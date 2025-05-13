@@ -9,12 +9,22 @@ function Controls({ onChatAccessChange, onReportAccessChange }) {
     const [isChatAccessible, setIsChatAccessible] = useState(false);
     const [isReportAccessible, setIsReportAccessible] = useState(false);
 
+    /**
+     * Activar funcionalidad de chat
+     * 
+     * @param {*} event 
+     */
     const handleCheckboxChat = (event) => {
         const isChecked = event.target.checked;
         setIsChatAccessible(isChecked);
         onChatAccessChange(isChecked);
     };
 
+    /**
+     * Activar funcionalidad de genración de informes
+     * 
+     * @param {*} event 
+     */
     const handleCheckboxReport = (event) => {
         const isChecked = event.target.checked;
         setIsReportAccessible(isChecked);
@@ -27,7 +37,7 @@ function Controls({ onChatAccessChange, onReportAccessChange }) {
                 <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header">
                     <div className="accordion-title">
                         <GroupsIcon className="icon" />
-                        <h4 className="title">Consultas</h4>
+                        <h4 className="title">Asistente IA</h4>
                     </div>
                 </AccordionSummary>
                 <AccordionDetails>

@@ -18,6 +18,12 @@ const AuthPage = () => {
         sessionStorage.setItem('user', JSON.stringify(user));
     }
 
+    /**
+     * Comprobar si el usuario existe en la base de datos.
+     * 
+     * @param {*} identifier 
+     * @returns 
+     */
     const checkUserExistence = async (identifier) => {
         try{
             const response = await fetch('http://127.0.0.1:8000/auth/user-exist', {
@@ -48,6 +54,13 @@ const AuthPage = () => {
         setSuccessMsg('');
     }
 
+    /**
+     * 
+     * Realizar el inicio de sesión del usuario.
+     * 
+     * @param {*} info 
+     * @returns 
+     */
     async function loginUser(info){
         try{
             console.log(info);
@@ -86,16 +99,27 @@ const AuthPage = () => {
         });
 
         if (user) {
-            // setUser(user);
             navigate('/Urolobot');
         }
     };
 
+    /**
+     * Comprobar si es un email válido
+     * 
+     * @param {*} email 
+     * @returns 
+     */
     function isValidEmail(email) {
         const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         return emailPattern.test(email);
     }
 
+    /**
+     * Comprobar información de registro de un usuario nuevo y realizar el registro.
+     * 
+     * @param {*} e 
+     * @returns 
+     */
     const handleRegister = async (e) => {
         e.preventDefault();
         setErrorMsg('');
@@ -120,6 +144,14 @@ const AuthPage = () => {
         setSuccessMsg("Usuario registrado con éxito. Por favor, inicia sesión.");
     }
 
+    /**
+     * Realizar el registro de un usuario nuevo.
+     * 
+     * @param {*} name 
+     * @param {*} email 
+     * @param {*} password 
+     * @returns 
+     */
     async function registerUser(name, email, password){
         try{
             const response = await fetch('http://127.0.0.1:8000/auth/register', {

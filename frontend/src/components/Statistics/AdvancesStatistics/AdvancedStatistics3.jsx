@@ -14,6 +14,13 @@ import ThemeToggle from '../../ThemeToggle';
 
 import ChiSquaredChart from '../../Charts/ChiSquaredChart';
 
+
+/**
+ * Visualización de los resultados del análisis numérico de Mann Whitney
+ * 
+ * @param {*} param0 
+ * @returns 
+ */
 const AdvStatistics3 = ({ csvMannWhitneyPath }) => {
     const [procesando, setProcesando] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -22,6 +29,9 @@ const AdvStatistics3 = ({ csvMannWhitneyPath }) => {
     const [pValue, setPValue] = useState([]);
     const [significative, setSignificative] = useState([]);
 
+    /**
+     * Función para obtener los resultados del análisis numérico de Mann Whitney
+     */
     const handleAdv3 = async () => {
         setProcesando(true);
         setLoading(true);

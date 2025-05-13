@@ -3,7 +3,14 @@ import { Box, Button, Typography, ToggleButton, ToggleButtonGroup, CircularProgr
 import { Circle } from '@mui/icons-material';
 import ThemeToggle from '../ThemeToggle';
 import { Snackbar, Alert } from '@mui/material';
+import { use } from 'react';
 
+/**
+ * Visualización de la identificación de la variable de grupo y categorización de variables
+ * 
+ * @param {*} param0 
+ * @returns 
+ */
 const SelectGroupVariable = ({setIsGroupIdentified}) => {
     const [razonamiento, setRazonamiento] = useState('');
     const [procesando, setProcesando] = useState(false);
@@ -11,8 +18,12 @@ const SelectGroupVariable = ({setIsGroupIdentified}) => {
     const [groupV, setGroupV] = useState('');
     const [jsonPath, setJsonPath] = useState('');
     const [validKeys, setValidKeys] = useState([]);
-    const [openSnackbar, setOpenSnackbar] = useState(false);  
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [identifying, setIdentifying] = useState(true) 
 
+    /**
+     * Función para confirmar la variable de grupo obtenida o modificada por el usuario y categorizar las variables
+     */
     const handleConfirmGroupVariable = async () => {
         const payload = {
             group_variable: groupV,
@@ -20,6 +31,7 @@ const SelectGroupVariable = ({setIsGroupIdentified}) => {
         };
 
         try {
+            setIdentifying(false)
             setLoading(true);
             const saveResponse = await fetch('http://127.0.0.1:8000/ai/save-config', {
                 method: 'POST',
@@ -58,9 +70,12 @@ const SelectGroupVariable = ({setIsGroupIdentified}) => {
             setLoading(false);
         }
     };
-
+    /**
+     * Función para ejecutar la identificación de la variable de grupo
+     */
     const handleExecuteData = async () => {  
         setProcesando(true);
+        setIdentifying(true)
         setLoading(true);
 
         try {
@@ -121,7 +136,7 @@ const SelectGroupVariable = ({setIsGroupIdentified}) => {
                         }}>
                             <CircularProgress sx={{ color: '#4D7AFF', mb: 2 }} />
                             <Typography variant="body1" sx={{ color: '#4D7AFF' }}>
-                            Categorizando variables...
+                                { identifying ? 'Identificando variable de grupo...' : 'Categorizando variables...'}
                             </Typography>
                         </Box>
                         ) : (

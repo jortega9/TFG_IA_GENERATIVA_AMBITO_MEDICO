@@ -47,8 +47,6 @@ class CollectSignificantVariables(Agent):
         
         self.df.to_csv(OUTPUT_PATH, index=False)
         
-        # Hacer aqui un LLM que saque conclusiones
-        
         return {
             "explanation": "TODO",
             "results": {

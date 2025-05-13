@@ -17,6 +17,12 @@ import ThemeToggle from '../../ThemeToggle';
 import BarChartNum from '../../Charts/BarChartNum';
 import PieChart from '../../Charts/PieChart';
 
+/**
+ * Visualización de los resultados del análisis de media y desviación típica de las variables numéricas.
+ * 
+ * @param {*} param0 
+ * @returns 
+ */
 const DescStatistics1 = ({ descNumCsv }) => {
     const [procesando, setProcesando] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -25,6 +31,9 @@ const DescStatistics1 = ({ descNumCsv }) => {
     const [nPruebas, setNPruebas] = useState([]);
     const [mostrar, setMostrar] = useState('media');
 
+    /**
+     * Función para obtener los resultados del análisis de media y desviación típica de las variables numéricas.
+     */
     const handleDesc1 = async () => {
         setProcesando(true);
         setLoading(true);

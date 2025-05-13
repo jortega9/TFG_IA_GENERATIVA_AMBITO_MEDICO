@@ -23,6 +23,12 @@ const DropFiles = ({ setIsDataPrepared }) => {
         return lastDotIndex !== -1 ? fileName.substring(0, lastDotIndex) : fileName;
     };
 
+    /**
+     * Copiar archivos proporcionados por el usuario a la carpeta de trabajo.
+     * 
+     * @param {*} event 
+     * @returns 
+     */
     const handleFileUpload = async (event) => {
         const uploadedFiles = event.target.files;
         if (!uploadedFiles || uploadedFiles.length === 0) return;
@@ -48,10 +54,14 @@ const DropFiles = ({ setIsDataPrepared }) => {
     
         const result = await response.json();
         setFileData(result.paths)
-        // console.log("paths:", result.paths);
         console.log("Respuesta del servidor:", result);
     };
 
+    /**
+     * Preparar los datos para proporcionarselos al modelo.
+     * 
+     * @returns 
+     */
     const handlePrepareData = async () => {
         const excelFile = fileData.find((file) => file.includes('.xlsx'));
         const masterFile = fileData.find((file) => file.includes('.json'));

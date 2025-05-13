@@ -4,12 +4,19 @@ import {
     TableContainer, TableHead, TableRow, Paper
 } from '@mui/material';
 
-// import masterData from '../../../../../data/processed/master.json'; 
-
+/**
+ * Visualización de los resultados del análisis de supervivencia de una variable específica (Kaplan Meier)
+ * 
+ * @param {*} param0 
+ * @returns 
+ */
 const KaplanVariableCard = ({ variableName, plotImage, csvKaplanPath, onLoaded }) => {
     const [data, setData] = useState([]);
     const [masterData, setMasterData] = useState({});
 
+    /**
+     * Función para cargar el archivo master.json
+     */
     const fetchMasterData = async () => {
         try {
             const response = await fetch('http://localhost:5173/master/master.json');
@@ -23,6 +30,9 @@ const KaplanVariableCard = ({ variableName, plotImage, csvKaplanPath, onLoaded }
         }
     };
 
+    /**
+     * Función para obtener los resultados del análisis de supervivencia según la variable seleccionada (Kaplan Meier)
+     */
     const handleExecuteData = async () => {
         try {
             fetchMasterData();

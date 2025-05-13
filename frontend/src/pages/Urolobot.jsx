@@ -80,7 +80,7 @@ function Urolobot() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: "gpt-4o",
+          model: "gpt-4o-mini",
           messages: [
             { role: "system", content: "You are a helpful assistant." },
             { role: "user", content: message }
@@ -116,7 +116,7 @@ function Urolobot() {
             <div className="chat-container">
               <div className="chat-header">
                 <h2>Chat with me!</h2>
-                <ThemeToggle />
+                {/* <ThemeToggle /> */}
               </div>
               <MessageList messages={messages} />
               <MessageInput onSendMessage={handleSendMessage} />

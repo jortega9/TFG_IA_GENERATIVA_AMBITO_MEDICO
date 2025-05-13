@@ -28,6 +28,11 @@ function PasswordPage() {
         navigate('/');
     };
 
+    /**
+     * Realizar comprobaciones de nueva contraseña y cambiar la contraseña del usuario.
+     * 
+     * @returns 
+     */
     async function changePswd(){
         try{
 
@@ -53,7 +58,6 @@ function PasswordPage() {
                 return false;
             }
 
-            // const token = localStorage.getItem('token');
             const response = await fetch('http://127.0.0.1:8000/auth/updatePwd', {
                 method: 'PUT',
                 headers: {

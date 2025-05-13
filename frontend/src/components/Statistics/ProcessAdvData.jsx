@@ -6,6 +6,9 @@ const ProcessAdvData = ({setIsDataProcessed, setCsvMannWhitneyPath, setCsvTStude
     const [procesando, setProcesando] = useState(false);
     const [loading, setLoading] = useState(false);
 
+    /**
+    * Función para comenzar el proceso de ejecución de los análisis comparativos para las variables numéricas y categóricas.
+    */
     const handleExecuteData = async () => {  
         setProcesando(true);
         setLoading(true);
@@ -71,13 +74,13 @@ const ProcessAdvData = ({setIsDataProcessed, setCsvMannWhitneyPath, setCsvTStude
                         }}>
                             <CircularProgress sx={{ color: '#4D7AFF', mb: 2 }} />
                             <Typography variant="body1" sx={{ color: '#4D7AFF' }}>
-                            Procesando los datos...
+                            Procesando los datos comparativos...
                             </Typography>
                         </Box>
                         ) : (
                             <>
                                 <Typography elevation={2} sx={{ padding: 3, borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f5f5f5', color: '#4D7AFF' }}>
-                                    <strong>Datos procesados correctamente.</strong>
+                                    <strong>Datos comparativos procesados correctamente.</strong>
                                 </Typography>
                             </>
                         )

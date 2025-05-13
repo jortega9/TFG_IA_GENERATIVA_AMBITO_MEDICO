@@ -14,6 +14,12 @@ import ThemeToggle from '../../ThemeToggle';
 
 import ChiSquaredChart from '../../Charts/ChiSquaredChart';
 
+/**
+ * Visualización de los resultados de las variables significativas
+ * 
+ * @param {*} param0 
+ * @returns 
+ */
 const AdvStatistics5 = ({ csvSignificantPath }) => {
     const [procesando, setProcesando] = useState(false);
     const [loading, setLoading] = useState(false);

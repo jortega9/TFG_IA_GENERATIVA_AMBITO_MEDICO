@@ -12,6 +12,14 @@ import {
 import { PlusCircle } from 'lucide-react';
 import '../styles/ChatList.css';
 
+/**
+ * 
+ * Lista de chats de pacientes
+ * Funcionalidad no empleada en la aplicación
+ * 
+ * @param {*} param0 
+ * @returns 
+ */
 const ChatList = ({ chats, setChats, onSelectChat }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [newPatient, setNewPatient] = useState({

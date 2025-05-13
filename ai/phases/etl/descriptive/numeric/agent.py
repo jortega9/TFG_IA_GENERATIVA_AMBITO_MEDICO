@@ -76,8 +76,6 @@ class NumericDescriptiveAgent(Agent):
                 
         self.summary.to_csv(OUTPUT_PATH, index=False)
         
-        # TODO: Hacer el LLM que hace la conclusion del summary 
-        
         return {
             "explanation": "TODO",
             "results": {

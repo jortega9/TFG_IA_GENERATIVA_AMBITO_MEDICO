@@ -14,6 +14,13 @@ import ThemeToggle from '../../ThemeToggle';
 
 import ChiSquaredChart from '../../Charts/ChiSquaredChart';
 
+
+/**
+ * Visualización de los resultados del análisis categórico de Chi^2
+ * 
+ * @param {*} param0 
+ * @returns 
+ */
 const AdvStatistics1 = ({ csvChiPath }) => {
     const [procesando, setProcesando] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -23,6 +30,9 @@ const AdvStatistics1 = ({ csvChiPath }) => {
     const [pValue, setPValue] = useState([]);
     const [significative, setSignificative] = useState([]);
 
+    /**
+     * Función para obtener los resultados del análisis categórico Chi^2
+     */
     const handleAdv1 = async () => {
         setProcesando(true);
         setLoading(true);

@@ -16,9 +16,12 @@ function AccountPage() {
     const [errorMsg, setErrorMsg] = useState('');
     const [successMsg, setSuccessMsg] = useState('');
 
+    /**
+     * Obtener la información del usuario de la base de datos.
+     */
     useEffect(() => {
         const getInfo = async () => {
-            if (dataObtained) return; // Si ya se obtuvieron los datos, no vuelve a cargarlos
+            if (dataObtained) return;
             try {
                 const token = localStorage.getItem('token');
                 const response = await fetch('http://127.0.0.1:8000/auth/info', {
@@ -55,6 +58,11 @@ function AccountPage() {
         navigate('/');
     };
 
+    /**
+     * Actualizar la información del usuario
+     * 
+     * @returns 
+     */
     async function saveUser(){
         try{
 
@@ -90,6 +98,11 @@ function AccountPage() {
         }
     };
 
+    /**
+     * Eliminar al usuario de la base de datos.
+     * 
+     * @returns 
+     */
     async function deleteUser(){
         try{
             const token = localStorage.getItem('token');
@@ -169,31 +182,6 @@ function AccountPage() {
                         style={{ width: '100%', marginBottom: '10px', padding: '8px' }}
                     />
                 </div>
-
-                {/* <div style={{ position: 'relative' }}>
-                    <label className='account-items'>Contraseña:</label>
-                    <input
-                        type={showPassword ? 'text' : 'password'}
-                        name="password"
-                        value={userInfo.password}
-                        readOnly
-                        style={{ width: '100%', marginBottom: '10px', padding: '8px', backgroundColor: '#d3d3d3' }}
-                    />
-                    <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        style={{
-                            position: 'absolute',
-                            left: '96%',
-                            top: '45px',
-                            background: 'none',
-                            border: 'none',
-                            cursor: 'pointer',
-                        }}
-                    >
-                        {showPassword ? '🔓' : '🔒'}
-                    </button>
-                </div> */}
                 {errorMsg && <p className="error-message"><strong>{errorMsg}</strong></p>}
                 {successMsg && <p className="success-message"><strong>{successMsg}</strong></p>}
                 <button
