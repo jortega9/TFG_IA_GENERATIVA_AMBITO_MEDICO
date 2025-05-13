@@ -14,10 +14,16 @@ fake_users_db = {}
 db = DatabaseConnection()
 
 def unique_uuid_user():
+    """
+    Genera un UUID único para el usuario.
+    """
     uuid_user = str(uuid.uuid4())
     return uuid_user
 
 def register_user(user_create: UserCreate):
+    """
+    Registra un nuevo usuario en la base de datos.
+    """
     hashed_password = hash_password(user_create.password)
     uuid = unique_uuid_user()
     user = User(
@@ -44,6 +50,9 @@ def register_user(user_create: UserCreate):
         raise HTTPException(status_code=500, detail=str(e))
 
 def login_user(identifier: str, password: str):
+    """
+    Inicia sesión de un usuario y devuelve un token de acceso.
+    """
     try:
         user = db.get_user_identifier(identifier)
         if not user:
@@ -64,6 +73,9 @@ def login_user(identifier: str, password: str):
     
 
 def logout_user(uuid: str):
+    """
+    Cierra la sesión del usuario actual.
+    """
     try:
         db.update_user_logout(uuid, datetime.now())
         return {"user_id_logout": "logout"}
@@ -74,6 +86,9 @@ def logout_user(uuid: str):
     
 
 def get_active_user(uuid: str):
+    """
+    Obtiene el usuario activo de la base de datos.
+    """
     try:
         user = db.get_active_user(uuid)
         if user:
@@ -85,6 +100,9 @@ def get_active_user(uuid: str):
         raise HTTPException(status_code=500, detail="Error interno del servidor")
     
 def get_exist_user(identifier: str):
+    """
+    Verifica si un usuario ya existe en la base de datos.
+    """ 
     try:
         exist = db.get_user_exist(identifier)
         return {"user_exists": exist}
@@ -94,6 +112,9 @@ def get_exist_user(identifier: str):
 
     
 def get_info(uuid: str):
+    """
+    Obtiene la información del usuario activo.
+    """
     try:
         info = db.get_user_info(uuid)
         return info
@@ -102,6 +123,9 @@ def get_info(uuid: str):
         raise HTTPException(status_code=500, detail="Error interno del servidor")
 
 def update_user(user_update: UserUpdate, uuid: str):
+    """
+    Actualiza la información del usuario.
+    """
     try:
         user = db.update_user_account(user_update, uuid)
         return user
@@ -110,6 +134,9 @@ def update_user(user_update: UserUpdate, uuid: str):
         raise HTTPException(status_code=500, detail="Error interno del servidor")
     
 def update_pwd(pwd_update: PwdUpdate, uuid: str):
+    """
+    Actualiza la contraseña del usuario.
+    """
     try:
         hashed_password = hash_password(pwd_update.password)
         user = db.update_user_pwd(hashed_password, pwd_update.email, uuid)
@@ -119,6 +146,9 @@ def update_pwd(pwd_update: PwdUpdate, uuid: str):
         raise HTTPException(status_code=500, detail="Error interno del servidor")
 
 def delete_user(uuid: str):
+    """
+    Elimina un usuario de la base de datos.
+    """
     try:
         db.delete_user(uuid)
     except Exception as e:
@@ -126,6 +156,7 @@ def delete_user(uuid: str):
         raise HTTPException(status_code=500, detail="Error interno del servidor")
     
 # ----------------------- Patients ------------------------------------
+# ---------------------- Not used yet ---------------------------------
 
 def add_newPatient(patient: PatientCreate):
 

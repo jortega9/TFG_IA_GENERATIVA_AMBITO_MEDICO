@@ -182,13 +182,13 @@ class DatabaseConnection:
         WHERE uuid_user = %s AND email = %s
         """
         try:
-            cursor.execute(verify_query, (uuid, email)) # Verifica que el usuario exista tanto uuid y email
+            cursor.execute(verify_query, (uuid, email))
             count = cursor.fetchone()[0]
             
             if count == 0:
                 raise Exception("Error: No se encontró un usuario con el email y UUID proporcionados.")
             
-            cursor.execute(query, (pwd, uuid, email)) # Una vez sabemos que existe ejecutamos la actualización de la contraseña
+            cursor.execute(query, (pwd, uuid, email))
             self.connUser.commit()
         except Exception as e:
             raise Exception("update_user_pwd: " + str(e))
@@ -198,15 +198,16 @@ class DatabaseConnection:
 
     def get_user_info(self, uuid) -> dict:
         self.connectDB()
-        cursor = self.connUser.cursor(dictionary=True)  # Configura el cursor para que devuelva un diccionario
+        cursor = self.connUser.cursor(dictionary=True)
         query = """SELECT name, username, email, password FROM user WHERE uuid_user = %s"""
         cursor.execute(query, (uuid,))
-        user = cursor.fetchone()  # Obtiene solo un registro
+        user = cursor.fetchone() 
         cursor.close()
         self.close_connectionDB()
         return user
 
 # -------------------------- Patients ----------------------------
+# ---------------------- Not used yet ---------------------------------
 
     def insert_patient(self, patient) -> None:
         self.connectDB()
@@ -214,7 +215,6 @@ class DatabaseConnection:
         
         patientExist_query = "SELECT COUNT(*) FROM patients WHERE name = %s"
         
-        # Query para actualizar los datos si el paciente existe
         update_query = """
             UPDATE patients
             SET email = %s, 
@@ -226,8 +226,7 @@ class DatabaseConnection:
                 history = %s
             WHERE name = %s
         """
-        
-        # Query para insertar un nuevo paciente si no existe
+
         insert_query = """
             INSERT INTO patients (
                 name, email, phone, gender, age, diseases, allergy, history
@@ -235,12 +234,12 @@ class DatabaseConnection:
         """
 
         try:
-            # Comprobar si el paciente existe en la tabla
+
             cursor.execute(patientExist_query, (patient.name,))
             exists = cursor.fetchone()[0] > 0
 
             if exists:
-                # Ejecutar la consulta de actualización si el paciente existe
+
                 cursor.execute(
                     update_query,
                     (
@@ -251,11 +250,10 @@ class DatabaseConnection:
                         patient.diseases,
                         patient.allergy,
                         patient.history,
-                        patient.name,  # WHERE clause
+                        patient.name,
                     )
                 )
             else:
-                # Ejecutar la consulta de inserción si el paciente no existe
                 cursor.execute(
                     insert_query,
                     (
@@ -269,14 +267,11 @@ class DatabaseConnection:
                         patient.history,
                     )
                 )
-            # Confirmar los cambios en la base de datos
             self.connUser.commit()
         except Exception as e:
-            # Revertir los cambios en caso de error
             self.connUser.rollback()
             raise Exception("insert_patient: " + str(e))
         finally:
-            # Cerrar el cursor y la conexión
             cursor.close()
             self.close_connectionDB()
 

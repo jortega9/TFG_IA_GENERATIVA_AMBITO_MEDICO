@@ -5,7 +5,12 @@ import ThemeToggle from '../ThemeToggle';
 
 import { Snackbar, Alert } from '@mui/material';
 
-
+/**
+ * Visualización de la identificación de la variable de tiempo
+ * 
+ * @param {*} param0 
+ * @returns 
+ */
 const SelectTimeVariable = ({setIsTimeIdentified}) => {
     const [razonamiento, setRazonamiento] = useState('');
     const [procesando, setProcesando] = useState(false);
@@ -15,6 +20,9 @@ const SelectTimeVariable = ({setIsTimeIdentified}) => {
     const [otherOptions, setOtherOptions] = useState([]);
     const [openSnackbar, setOpenSnackbar] = useState(false);
 
+    /**
+     * Función para confirmar la variable de tiempo obtenida o modificada por el usuario
+     */
     const handleConfirmTimeVariable = async () => {
         const payload = {
             time_variable: timeV,
@@ -53,7 +61,9 @@ const SelectTimeVariable = ({setIsTimeIdentified}) => {
     };
     
 
-
+    /**
+     * Función para ejecutar la identificación de la variable de tiempo
+     */
     const handleExecuteData = async () => {  
         setProcesando(true);
         setLoading(true);

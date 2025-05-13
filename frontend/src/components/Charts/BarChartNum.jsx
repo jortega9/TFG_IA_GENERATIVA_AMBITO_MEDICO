@@ -1,7 +1,6 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
 
-// Función para generar una paleta de colores (puedes ampliarla)
 const coloresBase = [
     '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
     '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf',
@@ -17,11 +16,9 @@ const coloresBase = [
 const BarChartNum = ({ data, title, variable, height = 300, width = 480 }) => {
 
     const dataFiltrada = data.filter(item => !item.variable.toLowerCase().includes('nhis'));
-    // Extrae nombres base (sin número)
     const categorias = dataFiltrada.map(item => item.variable);
     const nombresBase = categorias.map(c => c.split('_')[0]);
 
-    // Asigna un color a cada nombre base
     const colorMap = {};
     let colorIndex = 0;
     nombresBase.forEach(nombre => {
@@ -31,7 +28,6 @@ const BarChartNum = ({ data, title, variable, height = 300, width = 480 }) => {
         }
     });
 
-    // Mapea los colores a cada categoría
     const coloresPorBarra = nombresBase.map(nombre => colorMap[nombre]);
 
     const series = [{
@@ -48,7 +44,7 @@ const BarChartNum = ({ data, title, variable, height = 300, width = 480 }) => {
                 borderRadius: 4,
                 horizontal: false,
                 columnWidth: '50%',
-                distributed: true, // Necesario para colores individuales por barra
+                distributed: true, 
             }
         },
         colors: coloresPorBarra,

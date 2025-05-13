@@ -92,12 +92,12 @@ function AccountButton() {
                 open={open}
                 onClose={handleClose}
                 sx={{
-                    '& .MuiPaper-root': { // background del menu
+                    '& .MuiPaper-root': {
                         backgroundColor: 'grey',
                         border: '1px solid #333333',
                         color: 'white',
                     },
-                    '& .MuiMenuItem-root': { //textos del menu
+                    '& .MuiMenuItem-root': { 
                         color: 'white',
                         '&:hover': {
                             backgroundColor: '#666666',

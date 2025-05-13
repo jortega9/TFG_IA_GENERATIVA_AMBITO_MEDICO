@@ -18,10 +18,19 @@ import {
 
 import CoxUnivarianteChart from '../../Charts/CoxUnivarianteChart';
 
+/**
+ * Visualización de los resultados del análisis de supervivencia con el modelo de regresión de Cox univariante.
+ * 
+ * @param {*} param0 
+ * @returns 
+ */
 const CoxStatistics = ({ csvCoxPath }) => {
 
     const [data, setData] = useState([]);
 
+    /**
+     * Función para obtener los resultados del análisis de supervivencia con el modelo de regresión de Cox univariante.
+     */
     const handleExecuteData = async () => {
         try {
             const response = await fetch('http://127.0.0.1:8000/ai/coxStatistics', {
@@ -36,8 +45,6 @@ const CoxStatistics = ({ csvCoxPath }) => {
 
             const result = await response.json();
             const entries = [];
-
-            //variable,coef,HR,p,ci_lower,ci_upper,c_index
 
             for (const variable in result.result) {
                 const { coef, HR, p, ci_lower, ci_upper } = result.result[variable];
@@ -68,7 +75,7 @@ const CoxStatistics = ({ csvCoxPath }) => {
         }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '10%' }}>
                 <Typography sx={{ color: '#4D7AFF', fontSize: '0.9rem' }}>
-                    <strong>ANÁLISIS DE COX UNIVARIANTE. </strong>
+                    <strong>ANÁLISIS DE SUPERVIVENCIA CON MODELO DE REGRESIÓN DE COX UNIVARIANTE. </strong>
                 </Typography>
                 {/* <ThemeToggle /> */}
             </Box>

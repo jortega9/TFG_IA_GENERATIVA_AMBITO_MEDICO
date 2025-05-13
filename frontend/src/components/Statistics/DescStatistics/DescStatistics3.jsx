@@ -14,11 +14,16 @@ import {
 } from '@mui/material';
 import ThemeToggle from '../../ThemeToggle';
 
-// import masterData from '../../../../../data/processed/master.json'; 
 
 import BarChartCat from '../../Charts/BarChartCat';
 import BarChartIC95 from '../../Charts/BarChartIC95';
 
+/**
+ * Visualización de los resultados del análisis de porcentajes con intervalos de confianza al 95% y frecuencias absolutas de las variables cualitativas.
+ * 
+ * @param {*} param0 
+ * @returns 
+ */
 const DescStatistics3 = ({ descCatCsv }) => {
     const [procesando, setProcesando] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -29,9 +34,11 @@ const DescStatistics3 = ({ descCatCsv }) => {
     const [mostrar, setMostrar] = useState('frecuencias');
     const [masterData, setMasterData] = useState({});
 
+    /**
+     * Función para cargar el archivo master.json y poder usarlo.
+     */
     const fetchMasterData = async () => {
         try {
-            ///home/joort/TFG/TFG_IA_GENERATIVA_AMBITO_MEDICO/
             const response = await fetch('http://localhost:5173/master/master.json');
             if (!response.ok) {
             throw new Error('Archivo master.json no encontrado');
@@ -45,6 +52,9 @@ const DescStatistics3 = ({ descCatCsv }) => {
         }
     };
 
+    /**
+     * Función para obtener los resultados del análisis de porcentajes con intervalos de confianza al 95% y frecuencias absolutas de las variables cualitativas.
+     */
     const handleDesc3 = async () => {
         setProcesando(true);
         setLoading(true);

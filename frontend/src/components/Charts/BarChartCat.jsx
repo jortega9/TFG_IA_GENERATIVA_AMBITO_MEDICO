@@ -16,7 +16,6 @@ const BarChartCat = ({ data, title, variable, height = 300, width = 480 }) => {
     const categorias = data.map(item => item.variable);
     const nombresBase = categorias.map(c => c.split('_')[0]);
 
-    // Buscar punto de corte a partir de la mitad donde cambia el grupo base
     const findSplitIndex = () => {
         const mid = Math.floor(categorias.length / 2);
         for (let i = mid; i < categorias.length; i++) {
@@ -29,16 +28,13 @@ const BarChartCat = ({ data, title, variable, height = 300, width = 480 }) => {
 
     const splitIndex = findSplitIndex();
 
-    // Dividir data y categorías
     const dataFirstHalf = data.slice(0, splitIndex);
     const dataSecondHalf = data.slice(splitIndex);
 
-    // Función para crear options y series para cada mitad
     const createChartProps = (subset, subtitle) => {
         const cats = subset.map(item => item.variable);
         const bases = cats.map(c => c.split('_')[0]);
 
-        // Asignar colores por nombre base
         const colorMap = {};
         let colorIndex = 0;
         bases.forEach(nombre => {

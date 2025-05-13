@@ -12,15 +12,21 @@ import {
     CircularProgress
 } from '@mui/material';
 
-// import kaplan_meier_plot from "../../../../../data/processed/kaplan_meier/kaplan_meier_plot.png";
-
+/**
+ * Visualización de los resultados del análisis de supervivencia según la variable de grupo (Kaplan Meier)
+ * 
+ * @param {*} param0 
+ * @returns 
+ */
 const KaplanStatistics1 = ({ csvKaplanPath, imagesKaplanPath }) => {
     const [procesando, setProcesando] = useState(false);
     const [loading, setLoading] = useState(false);
     const [medianSurvivalTime, setMedianSurvivalTime] = useState([]);
     const [nObservations, setNObservations] = useState([]);
     
-
+    /**
+     * Función para obtener los resultados del análisis de supervivencia según la variable de grupo (Kaplan Meier)
+     */
     const handleExecuteData = async () => {
         setProcesando(true);
         setLoading(true);
@@ -73,7 +79,7 @@ const KaplanStatistics1 = ({ csvKaplanPath, imagesKaplanPath }) => {
         }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '10%' }}>
                 <Typography sx={{ color: '#4D7AFF', fontSize: '0.9rem' }}>
-                    <strong>ANÁLISIS DE KAPLAN MEIER EN FUNCIÓN DE LA VARIABLE DE GRUPO</strong>
+                    <strong>ANÁLISIS DE SUPERVIVENCIA SEGÚN LA VARIABLE DE GRUPO (KAPLAN MEIER) </strong>
                 </Typography>
             </Box>
 
@@ -82,7 +88,7 @@ const KaplanStatistics1 = ({ csvKaplanPath, imagesKaplanPath }) => {
                     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 6 }}>
                         <CircularProgress sx={{ color: '#4D7AFF', mb: 2 }} />
                         <Typography variant="body1" sx={{ color: '#4D7AFF' }}>
-                            Procesando los datos...
+                            Obteniendo los resultados...
                         </Typography>
                     </Box>
                 ) : (
@@ -94,7 +100,7 @@ const KaplanStatistics1 = ({ csvKaplanPath, imagesKaplanPath }) => {
                                     alignItems: 'center', justifyContent: 'center',
                                     backgroundColor: '#f5f5f5', color: '#4D7AFF'
                                 }}>
-                                    <strong>No hay datos disponibles para realizar el análisis general de Kaplan Meier.</strong>
+                                    <strong>No hay datos disponibles para realizar el análisis de supervivencia general con Kaplan Meier.</strong>
                                 </Typography>
                             </Box>
                         ) : (

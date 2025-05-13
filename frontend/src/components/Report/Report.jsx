@@ -44,6 +44,12 @@ const Report = () => {
     const [isGroupIdentified, setIsGroupIdentified] = useState(false);
     const [isTimeIdentified, setIsTimeIdentified] = useState(false);
 
+    /**
+     * Obtener el contenido de la sección actual durante el proceso de generación del informe
+     * 
+     * @param {*} step 
+     * @returns 
+     */
     const getStepContent = (step) => {
         switch (step) {
             case 0:
@@ -101,17 +107,19 @@ const Report = () => {
             }
     };
 
+    /**
+     * Comprobar si el paso actual es válido para avanzar en el proceso de generación del informe
+     * 
+     * @returns 
+     */
     const isStepValid = () => {
         switch (currentStep) {
             case 0:
                 return isDataPrepared;
-                // return true;
             case 1:
                 return isGroupIdentified;
-                // return true;
             case 2:
                 return isDescDataProcessed;
-                // return true;
             case 3:
                 return true;
             case 4:
@@ -145,6 +153,11 @@ const Report = () => {
         }
     };
 
+    /**
+     * Comprobar si el paso actual es válido para volver atras en el proceso de generación del informe
+     * 
+     * @returns 
+     */
     const isBackStepValid = () => {
         switch (currentStep) {
             case 0:
@@ -186,7 +199,9 @@ const Report = () => {
         }
     };
 
-
+    /**
+     * Avanzar al siguiente paso en el proceso de generación del informe
+     */
     const nextStep = () => {
         if (isStepValid() && currentStep < steps.length){
             setCurrentStep(currentStep + 1);
@@ -195,6 +210,9 @@ const Report = () => {
 
     };
 
+    /**
+     * Volver al paso anterior en el proceso de generación del informe
+     */
     const prevStep = () => {
         if (currentStep > 0) setCurrentStep(currentStep - 1);
     };

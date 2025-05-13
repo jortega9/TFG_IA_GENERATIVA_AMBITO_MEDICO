@@ -14,6 +14,13 @@ import ThemeToggle from '../../ThemeToggle';
 
 import ChiSquaredChart from '../../Charts/ChiSquaredChart';
 
+
+/**
+ * Visualización de los resultados del análisis categórico de Fisher
+ * 
+ * @param {*} param0 
+ * @returns 
+ */
 const AdvStatistics2 = ({ csvFisherPath }) => {
     const [procesando, setProcesando] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -22,6 +29,9 @@ const AdvStatistics2 = ({ csvFisherPath }) => {
     const [pValue, setPValue] = useState([]);
     const [significative, setSignificative] = useState([]);
 
+    /**
+     * Función para obtener los resultados del análisis categórico Fisher
+     */
     const handleAdv2 = async () => {
         setProcesando(true);
         setLoading(true);

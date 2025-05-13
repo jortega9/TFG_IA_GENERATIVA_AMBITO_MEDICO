@@ -6,10 +6,19 @@ import {
     CircularProgress,
 } from '@mui/material';
 
+/**
+ *  Componente para generar el informe PDF, acceder a él y descargar el archivo ZIP con los resultados del proceso.
+ * 
+ * @param {*} param0 
+ * @returns 
+ */
 const DocGenerator = ({ csvCoxPath }) => {
     const [pdfPath, setPdfPath] = useState([]);
     const [loadingZip, setLoadingZip] = useState(false);
 
+    /**
+     * Función para descargar el archivo ZIP generado por el backend
+     */
     const handleDownloadZip = async () => {
         try {
             setLoadingZip(true);
@@ -38,6 +47,9 @@ const DocGenerator = ({ csvCoxPath }) => {
         }
     };
 
+    /**
+     * Función para generar el documento PDF a partir de los resultados obtenidos
+     */
     const handleExecuteData = async () => {
         try {
             const response = await fetch('http://127.0.0.1:8000/ai/documentGenerator', {

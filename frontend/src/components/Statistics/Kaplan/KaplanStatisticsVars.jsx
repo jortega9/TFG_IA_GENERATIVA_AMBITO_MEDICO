@@ -18,21 +18,6 @@ import {
 
 import KaplanVariableCard from './KaplanVariableCard';
 
-// import bilat2_kaplan_meier_plot from '../../../../../data/processed/kaplan_meier/bilat2_kaplan_meier_plot.png';
-// import capras_kaplan_meier_plot from '../../../../../data/processed/kaplan_meier/capras_kaplan_meier_plot.png';
-// import extracap_kaplan_meier_plot from '../../../../../data/processed/kaplan_meier/extracap_kaplan_meier_plot.png';
-// import gleason1_kaplan_meier_plot from '../../../../../data/processed/kaplan_meier/gleason1_kaplan_meier_plot.png';
-// import gleason2_kaplan_meier_plot from '../../../../../data/processed/kaplan_meier/gleason2_kaplan_meier_plot.png';
-// import hereda_kaplan_meier_plot from '../../../../../data/processed/kaplan_meier/hereda_kaplan_meier_plot.png';
-// import localiz_kaplan_meier_plot from '../../../../../data/processed/kaplan_meier/localiz_kaplan_meier_plot.png';
-// import margen_kaplan_meier_plot from '../../../../../data/processed/kaplan_meier/margen_kaplan_meier_plot.png';
-// import multifoc_kaplan_meier_plot from '../../../../../data/processed/kaplan_meier/multifoc_kaplan_meier_plot.png';
-// import pinag_kaplan_meier_plot from '../../../../../data/processed/kaplan_meier/pinag_kaplan_meier_plot.png';
-// import ra_estroma_kaplan_meier_plot from '../../../../../data/processed/kaplan_meier/ra_estroma_kaplan_meier_plot.png';
-// import rtpadyu_kaplan_meier_plot from '../../../../../data/processed/kaplan_meier/rtpadyu_kaplan_meier_plot.png';
-// import tnm2_kaplan_meier_plot from '../../../../../data/processed/kaplan_meier/tnm2_kaplan_meier_plot.png';
-// import vvss_kaplan_meier_plot from '../../../../../data/processed/kaplan_meier/vvss_kaplan_meier_plot.png';
-
 
 const kaplanVars = [
     { name: "bilat2", plot: "bilat2_kaplan_meier_plot.png" },
@@ -51,6 +36,12 @@ const kaplanVars = [
     { name: "vvss", plot: "vvss_kaplan_meier_plot.png" },
 ];
 
+/**
+ * Visualización de los resultados del análisis de supervivencia de cada  una de las variables estratificadas (Kaplan Meier)
+ * 
+ * @param {*} param0 
+ * @returns 
+ */
 const KaplanStatisticsVars = ({ csvKaplanPath }) => {
     const [loadedCount, setLoadedCount] = useState(0);
 
@@ -75,7 +66,7 @@ const KaplanStatisticsVars = ({ csvKaplanPath }) => {
         }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '10%' }}>
                 <Typography sx={{ color: '#4D7AFF', fontSize: '0.9rem' }}>
-                    <strong> ANÁLISIS DE KAPLAN MEIER EN FUNCIÓN DE CADA VARIABLE. </strong>
+                    <strong> ANÁLISIS DE SUPERVIVENCIA ESTRATIFICADO EN FUNCIÓN DE CADA VARIABLE. (KAPLAN MEIER) </strong>
                 </Typography>
                 {/* <ThemeToggle /> */}
             </Box>
