@@ -12,8 +12,10 @@ import { Grid } from '@mui/material';
 
 function Urolobot() {
   const OK_API = 200;
-  const API_KEY = "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";
+  const API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
   const ERROR_MSG = 'Error, please refresh!';
+
+  console.log('API Key:', API_KEY);
 
   const [messages, setMessages] = useState([]);
   const [isChatAccessible, setIsChatAccessible] = useState(false);
