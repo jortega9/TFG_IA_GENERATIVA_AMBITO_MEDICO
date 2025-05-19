@@ -11,7 +11,9 @@ const DropFiles = ({ setIsDataPrepared }) => {
     const [text, setText] = useState("");
     const [files, setFiles] = useState([]);
     const [preparingData, setPreparingData] = useState(false);
-    const [openSnackbar, setOpenSnackbar] = useState(false);  
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
+    const [errorFileNames, setErrorFileNames] = useState([]);
 
     const addFiles = (acceptedFiles) => {
         setFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
@@ -32,16 +34,40 @@ const DropFiles = ({ setIsDataPrepared }) => {
     const handleFileUpload = async (event) => {
         const uploadedFiles = event.target.files;
         if (!uploadedFiles || uploadedFiles.length === 0) return;
-    
+        
+        const validExtensions = ['.xlsx', '.json'];
         const newFiles = Array.from(uploadedFiles);
-        addFiles(newFiles);
+
+        const validFiles = [];
+        const errorFiles = [];
+
+        newFiles.forEach((file) => {
+            const extension = file.name.slice(file.name.lastIndexOf('.')).toLowerCase();
+            
+            if(validExtensions.includes(extension)) {
+                validFiles.push(file);
+            }
+            else {
+                errorFiles.push({name: file.name, error: "Formato no válido"});
+            }
+        
+        });
+
+        if (errorFiles.length > 0){
+            setErrorFileNames(errorFiles.map(file => file.name));
+            setOpenErrorSnackbar(true);
+        }
+
+        if (validFiles.length === 0) return;
+
+        addFiles(validFiles);
     
         const formData = new FormData();
-        newFiles.forEach((file) => {
+        validFiles.forEach((file) => {
             formData.append('files', file);
         });
     
-        console.log('Archivos subidos:', newFiles);
+        console.log('Archivos subidos:', validFiles);
     
         const response = await fetch('http://127.0.0.1:8000/ai/copyDocs', {
             method: 'POST',
@@ -218,6 +244,12 @@ const DropFiles = ({ setIsDataPrepared }) => {
             <Snackbar open={openSnackbar} autoHideDuration={4000} onClose={() => setOpenSnackbar(false)} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}            >
                 <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{ width: '100%' }}>
                     Datos de la base de datos y archivo maestro preparados.
+                </Alert>
+            </Snackbar>
+
+            <Snackbar open={openErrorSnackbar} autoHideDuration={4000} onClose={() => setOpenErrorSnackbar(false)} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}            >
+                <Alert onClose={() => setOpenErrorSnackbar(false)} severity="error" sx={{ width: '100%' }}>
+                    Formato no valido en: {errorFileNames.join(', ')}
                 </Alert>
             </Snackbar>
         </>
