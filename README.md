@@ -70,12 +70,16 @@ Antes de comenzar, asegúrate de tener instalados los siguientes programas y her
        - user_meta
           - ![image](https://github.com/user-attachments/assets/3af4094a-4f2b-49a5-8db7-491d76c7013f)
 
-7. **Configurar archivo .env**  
+8. **Configurar archivo .env**  
    - Crea un archivo `.env` en el directorio raíz del proyecto basandote en env.template .
     ```bash
    cp .env.template .env
    ```
-- Para ver dirección de red desde cmd de windows para DB_HOST:
+   - Crea un archivo `.env` en el directorio frontend en el que añadir la API_KEY de OpenAI:
+    ```bash
+   VITE_OPENAI_API_KEY='your-openai-api-key'
+   ```
+   - Para ver dirección de red desde cmd de windows para DB_HOST:
     ```bash
    ipconfig
    ```
@@ -84,7 +88,7 @@ Antes de comenzar, asegúrate de tener instalados los siguientes programas y her
 
 
     
-7. **Configurar archivo config.init**  
+9. **Configurar archivo config.init**  
    - Crea un archivo `config.init` en el directorio ai del proyecto basandote en config.init.template .
     ```bash
    cd ai
